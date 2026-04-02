@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content: "You are MedVision AI, a helpful medical assistant for a brain tumor detection system. Keep answers concise and professional."
+          content: "You are MedVision AI, a helpful medical assistant for a brain tumor detection system. Keep answers concise and professional. This message has been changed now."
         },
         {
           role: "user",
