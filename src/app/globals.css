@@ -1,0 +1,139 @@
+/* 1. Import Theme variables (colors, fonts, etc.) */
+@import "tailwindcss/theme.css";
+
+/* 2. Import Utilities (flex, pt-24, text-center, etc.) */
+@import "tailwindcss/utilities.css";
+
+/* NOTE: We purposefully DO NOT import "tailwindcss/preflight.css" 
+   This keeps your H1, H2, and Lists looking like standard HTML */
+
+/* 3. Essential Layout Fix (Required because we skipped Preflight) */
+*,
+::before,
+::after {
+  box-sizing: border-box; /* Prevents padding from breaking your layout */
+}
+
+/* 4. Your Custom Styles */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* ... keep your other :root variables here ... */
+}
+
+/* Ensure your body background works */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(100deg, #0a192f 10%, #4a1771 90%);
+  color: #ffffff;
+
+  background-attachment: fixed;
+}
+
+.header {
+  background-image:
+    linear-gradient(rgba(10, 25, 47, 0.7), rgba(88, 28, 135, 0.7)),
+    url("/Landing_Back_Image2.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  align-items: center;
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  -webkit-mask-image: linear-gradient(
+    to bottom to right,
+    black 60%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+
+  -webkit-mask-image:
+    linear-gradient(to bottom, black 60%, transparent 100%),
+    linear-gradient(to top, black 60%, transparent 100%),
+    linear-gradient(to right, black 60%, transparent 100%),
+    linear-gradient(to left, black 60%, transparent 100%);
+  -webkit-mask-composite: intersect;
+
+  mask-image:
+    linear-gradient(to bottom, black 60%, transparent 100%),
+    linear-gradient(to top, black 60%, transparent 100%),
+    linear-gradient(to right, black 60%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.header-h1 {
+  font-size: 50px;
+  margin: 0px;
+}
+.header h2,
+p {
+  margin: 0px;
+  box-shadow: #171717;
+}
+.login-signup-btn {
+  background-color: #9150f3e1;
+  padding: 10px;
+  border-radius: 10vh;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 10px;
+}
+.demo {
+  cursor: pointer;
+
+  padding: 10px;
+  color: black;
+  font-weight: bolder;
+  border-radius: 20px;
+  width: 150px;
+  text-align: center;
+}
+.chatbot-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-btn {
+  font-size: 20px;
+}
+
+/* Footer */
+.foot {
+  margin-bottom: 0px;
+  padding: 100px;
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+.foot-icons {
+  font-size: 50px;
+  display: flex;
+  gap: 50px;
+  color: white;
+}
+.footer-buttons {
+  background-color: #270772;
+  padding: 10px;
+  border-radius: 10vh;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 10px;
+}
+/* Login Page */
+.login-signup {
+  background-color: #9150f3e1;
+  padding: 10px;
+  border-radius: 10vh;
+  /* border: none; */
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+}
