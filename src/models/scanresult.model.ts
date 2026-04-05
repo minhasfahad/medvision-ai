@@ -21,7 +21,7 @@ const ResultSchema: Schema = new Schema(
         },
         originalImage: { type: String, required: true },    
         imageData: { type: String, required: true },
-        // Fixed: changed StaticRange to String
+
         className: { type: String, required: true },
         confidence: { type: Number, required: true },
         tumorDetected: { type: Boolean, required: true }
