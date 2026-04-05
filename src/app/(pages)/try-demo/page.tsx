@@ -4,6 +4,7 @@ import api from '@/src/lib/axios';
 import { useState } from 'react';
 // --- NEW IMPORT ADDED HERE ---
 import GaugeChart from 'react-gauge-chart'; 
+import { useAuthStore } from '@/src/lib/store/useAuthStore';
 // -----------------------------
 
 interface AnalysisResult {
@@ -12,21 +13,28 @@ interface AnalysisResult {
   detected: boolean;
 }
 
+
 export default function TryDemoPage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [analyzedImage, setAnalyzedImage] = useState<string | null>(null);
   const [analysisData, setAnalysisData] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
-
+  
+  const {user, token} = useAuthStore();
   const handleUpload = async () => {
     if (!selectedImage) return;
+    if (!user || !user.id) {
+        alert("Please login first to save your scans.");
+        return;
+    }
     setLoading(true);
     setAnalyzedImage(null);
     setAnalysisData(null);
 
     const formData = new FormData();
     formData.append("mri_image", selectedImage);
-
+    // Pass the ID from your Zustand store to the API
+    formData.append("userId", user.id);
     try {
       // Calls the Next.js API route (bridge)
       const response = await api.post("/api/analyze", formData, {
@@ -67,6 +75,8 @@ export default function TryDemoPage() {
         <p className="text-gray-400 mb-8">Upload MRI scan for deep learning tumor detection</p>
         
         <div className="bg-white/5 p-8 rounded-2xl border border-white/10 w-full max-w-[60%] shadow-2xl rsults">
+        <h2>🛡️ Data & Privacy Notice</h2>
+        <h4 >To track your medical history, we securely save your scans and results to your profile. By uploading, you acknowledge our Privacy Policy and Medical Disclaimer.</h4>
           {/* UPLOAD SECTION */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-300 mb-2">Select MRI Image</label>
@@ -151,7 +161,7 @@ export default function TryDemoPage() {
                     {/* --- END CHANGED SECTION --- */}
 
                     <div className="pt-2">
-                      <p className="text-[11px] leading-relaxed text-gray-500 italic">
+                      <p className="text-[11px] leading-relaxed text-gray-500 italic p-5 text-center">
                         {analysisData.detected 
                           ? "Note: High-confidence region identified. Consult a radiologist for clinical verification." 
                           : "Note: No abnormal tumor mass detected by the current model version."}
@@ -174,6 +184,8 @@ export default function TryDemoPage() {
               </div>
             </div>
           )}
+
+          <h5 className='text-center pt-10 text-[18px] text-blue-500' >AI-generated result. Accuracy may vary. Please consult a medical professional for an official clinical diagnosis. </h5>
         </div>
       </main>
     </div>
