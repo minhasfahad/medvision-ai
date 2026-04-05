@@ -8,16 +8,20 @@ export async function POST(req: NextRequest) {
     // 1. Get User ID (Crucial for the "Foreign Key")
     // Replace this with your actual Auth logic
     await connectDB();
-    console.log("DB Ready! Go on");
+
     const formData = await req.formData();
     const userId = formData.get('userId') as string; 
-    if (!userId || userId === "REPLACE_WITH_LOGGED_IN_USER_ID") {
+    if (!userId) {
       return NextResponse.json({ 
         success: false, 
         message: "Valid User ID is required. Are you logged in?" 
       }, { status: 400 });
     }
-    const file = formData.get('mri_image') as Blob;
+    const file = formData.get('mri_image') as File;
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const originalImageBase64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
     const pythonFormData = new FormData();
     pythonFormData.append('file', file);
@@ -35,6 +39,7 @@ export async function POST(req: NextRequest) {
     // 3. Save to MongoDB using Repository
     const savedData = await SaveScanResult({
       user: userId as any,
+      originalImage: originalImageBase64,
       imageData: pythonData.image, // The base64 string
       className: pythonData.class_name,
       confidence: pythonData.confidence,

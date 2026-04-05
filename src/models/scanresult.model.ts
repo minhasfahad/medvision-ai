@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 // 1. TypeScript Interface
 export interface IResult extends Document {
     user: mongoose.Types.ObjectId; // Added user to interface
+    originalImage: string
     imageData: string;
     className: string;
     confidence: number;
@@ -18,6 +19,7 @@ const ResultSchema: Schema = new Schema(
             ref: 'User',
             required: true
         },
+        originalImage: { type: String, required: true },    
         imageData: { type: String, required: true },
         // Fixed: changed StaticRange to String
         className: { type: String, required: true },
