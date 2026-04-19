@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SaveScanResult } from "@/src/repositories/result.repository";
+import { saveScanResult } from "@/src/repositories/result.repository";
 import { connectDB } from "@/src/lib/mongoose";
 // import { getServerSession } from "next-auth"; // If using NextAuth
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const pythonData = await response.json();
 
     // 3. Save to MongoDB using Repository
-    const savedData = await SaveScanResult({
+    const savedData = await saveScanResult({
       user: userId as any,
       originalImage: originalImageBase64,
       imageData: pythonData.image, // The base64 string
