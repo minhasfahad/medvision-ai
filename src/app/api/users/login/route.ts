@@ -12,6 +12,7 @@ export async function POST(req: Request) {
     await connectDB();
     const { email, password } = await req.json();
 
+    
     // 1. Find user AND include the password_hash (which is hidden by default)
     const user = await userRepo.findByEmailWithPassword(email);
     if (!user) {

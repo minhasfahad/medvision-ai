@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
 export default function Signup() {
   const router = useRouter();
   const setAuthValues = useAuthStore((state) => state.setAuth);
@@ -26,6 +27,7 @@ export default function Signup() {
         name,
         email,
         password,
+        role,
       });
       const { user, token } = response.data;
       setAuthValues(user, token);
@@ -93,8 +95,8 @@ export default function Signup() {
             </div>
 
             <div className="relative w-full max-w-sm">
-              <i className="fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-
+              <i className="mt-6 fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <p className="mb-7">Password Must be at least 8 characters long.</p>
               <input
                 type="password"
                 placeholder="Password"

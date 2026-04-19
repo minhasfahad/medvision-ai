@@ -22,7 +22,14 @@ export default function LandingPage() {
           </p>
         </header>
         {authState.isAuthenticated ? (
-          <h1 className="">Logged in as {authState.user?.name}</h1>
+          <div className="">
+            <h1>
+              Logged in as {authState.user?.name}{" "}
+              <span className="text-red-700">
+                (Role: {authState.user?.role} )
+              </span>
+            </h1>
+          </div>
         ) : (
           <></>
         )}
