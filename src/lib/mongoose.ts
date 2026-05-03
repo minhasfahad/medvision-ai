@@ -9,5 +9,5 @@ if (!MONGODB_URI) {
 export async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
   console.log("Connected with Mongo DB Successfuly!");
-  return mongoose.connect(MONGODB_URI);
+  return mongoose.connect('mongodb://localhost:27017/medvision_ai');
 }
