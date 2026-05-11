@@ -103,7 +103,7 @@ const ContactPage = () => {
 
                 <button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition transform hover:scale-[1.02]"
+                  className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition transform hover:scale-[1.02]"
                 >
                   Send Message
                 </button>

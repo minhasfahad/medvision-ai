@@ -15,7 +15,7 @@ export const Navbar = () => {
 
   return (
     <nav className="items-center top-0 z-20 w-full border-b border-gray-700 bg-[#060b30]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 items-center">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4 ">
         {/* LOGO SECTION */}
         <Link
           href="/"
@@ -94,7 +94,7 @@ export const Navbar = () => {
             </li>
             {authState.isAuthenticated && (
               <>
-                {(authState.user?.role === "doctor" || authState.user?.role === "admin") && (
+                {(authState.user?.role === "doctor" ||authState.user?.role === "Doctor" || authState.user?.role === "DOCTOR" && (
                   <>
                     <li>
                       <Link
@@ -113,7 +113,7 @@ export const Navbar = () => {
                       </Link>
                     </li>
                   </>
-                )}
+                ))}
                 <li className="chatbot-img flex gap-1 items-center">
                   <Image
                     className="chatbot-img"
