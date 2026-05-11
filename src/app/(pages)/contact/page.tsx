@@ -110,7 +110,6 @@ const ContactPage = () => {
               </form>
             )}
           </div>
-
         </div>
       </div>
     </>
