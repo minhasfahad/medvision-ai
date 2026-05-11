@@ -23,3 +23,19 @@ export const getAllScanResults = async () => {
         throw new Error("Failed to get the Results: " + String(error));
     }
 };
+
+export const updateScanComment = async (scanId: string, comment: string) => {
+    try {
+        const updatedResult = await Result.findByIdAndUpdate(
+            scanId,
+            { comment },
+            { new: true }
+        );
+        return updatedResult;
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error("Failed to update comment: " + error.message);
+        }
+        throw new Error("Failed to update comment: " + String(error));
+    }
+};
