@@ -14,6 +14,7 @@ interface ScanResult {
   tumorDetected: boolean;
   createdAt: string;
   updatedAt: string;
+  comment?: string;
 }
 
 // --- NEW: Appointment Interface ---
@@ -29,6 +30,8 @@ export default function DoctorDashboard() {
   const [scans, setScans] = useState<ScanResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [commentInputs, setCommentInputs] = useState<{ [key: string]: string }>({});
+  const [savingComments, setSavingComments] = useState<{ [key: string]: boolean }>({});
 
   // --- NEW: State for Appointments ---
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -85,6 +88,45 @@ export default function DoctorDashboard() {
 
     fetchAppointments();
   }, []);
+
+  // Save Comment Function
+  const handleSaveComment = async (scanId: string) => {
+    const commentText = commentInputs[scanId]?.trim();
+    if (!commentText) return;
+
+    setSavingComments(prev => ({ ...prev, [scanId]: true }));
+    
+    try {
+      const response = await fetch('/api/results', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          scanId, 
+          comment: commentText 
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to save comment');
+
+      const result = await response.json();
+      
+      // Update local state
+      setScans(prevScans => 
+        prevScans.map(scan => 
+          scan._id === scanId 
+            ? { ...scan, comment: commentText }
+            : scan
+        )
+      );
+      
+      setCommentInputs(prev => ({ ...prev, [scanId]: '' }));
+    } catch (err: any) {
+      console.error('Error saving comment:', err);
+      alert('Failed to save comment');
+    } finally {
+      setSavingComments(prev => ({ ...prev, [scanId]: false }));
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-[#0f111a] text-white">
@@ -151,6 +193,41 @@ export default function DoctorDashboard() {
                   <p className="text-[10px] text-gray-500 mt-2">
                     {new Date(scan.createdAt).toLocaleDateString()}
                   </p>
+
+                  {/* Comment Section */}
+                  <div className="mt-4 pt-4 border-t border-gray-700">
+                    {/* Display Existing Comment */}
+                    {scan.comment && (
+                      <div className="mb-3 p-3 bg-blue-600/10 rounded-lg border border-blue-500/30">
+                        <p className="text-xs text-gray-400 mb-1">Doctor's Note:</p>
+                        <p className="text-sm text-gray-200">{scan.comment}</p>
+                      </div>
+                    )}
+
+                    {/* Add/Edit Comment Input */}
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Add a comment..."
+                        value={commentInputs[scan._id] || ''}
+                        onChange={(e) => setCommentInputs(prev => ({ ...prev, [scan._id]: e.target.value }))}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSaveComment(scan._id);
+                          }
+                        }}
+                        className="flex-1 px-2 py-2 bg-gray-800 text-white text-xs rounded border border-gray-700 focus:border-blue-500 outline-none"
+                        disabled={savingComments[scan._id]}
+                      />
+                      <button
+                        onClick={() => handleSaveComment(scan._id)}
+                        disabled={savingComments[scan._id] || !commentInputs[scan._id]?.trim()}
+                        className="px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white text-xs rounded font-medium transition-colors"
+                      >
+                        {savingComments[scan._id] ? 'Saving...' : 'Save'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

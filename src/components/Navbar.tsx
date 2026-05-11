@@ -19,16 +19,16 @@ export const Navbar = () => {
         {/* LOGO SECTION */}
         <Link
           href="/"
-          className="no-underline flex items-center space-x-3 rtl:space-x-reverse "
+          className="no-underline flex items-center space-x-2 rtl:space-x-reverse "
         >
           <Image
             src="/logoo.jpg" // Make sure this file exists in your public folder!
             alt="MedVision Logo"
-            width={150}
-            height={80}
+            width={120}
+            height={60}
             className="rounded-full"
           />
-          <span className="self-center whitespace-nowrap text-2xl font-semibold text-white">
+          <span className="self-center whitespace-nowrap text-xl font-semibold text-white">
             MedVision <span className="text-slate-500">AI</span>
           </span>
         </Link>
@@ -66,11 +66,11 @@ export const Navbar = () => {
           } w-full md:block md:w-auto`}
           id="navbar-default"
         >
-          <ul className="flex items-center gap-2 list-none mt-4 flex-col rounded-lg border border-gray-700 bg-gray-800 p-0 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-transparent md:p-0 rtl:space-x-reverse ">
+          <ul className="flex items-center gap-1 list-none mt-4 flex-col rounded-lg border border-gray-700 bg-gray-800 p-0 font-medium md:mt-0 md:flex-row md:space-x-4 md:border-0 md:bg-transparent md:p-0 rtl:space-x-reverse md:flex-nowrap">
             <li>
               <Link
                 href="/"
-                className="no-underline block rounded bg-blue-700 py-2 px-3 text-white md:bg-transparent md:p-0 md:text-blue-500"
+                className="no-underline block rounded bg-blue-700 py-2 px-2 text-white md:bg-transparent md:p-0 md:text-blue-500 text-sm md:text-base"
                 aria-current="page"
               >
                 Home
@@ -79,7 +79,7 @@ export const Navbar = () => {
             <li>
               <Link
                 href="/about"
-                className="no-underline block rounded py-2 px-3 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
+                className="no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
               >
                 About
               </Link>
@@ -87,24 +87,44 @@ export const Navbar = () => {
             <li>
               <Link
                 href="/contact"
-                className=" no-underline block rounded py-2 px-3 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
+                className=" no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
               >
                 Contact
               </Link>
             </li>
             {authState.isAuthenticated && (
               <>
-                <li className="chatbot-img flex gap-2">
+                {(authState.user?.role === "doctor" || authState.user?.role === "admin") && (
+                  <>
+                    <li>
+                      <Link
+                        href="/doctor-dashboard"
+                        className="no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
+                      >
+                        Doctor Dashboard
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/appointments"
+                        className="no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
+                      >
+                        Appointments
+                      </Link>
+                    </li>
+                  </>
+                )}
+                <li className="chatbot-img flex gap-1 items-center">
                   <Image
-                    className="chatbot-img gap-2"
+                    className="chatbot-img"
                     src="/chatbot.png"
-                    width={50}
-                    height={50}
+                    width={40}
+                    height={40}
                     alt="Chatbot"
                   />
                   <Link
                     href="/chatbot"
-                    className=" no-underline block rounded py-2 px-3 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
+                    className=" no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
                   >
                     AI ChatBot
                   </Link>
@@ -112,14 +132,14 @@ export const Navbar = () => {
                 <li>
                   <Link
                     href="/try-demo"
-                    className=" demo text-xl bg-blue-500 no-underline block rounded py-2 px-3 text-white hover:bg-blue-400 md:border-0 md:p-0 md:hover:text-blck-500"
+                    className=" demo text-sm md:text-base bg-blue-500 no-underline block rounded py-2 px-2 text-white hover:bg-blue-400 md:border-0 md:p-0 md:hover:text-blck-500"
                   >
                     Try Demo
                   </Link>
                 </li>
                 <li>
                   <button
-                    className="demo  no-underline block rounded py-2 px-3 text-white hover:bg-blue-400 md:border-0  md:hover:text-blck-500 bg-red-500 text-xl p-20"
+                    className="demo no-underline block rounded py-2 px-2 text-white hover:bg-blue-400 md:border-0 md:hover:text-blck-500 bg-red-500 text-sm md:text-base"
                     onClick={Logout}
                   >
                     Logout

@@ -8,6 +8,7 @@ export interface IResult extends Document {
     className: string;
     confidence: number;
     tumorDetected: boolean;
+    comment?: string;
     createdAt: Date;
 }
 
@@ -21,10 +22,10 @@ const ResultSchema: Schema = new Schema(
         },
         originalImage: { type: String, required: true },    
         imageData: { type: String, required: true },
-
         className: { type: String, required: true },
         confidence: { type: Number, required: true },
-        tumorDetected: { type: Boolean, required: true }
+        tumorDetected: { type: Boolean, required: true },
+        comment: { type: String, default: null }
     },
     {
         timestamps: true,
