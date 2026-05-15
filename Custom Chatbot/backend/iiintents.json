@@ -1,0 +1,508 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hi", "Hello", "Hey", "AOA", "Assalam o Alaikum", "Is anyone there",
+        "Good morning", "Good evening", "Hey AI", "Hi MedVision",
+        "Hello assistant", "Hi there", "Greetings", "Yo", "Hey bot"
+      ],
+      "responses": [
+        "Hello! I’m MedVision AI, your brain tumor detection and MRI assistant. How can I help you today?",
+        "Hi! I can guide you about brain tumors, MRI scans, diagnosis, and AI detection results.",
+        "Greetings! Ask me anything related to brain health or MRI-based tumor analysis."
+      ]
+    },
+    {
+      "tag": "brain_tumor_definition",
+      "patterns": [
+        "What is brain tumor", "Define brain tumor",
+        "Explain brain tumor simply", "Brain tumor meaning", "What is tumor in brain",
+        "Can you explain brain tumor", "Brain tumor kya hai"
+      ],
+      "responses": [
+        "A brain tumor is an abnormal growth of cells inside the brain that can interfere with normal brain functions such as               memory, movement, and thinking.",
+        "It can be benign (non-cancerous) or malignant (cancerous), depending on its nature and growth behavior.",
+        "Brain tumors may develop slowly or rapidly and require medical imaging like MRI for proper diagnosis.",
+          "A brain tumor is a mass or growth of abnormal cells in the brain. It can be primary (starting in the brain) or                   secondary (spreading from another part of the body)."
+      ]
+    },
+    {
+      "tag": "tumor_definition",
+      "patterns": [
+        "What is a tumor", 
+        "Define tumor", 
+        "Tumor kya hota hai",
+        "Explain tumor simply", 
+        "Tumor meaning", 
+        "What is a tumor in the body",
+        "Can you explain tumors", 
+        "Tumor kya hai",
+        "Tumor"
+      ],
+      "responses": [
+        "A tumor is an abnormal mass of tissue that forms when cells grow and divide more than they should or do not die when they          should.",
+        "Tumors can be benign (non-cancerous) or malignant (cancerous). Benign tumors stay in one place, while malignant ones can           spread to nearby tissues."
+      ]
+    },
+    {
+      "tag": "brain_tumor_types",
+      "patterns": [
+        "Types of brain tumor", "What are different brain tumors",
+        "Brain tumor categories", "Tell me tumor types",
+        "How many types of brain tumor are there",
+        "Which tumors exist in brain", "Classification of brain tumor"
+      ],
+      "responses": [
+        "Brain tumors are mainly divided into primary tumors (originating in the brain) and secondary tumors (spreading from other organs).",
+        "Common primary types include Gliomas, Meningiomas, Pituitary tumors, Schwannomas, and Medulloblastomas.",
+        "Secondary tumors, also called metastatic tumors, are usually more aggressive as they spread from cancers elsewhere in the body."
+      ]
+    },
+    {
+      "tag": "glioma",
+      "patterns": [
+        "What is glioma", "Glioma tumor kya hota hai",
+        "Is glioma dangerous", "Explain glioma",
+        "Glioma meaning", "Brain glioma details"
+      ],
+      "responses": [
+        "Glioma is a type of tumor that develops from glial cells, which support and protect neurons in the brain and spinal cord.",
+        "It ranges from low-grade (slow growing) to high-grade like glioblastoma, which is very aggressive and life-threatening."
+      ]
+    },
+    {
+      "tag": "meningioma",
+      "patterns": [
+        "What is meningioma", "Meningioma kya hota hai",
+        "Is meningioma cancer", "Explain meningioma",
+        "Brain membrane tumor", "Meningioma details"
+      ],
+      "responses": [
+        "Meningioma is a tumor that forms in the meninges, the protective layers covering the brain and spinal cord.",
+        "Most meningiomas are benign and grow slowly, often detected incidentally during MRI scans."
+      ]
+    },
+    {
+      "tag": "pituitary_tumor",
+      "patterns": [
+        "What is pituitary tumor", "Pituitary gland tumor",
+        "Hormone imbalance tumor", "Pituitary tumor kya hota hai",
+        "Brain hormone tumor", "Pituitary adenoma"
+      ],
+      "responses": [
+        "Pituitary tumors develop in the pituitary gland, which controls hormone production in the body.",
+        "These tumors may cause hormonal imbalance, vision problems, or growth issues depending on size.",
+        "Most pituitary tumors are treatable with medication or surgery."
+      ]
+    },
+    {
+      "tag": "schwannoma",
+      "patterns": [
+        "What is schwannoma", "Acoustic neuroma tumor",
+        "Nerve sheath tumor brain", "Schwannoma explanation",
+        "Hearing loss tumor", "Vestibular schwannoma"
+      ],
+      "responses": [
+        "Schwannoma is a tumor that grows on Schwann cells, which protect nerves in the brain and spinal cord.",
+        "It often affects hearing and balance when located near auditory nerves.",
+        "These tumors are usually benign but may require surgical removal if they grow."
+      ]
+    },
+    {
+      "tag": "medulloblastoma",
+      "patterns": [
+        "What is medulloblastoma", "Child brain tumor type",
+        "Aggressive brain tumor in kids", "Medulloblastoma explanation",
+        "Pediatric brain tumor", "Fast growing brain tumor in children"
+      ],
+      "responses": [
+        "Medulloblastoma is a highly aggressive malignant brain tumor that mostly affects children.",
+        "It usually starts in the cerebellum, which controls balance and coordination.",
+        "Early detection and treatment are very important for better outcomes."
+      ]
+    },
+    {
+      "tag": "symptoms_varied",
+      "patterns": [
+        "Brain tumor symptoms", "What are early signs",
+        "Headache every day why", "Vomiting and headache",
+        "Vision blur cause tumor", "Seizure symptoms brain",
+        "Tumor ke symptoms kya hain", "How do I know I have brain tumor",
+        "Dizziness and headache together", "Memory loss and confusion"
+      ],
+      "responses": [
+        "Common symptoms include persistent headaches, seizures, blurred vision, nausea, and memory problems.",
+        "Symptoms vary depending on tumor location, size, and growth speed.",
+        "If symptoms are persistent or worsening, immediate medical consultation is recommended."
+      ]
+    },
+    {
+      "tag": "emergency",
+      "patterns": [
+        "Sudden seizure", "I fainted", "Severe headache suddenly",
+        "Cannot see properly now", "Emergency brain issue",
+        "Lost consciousness", "Stroke like symptoms"
+      ],
+      "responses": [
+        "⚠ This may be a serious medical emergency. Please seek immediate hospital care.",
+        "Do not delay—urgent neurological evaluation is required right now.",
+        "If possible, contact emergency services or go to the nearest hospital immediately."
+      ]
+    },
+    {
+      "tag": "causes",
+      "patterns": [
+        "Why brain tumor happens", "Tumor causes kya hain",
+        "Genetic reason tumor", "Radiation cause brain tumor",
+        "Brain tumor reasons", "How tumor starts"
+      ],
+      "responses": [
+        "Brain tumors may develop due to genetic mutations, abnormal cell growth, or exposure to radiation.",
+        "In many cases, the exact cause remains unknown despite medical research.",
+        "Family history and certain genetic conditions can increase risk."
+      ]
+    },
+    {
+      "tag": "diagnosis",
+      "patterns": [
+        "How tumor is diagnosed", "MRI scan for tumor",
+        "CT scan brain tumor detection", "How doctors confirm tumor",
+        "Tumor detection process", "Which test for brain tumor"
+      ],
+      "responses": [
+        "Doctors use MRI scans, CT scans, and sometimes biopsy to confirm brain tumor diagnosis.",
+        "MRI is the most detailed imaging method for detecting tumor location and size."
+      ]
+    },
+    {
+      "tag": "ai_yolo",
+      "patterns": [
+        "How AI detects tumor", "What is YOLO model",
+        "How your AI works", "Tumor detection using AI",
+        "AI brain scan analysis", "Deep learning tumor detection"
+      ],
+      "responses": [
+        "MedVision AI uses the YOLO deep learning model to detect tumors in MRI images with high speed and accuracy.",
+        "The system analyzes scan patterns and highlights abnormal regions automatically."
+      ]
+    },
+    {
+      "tag": "mri_explained",
+      "patterns": [
+        "What is MRI", "How MRI works",
+        "Why MRI used for brain", "MRI kya hota hai",
+        "Brain scan explanation", "MRI purpose"
+      ],
+      "responses": [
+        "MRI (Magnetic Resonance Imaging) uses magnetic fields and radio waves to create detailed images of the brain.",
+        "It helps doctors detect tumors, bleeding, and other neurological conditions.",
+        "MRI is safe and does not use harmful radiation like X-rays."
+      ]
+    },
+    {
+      "tag": "confidence_score",
+      "patterns": [
+        "What is confidence score", "How accurate is AI",
+        "Can AI be wrong", "What does 95% confidence mean",
+        "AI accuracy meaning", "Prediction score explanation"
+      ],
+      "responses": [
+        "Confidence score indicates how certain the AI is about its prediction result.",
+        "A higher score means stronger likelihood, but it is not a final medical diagnosis.",
+        "Doctors always verify AI results before making treatment decisions."
+      ]
+    },
+    {
+      "tag": "treatment",
+      "patterns": [
+        "Brain tumor treatment", "Can tumor be cured",
+        "Surgery options tumor", "Chemotherapy brain tumor",
+        "Radiation therapy tumor", "Treatment methods brain tumor"
+      ],
+      "responses": [
+        "Treatment depends on tumor type and may include surgery, radiation therapy, or chemotherapy.",
+        "Some tumors are fully removable, while others require long-term management.",
+        "Doctors create personalized treatment plans based on MRI results and biopsy reports.",
+          "Treatment depends on grade and may include surgery, radiation, or chemotherapy."
+      ]
+    },
+    {
+      "tag": "follow_up_questions",
+      "patterns": [
+        "What next", "After MRI what happens",
+        "Next step kya hai", "Explain more", "Then what",
+        "What should I do after scan"
+      ],
+      "responses": [
+        "After MRI analysis, a detailed report is generated and reviewed by a specialist doctor.",
+        "The next step usually involves consultation with a neurologist for treatment planning.",
+        "Further tests or follow-ups may be required depending on the findings."
+      ]
+    },
+    {
+      "tag": "report_pdf",
+      "patterns": [
+        "Download report", "Get PDF report",
+        "Where is my scan report", "Can I get MRI result file",
+        "Export results", "Save report"
+      ],
+      "responses": [
+        "You can download a PDF report containing AI detection results, tumor location, and confidence scores.",
+        "The report is designed to assist doctors in understanding MRI analysis quickly.",
+        "It includes structured findings and diagnostic summary."
+      ]
+    },
+    {
+      "tag": "appointment",
+      "patterns": [
+        "Book doctor appointment", "Find neurologist",
+        "I want consultation", "Schedule doctor visit",
+        "Doctor appointment help", "Medical consultation booking"
+      ],
+      "responses": [
+        "You can book an appointment with a neurologist through the MedVision AI assistant.",
+        "I can guide you to nearby specialists or help schedule a consultation.",
+        "Would you like assistance in finding a brain specialist?"
+      ]
+    },
+    {
+      "tag": "appointment_confirmed",
+      "patterns": [
+        "Yes", "Yeah", "Sure", "Okay", "I would like that",
+        "Find me a doctor", "Help me book", "Yes please"
+      ],
+      "responses": [
+        "Great! Please click on the 'Find Doctor' button in the sidebar to see a list of neurologists.",
+        "Sure thing. I am now activating the doctor locator. You can filter by your city or hospital name.",
+        "Understood. Redirecting you to our appointment scheduling page..."
+      ]
+    },
+    {
+      "tag": "prevention",
+      "patterns": [
+        "How to prevent brain tumor", "Tumor prevention tips",
+        "Can lifestyle help prevent tumor", "Avoid brain tumor",
+        "Risk reduction tumor", "Healthy habits brain health"
+      ],
+      "responses": [
+        "There is no guaranteed way to prevent brain tumors, but reducing radiation exposure and maintaining a healthy lifestyle may help lower risk.",
+        "Regular medical checkups can support early detection and better outcomes.",
+        "Avoiding harmful environmental exposure and maintaining brain health is recommended."
+      ]
+    },
+    {
+      "tag": "about_project",
+      "patterns": [
+        "What is MedVision AI", "Tell me about project",
+        "Who created this system", "What is your purpose",
+        "Explain your system", "Project overview"
+      ],
+      "responses": [
+        "MedVision AI is a MERN-based AI system designed to detect brain tumors from MRI scans using deep learning models like YOLO.",
+        "It combines medical imaging with artificial intelligence to support early diagnosis.",
+        "The goal is to assist doctors by providing fast and accurate tumor detection insights.",
+        "MedVision team created this system for radiologist assistance"
+      ]
+    },
+    {
+      "tag": "ai_limitations",
+      "patterns": [
+        "How accurate is this?", "Can you make a mistake?",
+        "Is AI better than a radiologist?", "What are the chances of a wrong result?",
+        "False positives in AI", "AI reliability"
+      ],
+      "responses": [
+        "MedVision AI is highly accurate but serves as a supportive tool for radiologists, not a replacement. It can occasionally produce false positives or negatives.",
+        "Our YOLO-based model is trained on extensive datasets, but clinical verification by a human expert is always required."
+      ]
+    },
+    {
+      "tag": "data_privacy",
+      "patterns": [
+        "Is my MRI data safe?", "Who can see my scans?",
+        "Are my results private?", "Data security", "Privacy policy"
+      ],
+      "responses": [
+        "Your privacy is our priority. All uploaded MRI scans are encrypted and used only for the detection process.",
+        "We follow strict data protection protocols to ensure that your medical images and personal info remain confidential."
+      ]
+    },
+    {
+      "tag": "how_to_upload",
+      "patterns": [
+        "How do I upload a scan?", "Where to put MRI file?",
+        "Supported file formats", "Can I upload JPG or DICOM?",
+        "Steps to use MedVision"
+      ],
+      "responses": [
+        "To start, click the 'Upload' button on the dashboard. You can upload MRI images in .jpg, .png, or .jpeg formats.",
+        "Once you upload the file, click 'Analyze' and our YOLO model will process the image in seconds."
+      ]
+    },
+    {
+      "tag": "benign_vs_malignant",
+      "patterns": [
+        "Difference between benign and malignant", "Is benign tumor dangerous?",
+        "Does benign mean no cancer?", "Difference between cancerous and non-cancerous tumors"
+      ],
+      "responses": [
+        "Benign tumors are non-cancerous and usually slow-growing, while malignant tumors are cancerous and can invade nearby tissues.",
+        "Even a benign tumor can be serious if it puts pressure on sensitive areas of the brain."
+      ]
+    },
+    {
+      "tag": "confusion",
+      "patterns": [
+        "You are not helping", "I don't understand",
+        "That is not what I asked", "Wrong answer", "Stupid bot"
+      ],
+      "responses": [
+        "I apologize for the confusion. I am still learning! Could you try rephrasing your question?",
+        "I'm sorry if that wasn't helpful. I'm specifically trained on brain tumors and MRI analysis. How can I better assist you?"
+      ]
+    },
+    {
+      "tag": "no_tumor_detected",
+      "patterns": [
+        "What if result is normal?", "AI says no tumor", "Nothing found in scan",
+        "What does a clear MRI mean?", "No abnormalities found"
+      ],
+      "responses": [
+        "If the AI detects no tumor, it means no abnormal growths were identified based on our training data. However, a radiologist should still confirm the clear result.",
+        "A 'No Tumor' result is encouraging, but if you still experience symptoms, please consult a neurologist for further evaluation."
+      ]
+    },
+    {
+      "tag": "recovery",
+      "patterns": [
+        "Recovery after surgery", "Life after brain tumor", "Can I live a normal life?",
+        "Tumor recurrence", "Will the tumor come back?"
+      ],
+      "responses": [
+        "Recovery depends on the tumor type and treatment. Many patients return to normal activities, though regular follow-up MRIs are usually required.",
+        "Tumor recurrence is a possibility for some types, which is why long-term monitoring with MRI scans is a standard part of follow-up care."
+      ]
+    },
+    {
+      "tag": "bot_scope",
+      "patterns": [
+        "What can you do?", "How can you help me?", "Help me with other cancers",
+        "Can you check lung cancer?", "Tell me about heart disease"
+      ],
+      "responses": [
+        "I am specialized specifically in Brain Tumor detection and MRI analysis. I cannot provide information on other types of cancer or general diseases.",
+        "My focus is limited to neurological health and helping you understand brain MRI results."
+      ]
+    },
+    {
+      "tag": "motivation",
+      "patterns": [
+        "I am scared", "I feel hopeless", "Give me some motivation",
+        "I'm worried about my results", "Help me stay positive",
+        "I can't do this", "It's too hard", "Encourage me", "Feeling down"
+      ],
+      "responses": [
+        "Please remember that you are not alone. Technology and medicine are advancing every day, and your medical team is there to support you.",
+        "Stay strong. A diagnosis is just one step toward a solution. Many people have faced this and come out stronger on the other side.",
+        "It's okay to be scared, but don't lose hope. Focus on one step at a time. We are here to help you through the technical side of your journey.",
+        "Your courage in seeking answers is the first step toward healing. Take a deep breath—you've got this."
+      ]
+    },
+    {
+      "tag": "inspirational_quotes",
+      "patterns": [
+        "Give me a quote", "Inspiration please", "Wise words"
+      ],
+      "responses": [
+        "“Hope is the only thing stronger than fear.” — Robert Ley",
+        "“You are braver than you believe, stronger than you seem, and smarter than you think.” — A.A. Milne",
+        "“The human spirit is stronger than anything that can happen to it.” — C.C. Scott"
+      ]
+    },
+    {
+      "tag": "help_guide",
+      "patterns": [
+        "What can I ask you?", "Help me", "How to use this bot", "Options"
+      ],
+      "responses": [
+        "You can ask me things like:\n* 'What is a Glioma?'\n* 'How do I upload my MRI?'\n* 'What are the symptoms of a tumor?'\n* 'Is my data safe?'"
+      ]
+    },
+    {
+      "tag": "no_answer",
+      "patterns": [
+        "What is the weather today?", "Who is the prime minister?", "Cricket match score",
+        "Tell me a joke", "How to make tea", "Where can I buy a car?",
+        "What is the capital of France?", "Solve this math problem",
+        "I have a stomach ache", "My leg is hurting", "Heart attack symptoms",
+        "Treatment for fever", "Skin care tips",
+        "asdfghjkl", "123456", "???", "random stuff", "bla bla bla",
+        "Aaj ka mosam kaisa hai?", "Cricket ka score kya hai?", "Khana kaise pakate hain?",
+        "Mujhe bhook lagi hai", "Gari ki qeemat kya hai?", "Mazaaq sunao",
+        "Pet mein dard hai", "Bukhaar ka ilaj", "Dil ka dorah",
+        "Kya tum insaan ho?", "Tum kahan rehte ho?", "Urdu mein baat karo"
+      ],
+      "responses": [
+        "I'm sorry, I am a specialized AI for Brain Tumor detection and MRI analysis. I cannot answer questions outside of this field.",
+        "Maaf kijiye, main sirf brain tumor aur MRI scans se mutaliq sawalaat ke jawab de sakta hoon.",
+        "That topic is outside my medical scope. I can help you with things like brain tumor types, symptoms, or MRI scan results.",
+        "Main sirf dimagh ki sehat aur MRI analysis ke baare mein maloomat rakhta hoon."
+      ]
+    },
+    {
+      "tag": "multilingual",
+      "patterns": [
+        "Tumor kya hota hai", "MRI kya hai", "Sar ka tumor",
+        "AOA kya system hai", "Dimagh ka tumor", "Brain tumor urdu explanation"
+      ],
+      "responses": [
+        "Main MedVision AI hoon jo MRI scans aur brain tumor ke mutaliq madad karta hai.",
+        "Aap mujh se symptoms, diagnosis, treatment aur MRI analysis ke baare mein pooch sakte hain.",
+        "Main simple aur samajhne mein asaan information provide karta hoon."
+      ]
+    },
+    {
+      "tag": "safety",
+      "patterns": [
+        "Are you a doctor", "Is this medical advice",
+        "Can I trust this AI", "Are you medical professional",
+        "Is AI diagnosis final", "Should I rely on you"
+      ],
+      "responses": [
+        "I am an AI assistant, not a medical professional or doctor.",
+        "My output is for informational and educational purposes only.",
+        "Always consult a qualified doctor for medical diagnosis and treatment decisions."
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye", "Goodbye", "See you", "Take care", "Allah Hafiz",
+        "Catch you later", "See you soon", "I am leaving", "Quit",
+        "Exit", "Thanks bye", "Talk later", "I’m done", "Close chat",
+        "End", "Bye bot", "Good night", "See ya", "Finish", "Stop"
+      ],
+      "responses": [
+        "Goodbye! Stay healthy.",
+        "Take care! Feel free to come back anytime.",
+        "Allah Hafiz! Wishing you good health."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks", "Thank you", "JazakAllah", "Much appreciated",
+        "Thanks a lot", "Thank you so much", "I appreciate it",
+        "Great thanks", "Thanks buddy", "Thanks bot",
+        "Thank you very much", "Shukriya", "Thanks for help",
+        "Cheers", "Thanks AI"
+      ],
+      "responses": [
+        "You're welcome!",
+        "Happy to help!",
+        "Anytime 😊"
+      ]
+    }
+  ]
+}

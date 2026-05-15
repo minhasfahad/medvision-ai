@@ -5,7 +5,9 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password_hash: string;
-  role: string; // You can also use a String Literal type here like 'admin' | 'user'
+  role: string; 
+  age?: number;   // <-- NEW: Optional age attribute
+  image?: string; // <-- NEW: Optional image attribute (will store URL or base64)
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,19 +29,26 @@ const UserSchema: Schema = new Schema(
     password_hash: { 
       type: String, 
       required: true,
-      select: false // Security: Do not return password by default
+      select: false 
     },
     role: { 
       type: String, 
       required: true, 
       default: 'patient' 
+    },
+    age: { 
+      type: Number, 
+      required: false // <-- NEW
+    },
+    image: {
+      type: String,
+      required: false // <-- NEW
     }
   },
   {
-    timestamps: true, // Automatically manages createdAt and updatedAt
-    versionKey: false // Removes the __v field
+    timestamps: true, 
+    versionKey: false 
   }
 );
 
-// Use existing model if it exists, otherwise create a new one
 export const UserModel: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

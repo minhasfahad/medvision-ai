@@ -1,4 +1,3 @@
-import { Part } from "@google/generative-ai";
 import Result, { IResult } from "../models/scanresult.model";
 
 export const saveScanResult = async (data: Partial<IResult>) => {
@@ -10,16 +9,22 @@ export const saveScanResult = async (data: Partial<IResult>) => {
     }
 };
 
-export const getAllScanResults = async () => {
+// --- THIS IS THE UPDATED FUNCTION ---
+export const getScanResults = async (userId: string | null = null) => {
     try {
-        // Fetches all scan results from the database
-        return await Result.find();
+        // If a userId is provided (Patient requesting their history)
+        if (userId) {
+            // Find only this user's scans, and sort by newest first
+            return await Result.find({ user: userId }).sort({ createdAt: -1 });
+        }
+        
+        // If NO userId is provided (Doctor requesting all history)
+        return await Result.find().sort({ createdAt: -1 });
+        
     } catch (error) {
-        // TypeScript-safe error handling
         if (error instanceof Error) {
             throw new Error("Failed to get the Results: " + error.message);
         }
-        // Fallback if the error somehow isn't a standard Error object
         throw new Error("Failed to get the Results: " + String(error));
     }
 };

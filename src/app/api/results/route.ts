@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllScanResults, updateScanComment } from "@/src/repositories/result.repository";
+// Notice I changed the function name to getScanResults (we will update the repo next)
+import { getScanResults, updateScanComment } from "@/src/repositories/result.repository";
 import { connectDB } from "@/src/lib/mongoose";
 
 export async function GET(req: NextRequest) {
     try {
         await connectDB();
-        const scanresults = await getAllScanResults();
+        
+        // Grab the userId from the URL if it exists
+        const searchParams = req.nextUrl.searchParams;
+        const userId = searchParams.get('userId');
+
+        // Pass the userId to the repository
+        const scanresults = await getScanResults(userId);
+        
         return NextResponse.json({ success: true, data: scanresults });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';

@@ -1,42 +1,37 @@
-import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
 
-    // 1. Setup Groq with your Hardcoded Key
-    // (We do this to bypass the .env reading issue)
-    const groq = new Groq({ 
-      apiKey: process.env.GROQ_API_KEY 
+    // 1. Send the message to your local Python FastAPI server
+    const pythonServerUrl = "http://127.0.0.1:8000/chat";
+    
+    const response = await fetch(pythonServerUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
     });
 
-    // 2. Send message to the latest Llama 3.1 model
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: "You are MedVision AI, a helpful medical assistant for a brain tumor detection system. Keep answers concise and professional. This message has been changed now."
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
-      // UPDATED MODEL NAME: This is the newest, fastest one
-      model: "llama-3.1-8b-instant", 
-    });
+    // 2. Check if the Python server successfully processed it
+    if (!response.ok) {
+      throw new Error(`Python server responded with status: ${response.status}`);
+    }
 
-    const text = chatCompletion.choices[0]?.message?.content || "No response generated.";
-
-    return NextResponse.json({ reply: text });
+    // 3. Extract the reply and send it back to the frontend
+    const data = await response.json();
+    
+    // The Python server returns {"reply": "..."} which perfectly matches your frontend!
+    return NextResponse.json({ reply: data.reply });
 
   } catch (error: any) {
-    // 3. Log the REAL error message to your terminal so we can see it
-    console.error("GROQ ERROR DETAILS:", error);
+    // Log the error to your terminal so you can debug if the Python server is down
+    console.error("CUSTOM CHATBOT ERROR DETAILS:", error);
     
     return NextResponse.json(
-      { error: "Failed to process message" }, 
+      { error: "Failed to connect to the custom Python chatbot." }, 
       { status: 500 }
     );
   }

@@ -19,12 +19,15 @@ const ChatBotPage = () => {
   ]);
   const [loading, setLoading] = useState(false);
 
-  // Auto-scroll to bottom
+  // Auto-scroll to bottom ONLY when there are new messages
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-  useEffect(scrollToBottom, [messages]);
+  
+  useEffect(() => {
+    // Only scroll if there is more than just the initial welcome message
+    if (messages.length > 1) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
