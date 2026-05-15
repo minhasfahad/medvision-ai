@@ -1,20 +1,35 @@
-"use client"; // Required for the mobile menu toggle to work
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useAuthStore } from "../lib/store/useAuthStore";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
-  // State to handle mobile menu opening/closing
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const authState = useAuthStore();
-  const Logout = () => {
-    authState.clear();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const { user, isAuthenticated, clear } = useAuthStore();
+  const pathname = usePathname();
+
+  const isDoctor = user?.role?.toLowerCase() === "doctor";
+
+  const getLinkClasses = (path: string) => {
+    const isActive = pathname === path;
+    return `px-2 py-2 text-base no-underline transition-all duration-200 ${
+      isActive
+        ? "text-blue-400 font-bold"
+        : "text-gray-300 font-medium hover:text-white"
+    }`;
+  };
+
+  const getInitials = (name: string) => {
+    return name ? name.charAt(0).toUpperCase() : "U";
   };
 
   return (
-    <nav className="items-center top-0 z-20 w-full border-b border-gray-700 bg-[#060b30]/90 backdrop-blur-md">
+    <nav className="items-center top-0 z-20 w-full border-b border-gray-800 bg-[#060b30]/90 backdrop-blur-md print:hidden">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4 ">
         {/* LOGO SECTION */}
         <Link
@@ -22,13 +37,13 @@ export const Navbar = () => {
           className="no-underline flex items-center space-x-2 rtl:space-x-reverse "
         >
           <Image
-            src="/logoo.jpg" // Make sure this file exists in your public folder!
+            src="/logoo.jpg"
             alt="MedVision Logo"
             width={120}
             height={60}
             className="rounded-full"
           />
-          <span className="self-center whitespace-nowrap text-xl font-semibold text-white">
+          <span className="self-center whitespace-nowrap text-xl font-bold text-white">
             MedVision <span className="text-slate-500">AI</span>
           </span>
         </Link>
@@ -37,9 +52,7 @@ export const Navbar = () => {
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 md:hidden"
-          aria-controls="navbar-default"
-          aria-expanded={isMenuOpen}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-700 focus:outline-none md:hidden bg-transparent"
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -51,9 +64,9 @@ export const Navbar = () => {
           >
             <path
               stroke="currentColor"
-              strokeLinecap="round" // Fixed: React uses camelCase
+              strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="2" // Fixed: React uses camelCase
+              strokeWidth="2"
               d="M1 1h15M1 7h15M1 13h15"
             />
           </svg>
@@ -61,107 +74,181 @@ export const Navbar = () => {
 
         {/* LINKS SECTION */}
         <div
-          className={`${
-            isMenuOpen ? "block" : "hidden"
-          } w-full md:block md:w-auto`}
-          id="navbar-default"
+          className={`${isMenuOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
         >
-          <ul className="flex items-center gap-1 list-none mt-4 flex-col rounded-lg border border-gray-700 bg-gray-800 p-0 font-medium md:mt-0 md:flex-row md:space-x-4 md:border-0 md:bg-transparent md:p-0 rtl:space-x-reverse md:flex-nowrap">
+          <ul className="flex items-center gap-1 list-none mt-4 flex-col rounded-lg border border-gray-700 bg-gray-800 p-0 md:mt-0 md:flex-row md:space-x-2 md:border-0 md:bg-transparent md:p-0">
             <li>
-              <Link
-                href="/"
-                className="no-underline block rounded bg-blue-700 py-2 px-2 text-white md:bg-transparent md:p-0 md:text-blue-500 text-sm md:text-base"
-                aria-current="page"
-              >
+              <Link href="/" className={getLinkClasses("/")}>
                 Home
               </Link>
             </li>
             <li>
-              <Link
-                href="/about"
-                className="no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
-              >
+              <Link href="/about" className={getLinkClasses("/about")}>
                 About
               </Link>
             </li>
             <li>
-              <Link
-                href="/contact"
-                className=" no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
-              >
+              <Link href="/contact" className={getLinkClasses("/contact")}>
                 Contact
               </Link>
             </li>
-            {authState.isAuthenticated && (
+
+            {isAuthenticated && user ? (
               <>
-                {(authState.user?.role === "doctor" ||authState.user?.role === "Doctor" || authState.user?.role === "DOCTOR" && (
+                {isDoctor ? (
                   <>
                     <li>
                       <Link
                         href="/doctor-dashboard"
-                        className="no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
+                        className={getLinkClasses("/doctor-dashboard")}
                       >
-                        Doctor Dashboard
+                        Dashboard
                       </Link>
                     </li>
                     <li>
                       <Link
-                        href="/appointments"
-                        className="no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
+                        href="/doctor-appointments"
+                        className={getLinkClasses("/doctor-appointments")}
+                      >
+                        All Appointments
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    {/* Removed the plain text Scan MRI link here so it doesn't duplicate the new button */}
+                    <li>
+                      <Link
+                        href="/my-history"
+                        className={getLinkClasses("/my-history")}
+                      >
+                        My History
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/my-appointments"
+                        className={getLinkClasses("/my-appointments")}
                       >
                         Appointments
                       </Link>
                     </li>
                   </>
-                ))}
-                <li className="chatbot-img flex gap-1 items-center">
-                  <Image
-                    className="chatbot-img"
-                    src="/chatbot.png"
-                    width={40}
-                    height={40}
-                    alt="Chatbot"
-                  />
-                  <Link
-                    href="/chatbot"
-                    className=" no-underline block rounded py-2 px-2 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500 text-sm md:text-base"
-                  >
-                    AI ChatBot
-                  </Link>
-                </li>
-                <li>
+                )}
+
+                {/* --- NEW BEAUTIFUL SCAN MRI CTA BUTTON --- */}
+                <li className="ml-3 mr-1">
                   <Link
                     href="/try-demo"
-                    className=" demo text-sm md:text-base bg-blue-500 no-underline block rounded py-2 px-2 text-white hover:bg-blue-400 md:border-0 md:p-0 md:hover:text-blck-500"
+                    className="underline underline-offset-4 decoration-white/50 hover:decoration-white transition-colors"
                   >
-                    Try Demo
+                    <button className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer">
+                      Scan MRI Now
+                    </button>
                   </Link>
                 </li>
-                <li>
+
+                {/* USER PROFILE DROPDOWN */}
+                <li className="relative ml-4 pl-2 border-l border-gray-700">
                   <button
-                    className="demo no-underline block rounded py-2 px-2 text-white hover:bg-blue-400 md:border-0 md:hover:text-blck-500 bg-red-500 text-sm md:text-base"
-                    onClick={Logout}
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-3 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none bg-transparent border-0 cursor-pointer"
                   >
-                    Logout
+                    <div className="hidden md:flex flex-col text-right">
+                      <span className="text-sm font-bold text-gray-100">
+                        {user.name}
+                      </span>
+                      <span className="text-xs font-semibold text-blue-400 capitalize">
+                        {user.role}
+                      </span>
+                    </div>
+
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-[#1a163a]">
+                      {getInitials(user.name)}
+                    </div>
                   </button>
+
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-3 w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="md:hidden px-4 py-3 border-b border-gray-800 mb-2">
+                        <p className="text-sm font-bold text-white">
+                          {user.name}
+                        </p>
+                        <p className="text-xs text-blue-400 capitalize">
+                          {user.role}
+                        </p>
+                      </div>
+
+                      <Link
+                        href="/manage-account"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-[#1e2235] hover:text-white transition-colors no-underline"
+                      >
+                        <svg
+                          className="w-4 h-4 mr-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                          ></path>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          ></path>
+                        </svg>
+                        Manage Account
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          clear();
+                          setIsProfileOpen(false);
+                        }}
+                        className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-gray-800 pt-3 bg-transparent border-0 cursor-pointer"
+                      >
+                        <svg
+                          className="w-4 h-4 mr-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          ></path>
+                        </svg>
+                        Secure Logout
+                      </button>
+                    </div>
+                  )}
                 </li>
               </>
-            )}
-            {!authState.isAuthenticated ? (
+            ) : (
               <>
                 <li>
                   <Link href="/login">
-                    <button className="login-signup-btn">Login</button>
+                    <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer">
+                      Login
+                    </button>
                   </Link>
                 </li>
                 <li>
                   <Link href="/signup">
-                    <button className="login-signup-btn">Sign Up</button>
+                    <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer">
+                      Sign Up
+                    </button>
                   </Link>
                 </li>
               </>
-            ) : (
-              <></>
             )}
           </ul>
         </div>
