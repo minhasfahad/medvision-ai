@@ -137,3 +137,24 @@ p {
   cursor: pointer;
   font-size: 20px;
 }
+button{
+  border: none;
+  cursor: pointer;
+}
+
+/* Add to the end of your src/app/globals.css file for a slow bounce animation */
+@keyframes bounce-slow {
+  0%, 100% {
+    /* Gentler bounce amount (only 5% up, vs. default 25% up) */
+    transform: translateY(-5%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+.animate-bounce-slow {
+  /* Slow 2-second duration for a very gentle, professional motion */
+  animation: bounce-slow 2s infinite;
+}
