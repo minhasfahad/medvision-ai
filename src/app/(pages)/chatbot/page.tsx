@@ -74,32 +74,32 @@ const ChatBotPage = () => {
 
   return (
     <div className="flex flex-col h-screen text-white">
-      <main className="flex-grow flex flex-col items-center justify-center p-4">
+      <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 w-full">
         {/* Chat Container */}
-        <div className="w-full max-w-4xl bg-[#1a163a] rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[80vh] border border-white/10">
+        <div className="w-full max-w-4xl bg-[#1a163a] rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[80vh] border border-white/10">
           {/* Header */}
-          <div className="bg-[#2d2858] p-4 flex items-center border-b border-white/5">
-            <div className="bg-purple-600/20 p-2 rounded-full mr-3">
-              <i className="fa-solid fa-robot text-purple-400 text-xl"></i>
+          <div className="bg-[#2d2858] p-3 sm:p-4 flex items-center border-b border-white/5">
+            <div className="bg-purple-600/20 p-2 rounded-full mr-2.5 sm:mr-3 flex-none">
+              <i className="fa-solid fa-robot text-purple-400 text-lg sm:text-xl"></i>
             </div>
-            <div>
-              <h2 className="font-bold">MedVision AI Assistant</h2>
-              <p className="text-xs text-green-400 flex items-center">
-                <span className="w-2 h-2 bg-green-400 rounded-full mr-1"></span>{" "}
+            <div className="min-w-0">
+              <h2 className="font-bold text-sm sm:text-base truncate">MedVision AI Assistant</h2>
+              <p className="text-[11px] sm:text-xs text-green-400 flex items-center mt-0.5">
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full mr-1 flex-none animate-pulse"></span>{" "}
                 Online
               </p>
             </div>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-grow overflow-y-auto p-6 space-y-4">
+          <div className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3 sm:space-y-4">
             {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-4 rounded-2xl ${
+                  className={`max-w-[85%] sm:max-w-[80%] p-3 sm:p-4 rounded-2xl text-sm sm:text-base break-words shadow-sm ${
                     msg.role === "user"
                       ? "bg-purple-600 text-white rounded-br-none"
                       : "bg-[#2d2858] text-gray-200 rounded-bl-none"
@@ -110,13 +110,12 @@ const ChatBotPage = () => {
               </div>
             ))}
 
-            {/* Loading Indicator */}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-[#2d2858] p-4 rounded-2xl rounded-bl-none flex space-x-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-100"></div>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-200"></div>
+                <div className="bg-[#2d2858] p-3 sm:p-4 rounded-2xl rounded-bl-none flex space-x-1.5 sm:space-x-2 items-center">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full animate-bounce delay-200"></div>
                 </div>
               </div>
             )}
@@ -126,21 +125,21 @@ const ChatBotPage = () => {
           {/* Input Area */}
           <form
             onSubmit={handleSend}
-            className="p-4 bg-[#1a163a] border-t border-white/5 flex gap-4"
+            className="p-3 sm:p-4 bg-[#1a163a] border-t border-white/5 flex gap-2 sm:gap-4 items-center"
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about brain tumors or upload help..."
-              className="flex-grow bg-[#0f0c29] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition"
+              className="flex-grow bg-[#0f0c29] border border-gray-700 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-white focus:outline-none focus:border-purple-500 transition min-w-0 placeholder:text-gray-500"
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-purple-600 hover:bg-purple-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed flex-none flex items-center justify-center min-h-[40px] min-w-[40px]"
             >
-              <i className="fa-solid fa-paper-plane"></i>
+              <i className="fa-solid fa-paper-plane text-sm sm:text-base"></i>
             </button>
           </form>
         </div>

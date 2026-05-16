@@ -14,96 +14,96 @@ const ContactPage = () => {
 
   return (
     <>
-      <div className="min-h-screen  text-white flex items-center justify-center p-6">
+      <div className="min-h-screen text-white flex items-center justify-center p-3 sm:p-6">
         
-        <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 bg-[#1a163a] p-10 rounded-2xl shadow-2xl border border-gray-800">
+        <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 bg-[#1a163a] p-5 sm:p-10 rounded-2xl shadow-2xl border border-gray-800">
           
           {/* LEFT SIDE: Contact Information */}
-          <div className="flex flex-col justify-center space-y-8">
+          <div className="flex flex-col justify-center space-y-6 sm:space-y-8">
             <div>
-              <h1 className="text-4xl font-bold text-purple-400 mb-4">Get in Touch</h1>
-              <p className="text-gray-400 text-lg">
+              <h1 className="text-3xl sm:text-4xl font-bold text-purple-400 mb-3 sm:mb-4">Get in Touch</h1>
+              <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
                 Have questions about the project, the YOLO model, or our research? 
                 Fill out the form and we will get back to you.
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Email Item */}
               <div className="flex items-center space-x-4">
-                <div className="bg-purple-600/20 p-3 rounded-full text-purple-400">
-                  <i className="fa-solid fa-envelope text-xl"></i>
+                <div className="bg-purple-600/20 p-3 rounded-full text-purple-400 flex-none">
+                  <i className="fa-solid fa-envelope text-lg sm:text-xl"></i>
                 </div>
-                <div>
-                  <h3 className="font-bold">Email</h3>
-                  <p className="text-gray-400">support@medvision.ai</p>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-sm sm:text-base">Email</h3>
+                  <p className="text-gray-400 text-sm sm:text-base truncate">support@medvision.ai</p>
                 </div>
               </div>
 
               {/* Location Item */}
               <div className="flex items-center space-x-4">
-                <div className="bg-purple-600/20 p-3 rounded-full text-purple-400">
-                  <i className="fa-solid fa-location-dot text-xl"></i>
+                <div className="bg-purple-600/20 p-3 rounded-full text-purple-400 flex-none">
+                  <i className="fa-solid fa-location-dot text-lg sm:text-xl"></i>
                 </div>
                 <div>
-                  <h3 className="font-bold">Location</h3>
-                  <p className="text-gray-400">UMT, Lahore, Pakistan</p>
+                  <h3 className="font-bold text-sm sm:text-base">Location</h3>
+                  <p className="text-gray-400 text-sm sm:text-base">UMT, Lahore, Pakistan</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* RIGHT SIDE: The Form */}
-          <div className="bg-[#0f0c29] p-8 rounded-xl shadow-inner border border-gray-800">
+          <div className="bg-[#0f0c29] p-5 sm:p-8 rounded-xl shadow-inner border border-gray-800 w-full">
             {submitted ? (
               // Success Message State
-              <div className="text-center h-full flex flex-col justify-center items-center">
-                <div className="text-5xl mb-4">✅</div>
-                <h3 className="text-2xl font-bold text-white">Message Sent!</h3>
-                <p className="text-gray-400 mt-2">Thank you for reaching out.</p>
+              <div className="text-center h-full min-h-[300px] flex flex-col justify-center items-center p-4">
+                <div className="text-4xl sm:text-5xl mb-4">✅</div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white">Message Sent!</h3>
+                <p className="text-gray-400 text-sm sm:text-base mt-2">Thank you for reaching out.</p>
                 <button 
                   onClick={() => setSubmitted(false)}
-                  className="mt-6 text-purple-400 underline hover:text-purple-300"
+                  className="mt-6 text-sm sm:text-base text-purple-400 underline hover:text-purple-300 transition-colors"
                 >
                   Send another message
                 </button>
               </div>
             ) : (
               // The Form State
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Your Name</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1.5 sm:mb-2">Your Name</label>
                   <input 
                     type="text" 
                     required 
-                    className="w-full bg-[#1a163a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition"
+                    className="w-full bg-[#1a163a] border border-gray-700 rounded-lg p-2.5 sm:p-3 text-sm sm:text-base text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition placeholder:text-gray-600"
                     placeholder="Fahad Hamza"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1.5 sm:mb-2">Email Address</label>
                   <input 
                     type="email" 
                     required 
-                    className="w-full bg-[#1a163a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition"
+                    className="w-full bg-[#1a163a] border border-gray-700 rounded-lg p-2.5 sm:p-3 text-sm sm:text-base text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition placeholder:text-gray-600"
                     placeholder="fahad@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Message</label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1.5 sm:mb-2">Message</label>
                   <textarea 
                     rows={4}
                     required 
-                    className="w-full bg-[#1a163a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition"
+                    className="w-full bg-[#1a163a] border border-gray-700 rounded-lg p-2.5 sm:p-3 text-sm sm:text-base text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition placeholder:text-gray-600"
                     placeholder="I have a question about the demo..."
                   ></textarea>
                 </div>
 
                 <button 
                   type="submit" 
-                  className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition transform hover:scale-[1.02]"
+                  className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 sm:py-3 rounded-lg text-sm sm:text-base transition transform active:scale-95 hover:scale-[1.01]"
                 >
                   Send Message
                 </button>

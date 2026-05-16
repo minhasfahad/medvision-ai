@@ -51,7 +51,7 @@ export default function MyAppointmentsPage() {
     fetchAppointments();
   }, [user, isAuthenticated]);
 
-const handleCancelAppointment = async (appointmentId: string) => {
+  const handleCancelAppointment = async (appointmentId: string) => {
       // 1. Ask for confirmation before cancelling
       if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
 
@@ -76,11 +76,11 @@ const handleCancelAppointment = async (appointmentId: string) => {
 
   if (!isAuthenticated) {
       return (
-          <div className="min-h-screen bg-transparent flex flex-col items-center justify-center text-white pt-10">
+          <div className="min-h-screen bg-transparent flex flex-col items-center justify-center text-white pt-10 px-4 text-center">
               <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-              <p className="text-gray-400 mb-6">Please log in to view your appointments.</p>
-              <Link href="/login">
-                  <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+              <p className="text-gray-400 mb-6 text-sm sm:text-base">Please log in to view your appointments.</p>
+              <Link href="/login" className="w-full sm:w-auto">
+                  <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors w-full sm:w-auto">
                       Go to Login
                   </button>
               </Link>
@@ -89,27 +89,27 @@ const handleCancelAppointment = async (appointmentId: string) => {
   }
 
   return (
-    <div className="min-h-screen bg-transparent text-white w-full max-w-[1200px] mx-auto pt-10 px-6 pb-12">
+    <div className="min-h-screen bg-transparent text-white w-full max-w-[1200px] mx-auto pt-6 sm:pt-10 px-4 sm:px-6 pb-12">
       
-      <div className="mb-10 text-center md:text-left">
-          <h1 className="text-[28px] font-bold text-gray-100 mb-2">My Appointments</h1>
-          <p className="text-gray-400 text-sm">Manage your upcoming and past consultations.</p>
+      <div className="mb-6 sm:mb-10 text-center md:text-left">
+          <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100 mb-1.5 sm:mb-2">My Appointments</h1>
+          <p className="text-gray-400 text-xs sm:text-sm">Manage your upcoming and past consultations.</p>
       </div>
       
       <section>
-        {isLoading && <div className="text-blue-400 animate-pulse text-lg text-center md:text-left">Loading your schedule...</div>}
+        {isLoading && <div className="text-blue-400 animate-pulse text-base sm:text-lg text-center md:text-left py-4">Loading your schedule...</div>}
 
         {error && (
-          <div className="text-red-400 bg-red-500/10 p-4 rounded-lg border border-red-500/30 text-center md:text-left">
+          <div className="text-red-400 bg-red-500/10 p-4 rounded-lg border border-red-500/30 text-center md:text-left text-sm sm:text-base">
             Error: {error}
           </div>
         )}
 
         {!isLoading && !error && appointments.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 bg-[#121726] rounded-2xl border border-[#2a3655]">
-              <p className="text-gray-400 text-lg mb-4">You have no booked appointments.</p>
-              <Link href="/appointments">
-                  <button className="bg-[#00b85c] hover:bg-[#00a050] text-white px-6 py-2 rounded-lg font-semibold transition-colors shadow-lg shadow-green-900/20">
+          <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 bg-[#121726] rounded-2xl border border-[#2a3655] text-center">
+              <p className="text-gray-400 text-base sm:text-lg mb-4 sm:mb-6">You have no booked appointments.</p>
+              <Link href="/appointments" className="w-full sm:w-auto">
+                  <button className="bg-[#00b85c] hover:bg-[#00a050] text-white px-6 py-2.5 rounded-lg font-semibold transition-colors shadow-lg shadow-green-900/20 w-full sm:w-auto">
                       Book a Specialist
                   </button>
               </Link>
@@ -117,20 +117,20 @@ const handleCancelAppointment = async (appointmentId: string) => {
         )}
 
         {!isLoading && !error && appointments.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {appointments.map((appt) => (
               <div 
                 key={appt._id} 
-                className="p-6 bg-[#121726] rounded-2xl border border-[#2a3655] flex flex-col h-full shadow-lg hover:border-[#3b4b75] transition-all"
+                className="p-4 sm:p-6 bg-[#121726] rounded-2xl border border-[#2a3655] flex flex-col h-full shadow-lg hover:border-[#3b4b75] transition-all w-full"
               >
-                <div className="flex justify-between items-start mb-4">
-                    <div>
-                        <h3 className="text-xl font-bold text-gray-100">{appt.doctorName}</h3>
-                        <p className="text-blue-400 text-sm font-medium mt-1">{appt.tumorType} Consultation</p>
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-2 mb-4">
+                    <div className="min-w-0">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-100 truncate">{appt.doctorName}</h3>
+                        <p className="text-blue-400 text-xs sm:text-sm font-medium mt-0.5 sm:mt-1 truncate">{appt.tumorType} Consultation</p>
                     </div>
                     
                     {/* Status Badge */}
-                    <span className={`text-[11px] px-3 py-1 rounded-full uppercase tracking-wider font-bold border ${
+                    <span className={`text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider font-bold border whitespace-nowrap self-start ${
                         appt.status === 'Confirmed' ? 'bg-green-900/30 text-green-400 border-green-500/30' :
                         appt.status === 'Pending' ? 'bg-amber-900/30 text-amber-400 border-amber-500/30' :
                         'bg-gray-800 text-gray-400 border-gray-600'
@@ -139,32 +139,32 @@ const handleCancelAppointment = async (appointmentId: string) => {
                     </span>
                 </div>
 
-                <div className="space-y-3 mb-6 bg-[#1e2235] p-4 rounded-xl border border-gray-700/50">
-                    <div className="flex justify-between items-center text-sm">
+                <div className="space-y-2.5 sm:space-y-3 mb-5 sm:mb-6 bg-[#1e2235] p-3 sm:p-4 rounded-xl border border-gray-700/50">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm">
                         <span className="text-gray-400">Date & Time:</span>
-                        <span className="text-gray-100 font-semibold">{appt.appointmentDate}</span>
+                        <span className="text-gray-100 font-semibold sm:text-right break-words">{appt.appointmentDate}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm">
                         <span className="text-gray-400">Clinic:</span>
-                        <span className="text-gray-100 font-semibold">{appt.clinic}</span>
+                        <span className="text-gray-100 font-semibold sm:text-right break-words">{appt.clinic}</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm">
                         <span className="text-gray-400">Consultation Fee:</span>
-                        <span className="text-gray-100 font-semibold">{appt.fee}</span>
+                        <span className="text-gray-100 font-semibold sm:text-right whitespace-nowrap">{appt.fee}</span>
                     </div>
                 </div>
                 
                 {/* Action Buttons */}
-                <div className="mt-auto flex gap-3">
+                <div className="mt-auto flex gap-3 w-full">
                     <button 
                         onClick={() => handleCancelAppointment(appt._id)}
                         disabled={appt.status === 'Cancelled'}
-                        className="w-full bg-[#4b5563] hover:bg-red-600 disabled:bg-gray-800 disabled:text-gray-500 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors"
+                        className="w-full bg-[#4b5563] hover:bg-red-600 disabled:bg-gray-800 disabled:text-gray-500 text-white py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors truncate"
                     >
                         {appt.status === 'Cancelled' ? 'Cancelled' : 'Cancel Appointment'}
                     </button>
                     {appt.status !== 'Cancelled' && (
-                        <button className="w-full bg-[#2a3655] hover:bg-[#3b4b75] text-white py-2.5 rounded-lg text-sm font-semibold transition-colors">
+                        <button className="w-full bg-[#2a3655] hover:bg-[#3b4b75] text-white py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors truncate">
                             Reschedule
                         </button>
                     )}

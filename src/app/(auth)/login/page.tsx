@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    try {
+  	try {
       const response = await api.post("/api/users/login", { email, password });
       const { user, token } = response.data;
       setAuthValues(user, token);
@@ -35,22 +35,22 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="h-[100vh] w-full">
+      <div className="min-h-screen h-[100vh] w-full px-4 flex items-center justify-center">
         <div className="grid h-full w-full items-center justify-items-center">
           <form
             onSubmit={handleLogin}
-            className="grid gap-8 border-2  min-w-md p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
+            className="grid gap-6 sm:gap-8 border-2 w-full max-w-md p-6 sm:p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
           >
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500 text-sm sm:text-base">{error}</p>}
             <h1>
               <Link
-                className="grid  text-center text-white no-underline"
+                className="grid text-center text-white no-underline text-2xl sm:text-3xl font-semibold tracking-wide"
                 href="/"
               >
                 Medvision AI
               </Link>
             </h1>
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-regular fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
               <input
@@ -58,11 +58,11 @@ export default function LoginPage() {
                 placeholder="Email Address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
 
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
               <input
@@ -70,27 +70,27 @@ export default function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
 
-            <div>
+            <div className="w-full max-w-sm mx-auto">
               <button
                 type="submit"
                 disabled={loading}
-                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9]"
+                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-2 px-4 text-sm sm:text-base transition-all"
               >
                 {loading ? "Singning in..." : "Sign In"}
               </button>
             </div>
-            <div className="m-auto">
+            <div className="m-auto text-sm sm:text-base">
               <Link href="#" className="underline text-white">
                 Forgot Password?
               </Link>
             </div>
-            <div className="m-auto">
+            <div className="m-auto text-center text-sm sm:text-base">
               Do not have an Account?{" "}
-              <Link href="/signup" className="underline text-white">
+              <Link href="/signup" className="underline text-white whitespace-nowrap">
                 Create New
               </Link>
             </div>

@@ -17,10 +17,10 @@ export const Navbar = () => {
 
   const getLinkClasses = (path: string) => {
     const isActive = pathname === path;
-    return `px-2 py-2 text-base no-underline transition-all duration-200 ${
+    return `px-3 py-2 text-base no-underline transition-all duration-200 block w-full md:w-auto ${
       isActive
-        ? "text-blue-400 font-bold"
-        : "text-gray-300 font-medium hover:text-white"
+        ? "text-blue-400 font-bold bg-white/5 md:bg-transparent rounded-lg"
+        : "text-gray-300 font-medium hover:text-white hover:bg-white/5 md:hover:bg-transparent rounded-lg"
     }`;
   };
 
@@ -29,21 +29,22 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="items-center top-0 z-20 w-full border-b border-gray-800 bg-[#060b30]/90 backdrop-blur-md print:hidden">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4 ">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-800 bg-[#060b30]/90 backdrop-blur-md print:hidden">
+      <div className="mx-auto flex max-w-7xl items-center justify-between p-4 relative">
+        
         {/* LOGO SECTION */}
         <Link
           href="/"
-          className="no-underline flex items-center space-x-2 rtl:space-x-reverse "
+          className="no-underline flex items-center space-x-2 rtl:space-x-reverse"
         >
           <Image
             src="/logoo.jpg"
             alt="MedVision Logo"
-            width={120}
-            height={60}
-            className="rounded-full"
+            width={100}
+            height={50}
+            className="rounded-full w-auto h-10 sm:h-12 object-contain"
           />
-          <span className="self-center whitespace-nowrap text-xl font-bold text-white">
+          <span className="self-center whitespace-nowrap text-lg sm:text-xl font-bold text-white">
             MedVision <span className="text-slate-500">AI</span>
           </span>
         </Link>
@@ -52,7 +53,7 @@ export const Navbar = () => {
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-700 focus:outline-none md:hidden bg-transparent"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-800/60 focus:outline-none md:hidden bg-transparent border-0 cursor-pointer"
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -74,20 +75,22 @@ export const Navbar = () => {
 
         {/* LINKS SECTION */}
         <div
-          className={`${isMenuOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
+          className={`${
+            isMenuOpen ? "absolute top-full left-0 right-0 block" : "hidden"
+          } w-full md:relative md:top-auto md:left-auto md:right-auto md:block md:w-auto bg-[#060b30] md:bg-transparent border-b border-gray-800 md:border-0 px-4 pb-4 md:p-0 z-50 shadow-2xl md:shadow-none max-h-[85vh] overflow-y-auto md:overflow-visible`}
         >
-          <ul className="flex items-center gap-1 list-none mt-4 flex-col rounded-lg border border-gray-700 bg-gray-800 p-0 md:mt-0 md:flex-row md:space-x-2 md:border-0 md:bg-transparent md:p-0">
-            <li>
+          <ul className="flex list-none mt-4 flex-col rounded-lg border border-gray-800 bg-gray-900/60 p-2 gap-2 md:mt-0 md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0">
+            <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
               <Link href="/" className={getLinkClasses("/")}>
                 Home
               </Link>
             </li>
-            <li>
+            <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
               <Link href="/about" className={getLinkClasses("/about")}>
                 About
               </Link>
             </li>
-            <li>
+            <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
               <Link href="/contact" className={getLinkClasses("/contact")}>
                 Contact
               </Link>
@@ -97,7 +100,7 @@ export const Navbar = () => {
               <>
                 {isDoctor ? (
                   <>
-                    <li>
+                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/doctor-dashboard"
                         className={getLinkClasses("/doctor-dashboard")}
@@ -105,7 +108,7 @@ export const Navbar = () => {
                         Dashboard
                       </Link>
                     </li>
-                    <li>
+                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/doctor-appointments"
                         className={getLinkClasses("/doctor-appointments")}
@@ -116,8 +119,7 @@ export const Navbar = () => {
                   </>
                 ) : (
                   <>
-                    {/* Removed the plain text Scan MRI link here so it doesn't duplicate the new button */}
-                    <li>
+                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/my-history"
                         className={getLinkClasses("/my-history")}
@@ -125,7 +127,7 @@ export const Navbar = () => {
                         My History
                       </Link>
                     </li>
-                    <li>
+                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/my-appointments"
                         className={getLinkClasses("/my-appointments")}
@@ -136,26 +138,27 @@ export const Navbar = () => {
                   </>
                 )}
 
-                {/* --- NEW BEAUTIFUL SCAN MRI CTA BUTTON --- */}
-                <li className="ml-3 mr-1">
+                {/* SCAN MRI CTA BUTTON */}
+                <li className="w-full md:w-auto my-2 md:my-0 md:ml-3 md:mr-1" onClick={() => setIsMenuOpen(false)}>
                   <Link
                     href="/try-demo"
-                    className="underline underline-offset-4 decoration-white/50 hover:decoration-white transition-colors"
+                    className="underline underline-offset-4 decoration-white/50 hover:decoration-white transition-colors block w-full md:w-auto"
                   >
-                    <button className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer">
+                    <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer w-full md:w-auto min-h-[40px]">
                       Scan MRI Now
                     </button>
                   </Link>
+
                 </li>
 
                 {/* USER PROFILE DROPDOWN */}
-                <li className="relative ml-4 pl-2 border-l border-gray-700">
+                <li className="relative w-full md:w-auto mt-2 md:mt-0 md:ml-4 md:pl-4 border-t md:border-t-0 md:border-l border-gray-800 pt-3 md:pt-0">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center gap-3 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none bg-transparent border-0 cursor-pointer"
+                    className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none bg-transparent border-0 cursor-pointer text-left"
                   >
-                    <div className="hidden md:flex flex-col text-right">
-                      <span className="text-sm font-bold text-gray-100">
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-bold text-gray-100 truncate max-w-[120px]">
                         {user.name}
                       </span>
                       <span className="text-xs font-semibold text-blue-400 capitalize">
@@ -163,29 +166,23 @@ export const Navbar = () => {
                       </span>
                     </div>
 
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-[#1a163a]">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-[#1a163a] flex-none">
                       {getInitials(user.name)}
                     </div>
                   </button>
 
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-3 w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                      <div className="md:hidden px-4 py-3 border-b border-gray-800 mb-2">
-                        <p className="text-sm font-bold text-white">
-                          {user.name}
-                        </p>
-                        <p className="text-xs text-blue-400 capitalize">
-                          {user.role}
-                        </p>
-                      </div>
-
+                    <div className="absolute right-0 bottom-full mb-2 md:bottom-auto md:top-full md:mt-3 w-full md:w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                       <Link
                         href="/manage-account"
-                        onClick={() => setIsProfileOpen(false)}
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsMenuOpen(false);
+                        }}
                         className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-[#1e2235] hover:text-white transition-colors no-underline"
                       >
                         <svg
-                          className="w-4 h-4 mr-3"
+                          className="w-4 h-4 mr-3 text-gray-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -210,8 +207,9 @@ export const Navbar = () => {
                         onClick={() => {
                           clear();
                           setIsProfileOpen(false);
+                          setIsMenuOpen(false);
                         }}
-                        className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-gray-800 pt-3 bg-transparent border-0 cursor-pointer"
+                        className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-gray-800 pt-2.5 bg-transparent border-0 cursor-pointer text-left"
                       >
                         <svg
                           className="w-4 h-4 mr-3"
@@ -234,16 +232,16 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <li>
-                  <Link href="/login">
-                    <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer">
+                <li className="w-full md:w-auto my-1 md:my-0 md:ml-2" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/login" className="no-underline block w-full">
+                    <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer w-full md:w-auto min-h-[38px]">
                       Login
                     </button>
                   </Link>
                 </li>
-                <li>
-                  <Link href="/signup">
-                    <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer">
+                <li className="w-full md:w-auto my-1 md:my-0" onClick={() => setIsMenuOpen(false)}>
+                  <Link href="/signup" className="no-underline block w-full">
+                    <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer w-full md:w-auto min-h-[38px]">
                       Sign Up
                     </button>
                   </Link>
@@ -258,3 +256,5 @@ export const Navbar = () => {
 };
 
 export default Navbar;
+
+

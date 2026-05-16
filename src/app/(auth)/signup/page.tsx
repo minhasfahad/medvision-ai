@@ -43,21 +43,22 @@ export default function Signup() {
 
   return (
     <>
-      <div className="h-[100vh] w-full">
+      <div className="min-h-screen h-[100vh] w-full px-4 flex items-center justify-center">
         <div className="grid h-full w-full items-center justify-items-center">
           <form
             onSubmit={handleSignup}
-            className="grid gap-8 border-2  min-w-md p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
+            className="grid gap-6 sm:gap-8 border-2 w-full max-w-md p-6 sm:p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
           >
+            {error && <p className="text-red-500 text-sm sm:text-base">{error}</p>}
             <h1>
               <Link
-                className="grid  text-center text-white no-underline"
+                className="grid text-center text-white no-underline text-2xl sm:text-3xl font-semibold tracking-wide"
                 href="/"
               >
                 Join Medvision AI
               </Link>
             </h1>
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
               <input
@@ -66,11 +67,11 @@ export default function Signup() {
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
-                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
 
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-regular fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
               <input
@@ -79,44 +80,43 @@ export default function Signup() {
                 value={email}
                 required
                 onChange={(e) => setEmail(e.target.value)}
-                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-brands fa-critical-role absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
               <input
                 type="text"
                 placeholder="Role"
                 value={role}
-                
                 onChange={(e) => setRole(e.target.value)}
-                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
 
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-sm mx-auto">
               <i className="mt-6 fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <p className="mb-7">Password Must be at least 8 characters long.</p>
+              <p className="mb-7 text-xs sm:text-sm text-gray-300">Password Must be at least 8 characters long.</p>
               <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
-            <div>
+            <div className="w-full max-w-sm mx-auto">
               <button
-                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9]"
+                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-2 px-4 text-sm sm:text-base transition-all"
                 type="submit"
                 disabled={loading}
               >
-                {loading ? "Creating Account" : "Create Account"}
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
             </div>
-            <div>
+            <div className="w-full max-w-sm mx-auto">
               <button
-                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9]"
+                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-2 px-4 text-sm sm:text-base flex items-center justify-center transition-all"
                 type="submit"
               >
                 <Image
@@ -129,9 +129,9 @@ export default function Signup() {
                 Sign Up with Google
               </button>
             </div>
-            <div className="text-center">
-              Already Have and Account?{" "}
-              <Link href="/login" className="underline text-white">
+            <div className="text-center text-sm sm:text-base">
+              Already Have an Account?{" "}
+              <Link href="/login" className="underline text-white whitespace-nowrap">
                 Sign In
               </Link>
             </div>

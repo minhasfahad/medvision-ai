@@ -5,10 +5,10 @@ const AboutPage = () => {
   return (
     <>
       {/* Intro Section with proper padding and centering */}
-      <div className="text-center py-16 px-4 text-white">
-        <h1 className="text-4xl font-bold text-purple-400 mb-4">About MedVision AI</h1>
-        <h3 className="text-xl text-gray-300 mb-6">Bridging Medical Expertise with Artificial Intelligence</h3>
-        <p className="max-w-2xl mx-auto text-gray-400 leading-relaxed">
+      <div className="text-center py-10 sm:py-16 px-4 text-white">
+        <h1 className="text-3xl sm:text-4xl font-bold text-purple-400 mb-4">About MedVision AI</h1>
+        <h3 className="text-lg sm:text-xl text-gray-300 mb-6">Bridging Medical Expertise with Artificial Intelligence</h3>
+        <p className="max-w-xl md:max-w-2xl mx-auto text-sm sm:text-base text-gray-400 leading-relaxed">
           MedVision AI is a cutting-edge research project designed to assist
           radiologists in the early detection of brain tumors. By combining the
           speed of the MERN stack with the precision of the YOLOv11 Deep
@@ -18,7 +18,7 @@ const AboutPage = () => {
       </div>
 
       {/* Cards Section - Added GRID classes here so they stand side-by-side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-10 pb-16 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 px-4 sm:px-6 md:px-10 pb-16">
         <AboutCards
           icon="/About_Cards/card1.png"
           title="Frontend Architecture"
