@@ -22,19 +22,6 @@ export default function LandingPage() {
           </p>
         </header>
 
-        {authState.isAuthenticated ? (
-          <div className="mb-6 px-2">
-            <h1 className="text-base sm:text-lg md:text-xl font-medium">
-              Logged in as {authState.user?.name}{" "}
-              <span className="text-red-500 font-semibold block sm:inline sm:ml-2">
-                (Role: {authState.user?.role} )
-              </span>
-            </h1>
-          </div>
-        ) : (
-          <></>
-        )}
-
         <div className="py-6 px-2 max-w-md mx-auto">
           {authState.isAuthenticated ? (
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold mb-4">Scan an MRI Now</h1>
@@ -43,7 +30,7 @@ export default function LandingPage() {
           )}
           {authState.isAuthenticated ? (
             <Link href="/try-demo" className="block w-full">
-              <button className="login-signup-btn w-full px-6 py-3 text-sm sm:text-base font-semibold">
+              <button className="login-signup-btn w-[300] px-6 py-3 text-sm sm:text-base font-semibold">
                 Test AI Diagnostic Capabilities
               </button>
             </Link>

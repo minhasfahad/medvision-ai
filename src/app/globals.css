@@ -32,7 +32,7 @@ body {
   background-attachment: fixed;
 }
 
-.header {
+/* .header {
   background-image:
     linear-gradient(rgba(10, 25, 47, 0.7), rgba(88, 28, 135, 0.7)),
     url("/Landing_Back_Image2.png");
@@ -63,15 +63,25 @@ body {
     linear-gradient(to top, black 60%, transparent 100%),
     linear-gradient(to right, black 60%, transparent 100%);
   mask-composite: intersect;
+} */
+
+
+.header {
+  margin-top: 100px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
 }
 
 .header-h1 {
   font-size: 50px;
-  margin: 0px;
+  margin: 20px;
 }
 .header h2,
 p {
-  margin: 0px;
+  margin-bottom: 10px;
   box-shadow: #171717;
 }
 .login-signup-btn {
@@ -81,7 +91,7 @@ p {
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 15px;
   margin: 10px;
 }
 .demo {
@@ -107,15 +117,18 @@ p {
 /* Footer */
 .foot {
   margin-bottom: 0px;
-  padding: 100px;
-  padding-bottom: 30px;
-  padding-top: 30px;
+  padding: 30px;
+  
 }
 .foot-icons {
   font-size: 50px;
   display: flex;
   gap: 50px;
   color: white;
+}
+footer div.grid{
+  max-width: 1230px;
+  /* margin: 0 auto; */
 }
 .footer-buttons {
   background-color: #270772;
@@ -130,18 +143,30 @@ p {
 /* Login Page */
 .login-signup {
   background-color: #9150f3e1;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10vh;
   /* border: none; */
   color: white;
   cursor: pointer;
   font-size: 20px;
+  padding-right: 50px;
+
 }
 button{
   border: none;
   cursor: pointer;
 }
-
+@media screen and (max-width: 400px) {
+  .login-signup-btn{
+    width: auto;
+    font-size: 10px;
+  }
+  .header-h1 {
+    font-size: 40px;
+ 
+  }
+}
+  
 /* Add to the end of your src/app/globals.css file for a slow bounce animation */
 @keyframes bounce-slow {
   0%, 100% {
