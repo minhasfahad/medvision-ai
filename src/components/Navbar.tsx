@@ -31,7 +31,6 @@ export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-800 bg-[#060b30]/90 backdrop-blur-md print:hidden">
       <div className="mx-auto flex max-w-7xl items-center justify-between p-4 relative">
-        
         {/* LOGO SECTION */}
         <Link
           href="/"
@@ -80,17 +79,26 @@ export const Navbar = () => {
           } w-full md:relative md:top-auto md:left-auto md:right-auto md:block md:w-auto bg-[#060b30] md:bg-transparent border-b border-gray-800 md:border-0 px-4 pb-4 md:p-0 z-50 shadow-2xl md:shadow-none max-h-[85vh] overflow-y-auto md:overflow-visible`}
         >
           <ul className="flex list-none mt-4 flex-col rounded-lg border border-gray-800 bg-gray-900/60 p-2 gap-2 md:mt-0 md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0">
-            <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+            <li
+              className="w-full md:w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
               <Link href="/" className={getLinkClasses("/")}>
                 Home
               </Link>
             </li>
-            <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+            <li
+              className="w-full md:w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
               <Link href="/about" className={getLinkClasses("/about")}>
                 About
               </Link>
             </li>
-            <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+            <li
+              className="w-full md:w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
               <Link href="/contact" className={getLinkClasses("/contact")}>
                 Contact
               </Link>
@@ -100,7 +108,10 @@ export const Navbar = () => {
               <>
                 {isDoctor ? (
                   <>
-                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+                    <li
+                      className="w-full md:w-auto"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Link
                         href="/doctor-dashboard"
                         className={getLinkClasses("/doctor-dashboard")}
@@ -108,7 +119,10 @@ export const Navbar = () => {
                         Dashboard
                       </Link>
                     </li>
-                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+                    <li
+                      className="w-full md:w-auto"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Link
                         href="/doctor-appointments"
                         className={getLinkClasses("/doctor-appointments")}
@@ -119,7 +133,10 @@ export const Navbar = () => {
                   </>
                 ) : (
                   <>
-                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+                    <li
+                      className="w-full md:w-auto"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Link
                         href="/my-history"
                         className={getLinkClasses("/my-history")}
@@ -127,7 +144,10 @@ export const Navbar = () => {
                         My History
                       </Link>
                     </li>
-                    <li className="w-full md:w-auto" onClick={() => setIsMenuOpen(false)}>
+                    <li
+                      className="w-full md:w-auto"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Link
                         href="/my-appointments"
                         className={getLinkClasses("/my-appointments")}
@@ -139,7 +159,10 @@ export const Navbar = () => {
                 )}
 
                 {/* SCAN MRI CTA BUTTON */}
-                <li className="w-full md:w-auto my-2 md:my-0 md:ml-3 md:mr-1" onClick={() => setIsMenuOpen(false)}>
+                <li
+                  className="w-full md:w-auto my-2 md:my-0 md:ml-3 md:mr-1"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   <Link
                     href="/try-demo"
                     className="underline underline-offset-4 decoration-white/50 hover:decoration-white transition-colors block w-full md:w-auto"
@@ -148,7 +171,6 @@ export const Navbar = () => {
                       Scan MRI Now
                     </button>
                   </Link>
-
                 </li>
 
                 {/* USER PROFILE DROPDOWN */}
@@ -232,14 +254,20 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <li className="w-full md:w-auto my-1 md:my-0 md:ml-2" onClick={() => setIsMenuOpen(false)}>
+                <li
+                  className="w-full md:w-auto my-1 md:my-0 md:ml-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   <Link href="/login" className="no-underline block w-full">
                     <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer w-full md:w-auto min-h-[38px]">
                       Login
                     </button>
                   </Link>
                 </li>
-                <li className="w-full md:w-auto my-1 md:my-0" onClick={() => setIsMenuOpen(false)}>
+                <li
+                  className="w-full md:w-auto my-1 md:my-0"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   <Link href="/signup" className="no-underline block w-full">
                     <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer w-full md:w-auto min-h-[38px]">
                       Sign Up
@@ -256,5 +284,3 @@ export const Navbar = () => {
 };
 
 export default Navbar;
-
-
