@@ -17,10 +17,10 @@ export const Navbar = () => {
 
   const getLinkClasses = (path: string) => {
     const isActive = pathname === path;
-    return `px-3 py-2 text-base no-underline transition-all duration-200 block w-full md:w-auto ${
+    return `px-3 py-2 text-base no-underline transition-all duration-200 block w-full lg:w-auto ${
       isActive
-        ? "text-blue-400 font-bold bg-white/5 md:bg-transparent rounded-lg"
-        : "text-gray-300 font-medium hover:text-white hover:bg-white/5 md:hover:bg-transparent rounded-lg"
+        ? "text-blue-400 font-bold bg-white/5 lg:bg-transparent rounded-lg"
+        : "text-gray-300 font-medium hover:text-white hover:bg-white/5 lg:hover:bg-transparent rounded-lg"
     }`;
   };
 
@@ -31,10 +31,11 @@ export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-800 bg-[#060b30]/90 backdrop-blur-md print:hidden">
       <div className="mx-auto flex max-w-7xl items-center justify-between p-4 relative">
+        
         {/* LOGO SECTION */}
         <Link
           href="/"
-          className="no-underline flex items-center space-x-2 rtl:space-x-reverse"
+          className="no-underline flex items-center space-x-2 rtl:space-x-reverse flex-none"
         >
           <Image
             src="/logoo.jpg"
@@ -48,11 +49,11 @@ export const Navbar = () => {
           </span>
         </Link>
 
-        {/* MOBILE HAMBURGER BUTTON */}
+        {/* MOBILE HAMBURGER BUTTON - Kicks in at < 1024px now */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-800/60 focus:outline-none md:hidden bg-transparent border-0 cursor-pointer"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-800/60 focus:outline-none lg:hidden bg-transparent border-0 cursor-pointer"
         >
           <span className="sr-only">Open main menu</span>
           <svg
@@ -72,33 +73,24 @@ export const Navbar = () => {
           </svg>
         </button>
 
-        {/* LINKS SECTION */}
+        {/* LINKS SECTION - Stays clean desktop mode above 1024px, hidden below */}
         <div
           className={`${
             isMenuOpen ? "absolute top-full left-0 right-0 block" : "hidden"
-          } w-full md:relative md:top-auto md:left-auto md:right-auto md:block md:w-auto bg-[#060b30] md:bg-transparent border-b border-gray-800 md:border-0 px-4 pb-4 md:p-0 z-50 shadow-2xl md:shadow-none max-h-[85vh] overflow-y-auto md:overflow-visible`}
+          } w-full lg:relative lg:top-auto lg:left-auto lg:right-auto lg:block lg:w-auto bg-[#060b30] lg:bg-transparent border-b border-gray-800 lg:border-0 px-4 pb-4 lg:p-0 z-50 shadow-2xl lg:shadow-none max-h-[85vh] overflow-y-auto lg:overflow-visible`}
         >
-          <ul className="flex list-none mt-4 flex-col rounded-lg border border-gray-800 bg-gray-900/60 p-2 gap-2 md:mt-0 md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0">
-            <li
-              className="w-full md:w-auto"
-              onClick={() => setIsMenuOpen(false)}
-            >
+          <ul className="flex list-none mt-4 flex-col rounded-lg border border-gray-800 bg-gray-900/60 p-2 gap-2 lg:mt-0 lg:flex-row lg:items-center lg:gap-1 lg:border-0 lg:bg-transparent lg:p-0">
+            <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
               <Link href="/" className={getLinkClasses("/")}>
                 Home
               </Link>
             </li>
-            <li
-              className="w-full md:w-auto"
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
               <Link href="/about" className={getLinkClasses("/about")}>
                 About
               </Link>
             </li>
-            <li
-              className="w-full md:w-auto"
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
               <Link href="/contact" className={getLinkClasses("/contact")}>
                 Contact
               </Link>
@@ -108,10 +100,7 @@ export const Navbar = () => {
               <>
                 {isDoctor ? (
                   <>
-                    <li
-                      className="w-full md:w-auto"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                    <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/doctor-dashboard"
                         className={getLinkClasses("/doctor-dashboard")}
@@ -119,10 +108,7 @@ export const Navbar = () => {
                         Dashboard
                       </Link>
                     </li>
-                    <li
-                      className="w-full md:w-auto"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                    <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/doctor-appointments"
                         className={getLinkClasses("/doctor-appointments")}
@@ -133,10 +119,7 @@ export const Navbar = () => {
                   </>
                 ) : (
                   <>
-                    <li
-                      className="w-full md:w-auto"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                    <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/my-history"
                         className={getLinkClasses("/my-history")}
@@ -144,10 +127,7 @@ export const Navbar = () => {
                         My History
                       </Link>
                     </li>
-                    <li
-                      className="w-full md:w-auto"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                    <li className="w-full lg:w-auto" onClick={() => setIsMenuOpen(false)}>
                       <Link
                         href="/my-appointments"
                         className={getLinkClasses("/my-appointments")}
@@ -159,25 +139,22 @@ export const Navbar = () => {
                 )}
 
                 {/* SCAN MRI CTA BUTTON */}
-                <li
-                  className="w-full md:w-auto my-2 md:my-0 md:ml-3 md:mr-1"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <li className="w-full lg:w-auto my-2 lg:my-0 lg:ml-3 lg:mr-1" onClick={() => setIsMenuOpen(false)}>
                   <Link
                     href="/try-demo"
-                    className="underline underline-offset-4 decoration-white/50 hover:decoration-white transition-colors block w-full md:w-auto"
+                    className="no-underline block w-full lg:w-auto"
                   >
-                    <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer w-full md:w-auto min-h-[40px]">
+                    <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer w-full lg:w-auto min-h-[40px] whitespace-nowrap">
                       Scan MRI Now
                     </button>
                   </Link>
                 </li>
 
                 {/* USER PROFILE DROPDOWN */}
-                <li className="relative w-full md:w-auto mt-2 md:mt-0 md:ml-4 md:pl-4 border-t md:border-t-0 md:border-l border-gray-800 pt-3 md:pt-0">
+                <li className="relative w-full lg:w-auto mt-2 lg:mt-0 lg:ml-4 lg:pl-4 border-t lg:border-t-0 lg:border-l border-gray-800 pt-3 lg:pt-0">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none bg-transparent border-0 cursor-pointer text-left"
+                    className="flex items-center justify-between lg:justify-start gap-3 w-full lg:w-auto px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none bg-transparent border-0 cursor-pointer text-left"
                   >
                     <div className="flex flex-col text-left">
                       <span className="text-sm font-bold text-gray-100 truncate max-w-[120px]">
@@ -194,7 +171,7 @@ export const Navbar = () => {
                   </button>
 
                   {isProfileOpen && (
-                    <div className="absolute right-0 bottom-full mb-2 md:bottom-auto md:top-full md:mt-3 w-full md:w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="absolute right-0 bottom-full mb-2 lg:bottom-auto lg:top-full lg:mt-3 w-full lg:w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                       <Link
                         href="/manage-account"
                         onClick={() => {
@@ -254,22 +231,16 @@ export const Navbar = () => {
               </>
             ) : (
               <>
-                <li
-                  className="w-full md:w-auto my-1 md:my-0 md:ml-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <li className="w-full lg:w-auto my-1 lg:my-0 lg:ml-2" onClick={() => setIsMenuOpen(false)}>
                   <Link href="/login" className="no-underline block w-full">
-                    <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer w-full md:w-auto min-h-[38px]">
+                    <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer w-full lg:w-auto min-h-[38px]">
                       Login
                     </button>
                   </Link>
                 </li>
-                <li
-                  className="w-full md:w-auto my-1 md:my-0"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <li className="w-full lg:w-auto my-1 lg:my-0" onClick={() => setIsMenuOpen(false)}>
                   <Link href="/signup" className="no-underline block w-full">
-                    <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer w-full md:w-auto min-h-[38px]">
+                    <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer w-full lg:w-auto min-h-[38px]">
                       Sign Up
                     </button>
                   </Link>
