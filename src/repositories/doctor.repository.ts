@@ -1,5 +1,5 @@
 import Doctor, { IDoctor } from "@/src/models/doctor.model";
-import { Appointment, IAppointment } from "@/src/models/appointment.model";
+import { Appointment} from "@/src/models/appointment.model";
 import { connectDB } from "@/src/lib/mongoose";
 
 // Helper function to check if doctors are booked

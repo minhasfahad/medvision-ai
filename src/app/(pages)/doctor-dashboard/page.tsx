@@ -5,10 +5,13 @@ import api from "@/src/lib/axios";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-// 1. Interfaces
+// 1. Interfaces (Updated to include nested user name object)
 interface ScanResult {
   _id: string;
-  user: string;
+  user: {
+    _id: string;
+    name: string;
+  } | string; // Can be a populated object or a raw ID string if population fails
   originalImage: string;
   imageData: string;
   className: string;
@@ -38,18 +41,17 @@ export default function DoctorDashboard() {
   const [isLoadingAppointments, setIsLoadingAppointments] = useState(true);
   const [managingApptId, setManagingApptId] = useState<string | null>(null);
 
-  // Fetch Scans Logic
+  // 1. Fetch Scans Logic using AXIOS instance
   useEffect(() => {
     const fetchScans = async () => {
       try {
-        const response = await fetch("/api/results");
-        if (!response.ok) throw new Error("Failed to fetch recent scans");
-
-        const result = await response.json();
-        if (result.success) {
-          setScans(result.data);
+        setIsLoading(true);
+        const response = await api.get("/api/results");
+        
+        if (response.data.success) {
+          setScans(response.data.data);
         } else {
-          throw new Error(result.message || "API returned false success");
+          throw new Error(response.data.message || "API returned false success");
         }
       } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
@@ -62,7 +64,7 @@ export default function DoctorDashboard() {
     fetchScans();
   }, []);
 
-  // Fetch Appointments Logic
+  // 2. Fetch Appointments Logic using AXIOS instance
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -82,7 +84,7 @@ export default function DoctorDashboard() {
     fetchAppointments();
   }, []);
 
-  // Save Comment Function
+  // 3. Save Comment Function using AXIOS instance
   const handleSaveComment = async (scanId: string) => {
     const commentText = commentInputs[scanId]?.trim();
     if (!commentText) return;
@@ -90,21 +92,21 @@ export default function DoctorDashboard() {
     setSavingComments((prev) => ({ ...prev, [scanId]: true }));
 
     try {
-      const response = await fetch("/api/results", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scanId, comment: commentText }),
+      const response = await api.put("/api/results", { 
+        scanId, 
+        comment: commentText 
       });
 
-      if (!response.ok) throw new Error("Failed to save comment");
-
-      setScans((prevScans) =>
-        prevScans.map((scan) =>
-          scan._id === scanId ? { ...scan, comment: commentText } : scan,
-        ),
-      );
-
-      setCommentInputs((prev) => ({ ...prev, [scanId]: "" }));
+      if (response.data.success) {
+        setScans((prevScans) =>
+          prevScans.map((scan) =>
+            scan._id === scanId ? { ...scan, comment: commentText } : scan,
+          ),
+        );
+        setCommentInputs((prev) => ({ ...prev, [scanId]: "" }));
+      } else {
+        throw new Error(response.data.message || "Failed to save comment");
+      }
     } catch (err: unknown) {
       console.error("Error saving comment:", err);
       alert("Failed to save comment");
@@ -174,6 +176,26 @@ export default function DoctorDashboard() {
                         : "border-[#2a3655] hover:border-green-500/50"
                     }`}
                   >
+                    {/* Patient Meta Data Row (Displays populated name & formatted date) */}
+                    <div className="flex justify-between items-start mb-3 text-xs text-gray-400 border-b border-gray-800 pb-2">
+                      <div className="min-w-0">
+                        <p className="text-[10px] text-gray-500 uppercase font-semibold">Patient</p>
+                        <p className="text-gray-200 font-bold truncate">
+                          {typeof scan.user === "object" && scan.user !== null ? scan.user.name : "Anonymous User"}
+                        </p>
+                      </div>
+                      <div className="text-right flex-none">
+                        <p className="text-[10px] text-gray-500 uppercase font-semibold">Scan Date</p>
+                        <p className="text-gray-300 font-medium">
+                          {new Date(scan.createdAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric"
+                          })}
+                        </p>
+                      </div>
+                    </div>
+
                     <div className="w-full aspect-square bg-[#0f111a] rounded-xl mb-4 flex items-center justify-center overflow-hidden border border-gray-800 shadow-inner">
                       {scan.imageData ? (
                         <Image

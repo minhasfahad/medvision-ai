@@ -10,16 +10,21 @@ export const saveScanResult = async (data: Partial<IResult>) => {
 };
 
 // --- THIS IS THE UPDATED FUNCTION ---
+// --- THIS IS THE UPDATED FUNCTION WITH POPULATION ---
 export const getScanResults = async (userId: string | null = null) => {
     try {
         // If a userId is provided (Patient requesting their history)
         if (userId) {
             // Find only this user's scans, and sort by newest first
-            return await Result.find({ user: userId }).sort({ createdAt: -1 });
+            return await Result.find({ user: userId })
+                .sort({ createdAt: -1 })
+                .populate("user", "name"); // Brings the patient's name
         }
         
         // If NO userId is provided (Doctor requesting all history)
-        return await Result.find().sort({ createdAt: -1 });
+        return await Result.find()
+            .sort({ createdAt: -1 })
+            .populate("user", "name"); // Brings the patient's name
         
     } catch (error) {
         if (error instanceof Error) {
