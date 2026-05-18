@@ -202,7 +202,7 @@ export const Navbar = () => {
                         Manage Account
                       </Link>
 
-                      <button
+                      <Link href={"/"}><button
                         onClick={() => {
                           clear();
                           setIsProfileOpen(false);
@@ -224,7 +224,7 @@ export const Navbar = () => {
                           ></path>
                         </svg>
                         Secure Logout
-                      </button>
+                      </button></Link>
                     </div>
                   )}
                 </li>
