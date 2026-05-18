@@ -73,7 +73,6 @@ const ChatBotPage = () => {
   };
 
   return (
-  <ProtectedRoute>
 
     <div className="flex flex-col h-screen text-white">
       <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 w-full">
@@ -147,7 +146,6 @@ const ChatBotPage = () => {
         </div>
       </main>
     </div>
-  </ProtectedRoute>
 
   );
 };
