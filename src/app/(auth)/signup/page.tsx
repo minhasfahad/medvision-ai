@@ -12,7 +12,8 @@ export default function Signup() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("User"); // Defaulting to an initial valid option
+  const [age, setAge] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -26,6 +27,7 @@ export default function Signup() {
       const response = await api.post("/api/users/signup", {
         name,
         email,
+        age,
         password,
         role,
       });
@@ -43,14 +45,15 @@ export default function Signup() {
 
   return (
     <>
-      <div className="min-h-screen h-[100vh] w-full px-4 flex items-center justify-center">
-        <div className="grid h-full w-full items-center justify-items-center">
+      {/* Optimized wrapper height to completely eliminate the vertical scrollbar issue */}
+      <div className="min-h-[calc(100vh-80px)] w-full px-4 py-6 sm:py-10 flex items-center justify-center text-white">
+        <div className="w-full flex items-center justify-center">
           <form
             onSubmit={handleSignup}
-            className="grid gap-6 sm:gap-8 border-2 w-full max-w-md p-6 sm:p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
+            className="grid gap-5 sm:gap-6 border-2 w-full max-w-md p-6 sm:p-8 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
           >
-            {error && <p className="text-red-500 text-sm sm:text-base">{error}</p>}
-            <h1>
+            {error && <p className="text-red-500 text-sm sm:text-base m-0 text-center">{error}</p>}
+            <h1 className="m-0">
               <Link
                 className="grid text-center text-white no-underline text-2xl sm:text-3xl font-semibold tracking-wide"
                 href="/"
@@ -58,9 +61,10 @@ export default function Signup() {
                 Join Medvision AI
               </Link>
             </h1>
+            
+            {/* Full Name */}
             <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-
               <input
                 type="text"
                 placeholder="Full Name"
@@ -71,9 +75,9 @@ export default function Signup() {
               />
             </div>
 
+            {/* Email Address */}
             <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-regular fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-
               <input
                 type="email"
                 placeholder="Email Address"
@@ -83,20 +87,40 @@ export default function Signup() {
                 className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
+
+            {/* Role Dropdown Selector */}
             <div className="relative w-full max-w-sm mx-auto">
-              <i className="fa-brands fa-critical-role absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input
-                type="text"
-                placeholder="Role"
+              <i className="fa-brands fa-critical-role absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10"></i>
+              <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
+                className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-[#1a163a] w-full pl-10 pr-8 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base cursor-pointer appearance-none"
+              >
+                <option value="User" className="bg-[#1a163a]">User</option>
+                <option value="Patient" className="bg-[#1a163a]">Patient</option>
+                <option value="Doctor" className="bg-[#1a163a]">Doctor</option>
+                <option value="Admin" className="bg-[#1a163a]">Admin</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">
+                <i className="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+
+            {/* Age */}
+            <div className="relative w-full max-w-sm mx-auto">
+              <i className="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                type="number"
+                placeholder="Age"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
                 className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
 
+            {/* Password */}
             <div className="relative w-full max-w-sm mx-auto">
-              <i className="mt-6 fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <p className="mb-7 text-xs sm:text-sm text-gray-300">Password Must be at least 8 characters long.</p>
+              <i className="fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
               <input
                 type="password"
                 placeholder="Password"
@@ -105,33 +129,41 @@ export default function Signup() {
                 className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
             </div>
+            
+            <p className="text-center text-[11px] text-gray-300 max-w-sm mx-auto -mt-2 mb-1">
+              Password must be at least 8 characters long.
+            </p>
+
+            {/* Action Buttons with tightened height */}
             <div className="w-full max-w-sm mx-auto">
               <button
-                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-2 px-4 text-sm sm:text-base transition-all"
+                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-1.5 sm:py-2 px-4 text-sm font-bold transition-all"
                 type="submit"
                 disabled={loading}
               >
                 {loading ? "Creating Account..." : "Create Account"}
               </button>
             </div>
+
             <div className="w-full max-w-sm mx-auto">
               <button
-                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-2 px-4 text-sm sm:text-base flex items-center justify-center transition-all"
-                type="submit"
+                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-1.5 sm:py-2 px-4 text-sm font-bold flex items-center justify-center transition-all"
+                type="button"
               >
                 <Image
-                  className="mr-4"
-                  src="/public/google.png"
+                  className="mr-3 flex-none"
+                  src="/google.png"
                   alt="google"
-                  width={20}
-                  height={20}
+                  width={16}
+                  height={16}
                 />
                 Sign Up with Google
               </button>
             </div>
-            <div className="text-center text-sm sm:text-base">
+
+            <div className="text-center text-sm mt-1">
               Already Have an Account?{" "}
-              <Link href="/login" className="underline text-white whitespace-nowrap">
+              <Link href="/login" className="underline text-white whitespace-nowrap font-medium ml-1">
                 Sign In
               </Link>
             </div>
