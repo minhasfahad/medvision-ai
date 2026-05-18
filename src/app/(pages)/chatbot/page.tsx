@@ -2,8 +2,7 @@
 
 import api from "@/src/lib/axios";
 import { useState, useRef, useEffect } from "react";
-import ProtectedRoute from "@/src/components/ProtectedRoute";
-// Define the shape of a message
+
 interface Message {
   role: "user" | "bot";
   text: string;
@@ -19,13 +18,18 @@ const ChatBotPage = () => {
   ]);
   const [loading, setLoading] = useState(false);
 
-  // Auto-scroll to bottom ONLY when there are new messages
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Focus ref explicitly assigned to the inner conversation message container boundaries
+  const chatMessagesContainerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Only scroll if there is more than just the initial welcome message
-    if (messages.length > 1) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Only execute inner layout alignment shifts if there is real text flow history
+    if (messages.length > 1 && chatMessagesContainerRef.current) {
+      const container = chatMessagesContainerRef.current;
+      // Performs an isolated container scroll-to-bottom instead of snapping the main window page viewpoint
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth"
+      });
     }
   }, [messages]);
 
@@ -33,20 +37,15 @@ const ChatBotPage = () => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // 1. Add User Message
     const userMessage = { role: "user" as const, text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
 
     try {
-      // Make POST request with Axios
       const response = await api.post("/api/chat", { message: input });
-
-      // Axios automatically parses JSON, so data is already in response.data
       const data = response.data;
 
-      // Only add message if 'reply' exists
       const botMessage = {
         role: "bot" as const,
         text: data.reply || "No response received.",
@@ -54,12 +53,8 @@ const ChatBotPage = () => {
       setMessages((prev) => [...prev, botMessage]);
     } catch (error: any) {
       console.error("Chat Error:", error);
+      const errorMsg = error.response?.data?.error || error.message || "Server Error";
 
-      // Axios errors can be in error.response.data, or general error.message
-      const errorMsg =
-        error.response?.data?.error || error.message || "Server Error";
-
-      // Show error in chat bubble
       setMessages((prev) => [
         ...prev,
         {
@@ -73,13 +68,15 @@ const ChatBotPage = () => {
   };
 
   return (
-
-    <div className="flex flex-col h-screen text-white">
-      <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 w-full">
-        {/* Chat Container */}
-        <div className="w-full max-w-4xl bg-[#1a163a] rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh] sm:h-[80vh] border border-white/10">
+    // FIXED: Adjusted h-screen down to an isolated fluid dynamic viewport layout wrapper
+    <div className="min-h-[calc(100vh-100px)] text-white w-full font-sans tracking-wide flex flex-col justify-center items-center">
+      <main className="w-full flex flex-col items-center justify-center p-2 sm:p-4 max-w-5xl mx-auto">
+        
+        {/* Chat Container Wrapper */}
+        <div className="w-full bg-[#1a163a] rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[75vh] sm:h-[80vh] border border-white/10 relative">
+          
           {/* Header */}
-          <div className="bg-[#2d2858] p-3 sm:p-4 flex items-center border-b border-white/5">
+          <div className="bg-[#2d2858] p-3 sm:p-4 flex items-center border-b border-white/5 flex-none">
             <div className="bg-purple-600/20 p-2 rounded-full mr-2.5 sm:mr-3 flex-none">
               <i className="fa-solid fa-robot text-purple-400 text-lg sm:text-xl"></i>
             </div>
@@ -93,7 +90,10 @@ const ChatBotPage = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3 sm:space-y-4">
+          <div 
+            ref={chatMessagesContainerRef}
+            className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3 sm:space-y-4 scroll-smooth"
+          >
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -120,13 +120,12 @@ const ChatBotPage = () => {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input Area */}
           <form
             onSubmit={handleSend}
-            className="p-3 sm:p-4 bg-[#1a163a] border-t border-white/5 flex gap-2 sm:gap-4 items-center"
+            className="p-3 sm:p-4 bg-[#1a163a] border-t border-white/5 flex gap-2 sm:gap-4 items-center flex-none"
           >
             <input
               type="text"
@@ -144,9 +143,9 @@ const ChatBotPage = () => {
             </button>
           </form>
         </div>
+
       </main>
     </div>
-
   );
 };
 
