@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 import { useAuthStore } from "../lib/store/useAuthStore";
 import { 
   Upload, Brain, FileText, ShieldCheck, MessageSquare, History, 
-  Activity, Lock, Zap, Microscope, ChevronDown, CheckCircle2, ChevronRight
+  Activity, Lock, Zap, Microscope, ChevronDown, ChevronRight
 } from "lucide-react";
 
 // --- Subcomponents for Clean Code ---
