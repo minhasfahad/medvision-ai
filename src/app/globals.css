@@ -143,7 +143,7 @@ footer div.grid{
 /* Login Page */
 .login-signup {
   background-color: #9150f3e1;
-  padding: 20px;
+  /* padding: 20px; */
   border-radius: 10vh;
   /* border: none; */
   color: white;
