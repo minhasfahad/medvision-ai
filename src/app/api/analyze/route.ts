@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveScanResult } from "@/src/repositories/result.repository";
 import { connectDB } from "@/src/lib/mongoose";
-// import { getServerSession } from "next-auth"; // If using NextAuth
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Get User ID (Crucial for the "Foreign Key")
-    // Replace this with your actual Auth logic
     await connectDB();
 
     const formData = await req.formData();
@@ -26,34 +23,48 @@ export async function POST(req: NextRequest) {
     const pythonFormData = new FormData();
     pythonFormData.append('file', file);
 
-    // 2. Call Python API
-    const response = await fetch("http://127.0.0.1:8000/predict", {
+    // --- UPDATED: Use Environment Variable or fallback to localhost for testing ---
+    // Make sure NEXT_PUBLIC_PYTHON_API_URL is set in your AWS .env.production file!
+    const pythonApiUrl = process.env.NEXT_PUBLIC_PYTHON_API_URL || "http://127.0.0.1:8000";
+
+    const response = await fetch(`${pythonApiUrl}/predict`, {
       method: "POST",
       body: pythonFormData,
     });
 
-    if (!response.ok) return NextResponse.json({ success: false }, { status: 500 });
+    if (!response.ok) {
+        // If Python returns a 400-level error (like our validation failure), pass it through
+        if (response.status >= 400 && response.status < 500) {
+             const errorData = await response.json();
+             return NextResponse.json(errorData, { status: 200 }); // Return 200 so the frontend can read the custom message
+        }
+        return NextResponse.json({ success: false, message: "Python API Error" }, { status: 500 });
+    }
 
     const pythonData = await response.json();
+    
+    // Check if the validation failed inside the Python response
+    if (pythonData.success === false) {
+        return NextResponse.json(pythonData, { status: 200 });
+    }
 
-    // 3. Save to MongoDB using Repository
+    // 3. Save to MongoDB using Repository (Only if validation passed)
     const savedData = await saveScanResult({
       user: userId as any,
       originalImage: originalImageBase64,
-      imageData: pythonData.image, // The base64 string
+      imageData: pythonData.image, 
       className: pythonData.class_name,
       confidence: pythonData.confidence,
       tumorDetected: pythonData.tumor_detected,
     });
 
-    // 4. Return combined success response
     return NextResponse.json({
         ...pythonData,
-        dbId: savedData._id // Return the MongoDB ID too
+        dbId: savedData._id 
     });
 
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ success: false }, { status: 500 });
+    console.error("API Route Error:", err);
+    return NextResponse.json({ success: false, message: "Server connection failed." }, { status: 500 });
   }
 }

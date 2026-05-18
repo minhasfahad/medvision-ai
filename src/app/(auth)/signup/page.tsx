@@ -121,7 +121,7 @@ export default function Signup() {
               >
                 <Image
                   className="mr-4"
-                  src="/google.png"
+                  src="/public/google.png"
                   alt="google"
                   width={20}
                   height={20}

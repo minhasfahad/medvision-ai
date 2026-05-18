@@ -2,7 +2,7 @@
 
 import api from "@/src/lib/axios";
 import { useState, useRef, useEffect } from "react";
-
+import ProtectedRoute from "@/src/components/ProtectedRoute";
 // Define the shape of a message
 interface Message {
   role: "user" | "bot";
@@ -73,6 +73,8 @@ const ChatBotPage = () => {
   };
 
   return (
+  <ProtectedRoute>
+
     <div className="flex flex-col h-screen text-white">
       <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 w-full">
         {/* Chat Container */}
@@ -145,6 +147,8 @@ const ChatBotPage = () => {
         </div>
       </main>
     </div>
+  </ProtectedRoute>
+
   );
 };
 

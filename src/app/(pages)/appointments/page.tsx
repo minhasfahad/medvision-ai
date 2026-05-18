@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import api from "@/src/lib/axios"; 
 import { useAuthStore } from "@/src/lib/store/useAuthStore"; 
 import Image from 'next/image';
-
+import ProtectedRoute from "@/src/components/ProtectedRoute";
 // 1. Interface
 interface Doctor {
   _id: string;
@@ -98,6 +98,7 @@ function AppointmentContent() {
 
   return (
     // TASK 1: Changed background to transparent. Adjusted top padding.
+    <ProtectedRoute>
     <div className="min-h-screen bg-transparent text-white font-sans pb-10 pt-6 sm:pt-10 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto flex flex-col gap-8 sm:gap-10"> 
       
       {/* TASK 2 & 3: Navbar and Sidebar Removed */}
@@ -190,12 +191,16 @@ function AppointmentContent() {
         )}
       </main>
     </div>
+  </ProtectedRoute>
+
   );
 }
 
 // 3. Export default wrapped in Suspense
 export default function AppointmentPage() {
   return (
+  <ProtectedRoute>
+
     <Suspense fallback={
       <div className="min-h-screen bg-transparent flex items-center justify-center text-blue-400 text-base sm:text-xl font-bold animate-pulse px-4 text-center">
         Loading MedVision AI Booking System...
@@ -203,5 +208,6 @@ export default function AppointmentPage() {
     }>
       <AppointmentContent />
     </Suspense>
+  </ProtectedRoute>
   );
 }
