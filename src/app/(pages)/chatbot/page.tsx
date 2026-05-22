@@ -1,5 +1,5 @@
 "use client";
-
+import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import api from "@/src/lib/axios";
 import { useState, useRef, useEffect } from "react";
 
@@ -9,6 +9,7 @@ interface Message {
 }
 
 const ChatBotPage = () => {
+  const { user } = useAuthStore();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -20,7 +21,7 @@ const ChatBotPage = () => {
 
   // Focus ref explicitly assigned to the inner conversation message container boundaries
   const chatMessagesContainerRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     // Only execute inner layout alignment shifts if there is real text flow history
     if (messages.length > 1 && chatMessagesContainerRef.current) {
@@ -28,11 +29,12 @@ const ChatBotPage = () => {
       // Performs an isolated container scroll-to-bottom instead of snapping the main window page viewpoint
       container.scrollTo({
         top: container.scrollHeight,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   }, [messages]);
 
+  // Replace your existing handleSend function
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -43,7 +45,10 @@ const ChatBotPage = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/api/chat", { message: input });
+      const response = await api.post("/api/chat", {
+        message: input,
+        username: user?.name || "there", // ← sends username to route.ts
+      });
       const data = response.data;
 
       const botMessage = {
@@ -53,12 +58,13 @@ const ChatBotPage = () => {
       setMessages((prev) => [...prev, botMessage]);
     } catch (error: any) {
       console.error("Chat Error:", error);
-      const errorMsg = error.response?.data?.error || error.message || "Server Error";
+      const errorMsg =
+        error.response?.data?.error || error.message || "Server Error";
 
       setMessages((prev) => [
         ...prev,
         {
-          role: "bot",
+          role: "bot" as const,
           text: `⚠️ Error: Could not connect to MedVision AI. ${errorMsg}`,
         },
       ]);
@@ -71,17 +77,17 @@ const ChatBotPage = () => {
     // FIXED: Adjusted h-screen down to an isolated fluid dynamic viewport layout wrapper
     <div className="min-h-[calc(100vh-100px)] text-white w-full font-sans tracking-wide flex flex-col justify-center items-center">
       <main className="w-full flex flex-col items-center justify-center p-2 sm:p-4 max-w-5xl mx-auto">
-        
         {/* Chat Container Wrapper */}
         <div className="w-full bg-[#1a163a] rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[75vh] sm:h-[80vh] border border-white/10 relative">
-          
           {/* Header */}
           <div className="bg-[#2d2858] p-3 sm:p-4 flex items-center border-b border-white/5 flex-none">
             <div className="bg-purple-600/20 p-2 rounded-full mr-2.5 sm:mr-3 flex-none">
               <i className="fa-solid fa-robot text-purple-400 text-lg sm:text-xl"></i>
             </div>
             <div className="min-w-0">
-              <h2 className="font-bold text-sm sm:text-base truncate">MedVision AI Assistant</h2>
+              <h2 className="font-bold text-sm sm:text-base truncate">
+                MedVision AI Assistant
+              </h2>
               <p className="text-[11px] sm:text-xs text-green-400 flex items-center mt-0.5">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full mr-1 flex-none animate-pulse"></span>{" "}
                 Online
@@ -90,7 +96,7 @@ const ChatBotPage = () => {
           </div>
 
           {/* Messages Area */}
-          <div 
+          <div
             ref={chatMessagesContainerRef}
             className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-3 sm:space-y-4 scroll-smooth"
           >
@@ -143,7 +149,6 @@ const ChatBotPage = () => {
             </button>
           </form>
         </div>
-
       </main>
     </div>
   );

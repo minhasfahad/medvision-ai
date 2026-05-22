@@ -2,36 +2,40 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { message } = await req.json();
+    const { message, username } = await req.json();
 
-    // 1. Send the message to your local Python FastAPI server
-    const pythonServerUrl = "http://127.0.0.1:8000/chat";
-    
-    const response = await fetch(pythonServerUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message }),
-    });
-
-    // 2. Check if the Python server successfully processed it
-    if (!response.ok) {
-      throw new Error(`Python server responded with status: ${response.status}`);
+    if (!message || !message.trim()) {
+      return NextResponse.json(
+        { error: "Message cannot be empty." },
+        { status: 400 }
+      );
     }
 
-    // 3. Extract the reply and send it back to the frontend
+    // Use environment variable for AWS, fallback to localhost for development
+    const pythonServerUrl =
+      process.env.NEXT_PUBLIC_PYTHON_API_URL || "http://127.0.0.1:8000";
+
+    const response = await fetch(`${pythonServerUrl}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message,
+        username: username || "there"
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Python server error: ${response.status}`);
+    }
+
     const data = await response.json();
-    
-    // The Python server returns {"reply": "..."} which perfectly matches your frontend!
+
     return NextResponse.json({ reply: data.reply });
 
   } catch (error: any) {
-    // Log the error to your terminal so you can debug if the Python server is down
-    console.error("CUSTOM CHATBOT ERROR DETAILS:", error);
-    
+    console.error("CHATBOT ROUTE ERROR:", error);
     return NextResponse.json(
-      { error: "Failed to connect to the custom Python chatbot." }, 
+      { error: "Failed to connect to MedVision AI chatbot." },
       { status: 500 }
     );
   }
