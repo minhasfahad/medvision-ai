@@ -51,7 +51,7 @@ export async function PATCH(req: Request) {
     }
 
     // Verify current password
-    const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+    const isMatch = await bcrypt.compare(currentPassword, user.password_hash as string);
     if (!isMatch) {
       return NextResponse.json({ success: false, message: "Incorrect current password" }, { status: 401 });
     }
