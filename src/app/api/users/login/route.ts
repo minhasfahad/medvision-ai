@@ -20,12 +20,13 @@ export async function POST(req: Request) {
     }
 
     // 2. Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    // Add 'as string' to force TypeScript to treat it as a string
+    const isMatch = await bcrypt.compare(password, user.password_hash as string);
     if (!isMatch) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    let claims = {
+    const claims = {
       userId: user._id,
       role: user.role
     }
