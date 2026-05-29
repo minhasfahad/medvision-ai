@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import api from "@/src/lib/axios";
+import { signIn } from "next-auth/react";
 
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,16 +17,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // 1. Add state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-  	try {
+    try {
       const response = await api.post("/api/users/login", { email, password });
       const { user, token } = response.data;
       setAuthValues(user, token);
-      router.replace('/');
+      router.replace("/");
     } catch (error: any) {
       debugger;
       setError(error.response?.data?.error || "Login Failed");
@@ -41,19 +46,25 @@ export default function LoginPage() {
             onSubmit={handleLogin}
             className="grid gap-6 sm:gap-8 border-2 w-full max-w-md p-6 sm:p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
           >
-            {error && <p className="text-red-500 text-sm sm:text-base">{error}</p>}
-            <h1>
+            {error && (
+              <p className="text-red-500 text-sm sm:text-base">{error}</p>
+            )}
+            <h1 className="m-0">
               <Link
-                className="grid text-center text-white no-underline text-2xl sm:text-3xl font-semibold tracking-wide"
+                // Added 'font-sans' here
+                className="font-sans grid text-center no-underline text-3xl font-extrabold tracking-tight"
                 href="/"
               >
-                Medvision AI
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 animate-gradient-x">
+                  Login to Medvision AI
+                </span>
               </Link>
             </h1>
+
             <div className="relative w-full max-w-sm mx-auto">
               <i className="fa-regular fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-
               <input
+                required
                 type="email"
                 placeholder="Email Address"
                 value={email}
@@ -63,15 +74,27 @@ export default function LoginPage() {
             </div>
 
             <div className="relative w-full max-w-sm mx-auto">
-              <i className="fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <i className="fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 pointer-events-none"></i>
 
               <input
-                type="password"
+                required
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                className="text-white shadow-blue-500/50 shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                /* Added bg-transparent, border-none, and z-10 to fix the background box */
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors focus:outline-none bg-transparent border-none p-0 m-0 z-10"
+              >
+                <i
+                  className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"} bg-transparent`}
+                ></i>
+              </button>
             </div>
 
             <div className="w-full max-w-sm mx-auto">
@@ -83,14 +106,33 @@ export default function LoginPage() {
                 {loading ? "Singning in..." : "Sign In"}
               </button>
             </div>
+                        <div className="w-full max-w-sm mx-auto">
+                          <button
+                            className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-1.5 sm:py-2 px-4 text-sm font-bold flex items-center justify-center transition-all"
+                            type="button"
+                            onClick={() => signIn("google", { callbackUrl: "/" })}
+                          >
+                            <Image
+                              className="mr-3 flex-none"
+                              src="/google.png"
+                              alt="google"
+                              width={16}
+                              height={16}
+                            />
+                            Login with Google
+                          </button>
+                        </div>
             <div className="m-auto text-sm sm:text-base">
-              <Link href="#" className="underline text-white">
+              <Link href="/forgot-password" className="underline text-white">
                 Forgot Password?
               </Link>
             </div>
             <div className="m-auto text-center text-sm sm:text-base">
               Do not have an Account?{" "}
-              <Link href="/signup" className="underline text-white whitespace-nowrap">
+              <Link
+                href="/signup"
+                className="underline text-white whitespace-nowrap"
+              >
                 Create New
               </Link>
             </div>

@@ -18,10 +18,6 @@ export default function ProtectedRoute({
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-white px-4">
-        
-        <h3 className="h2-protected">
-          Access Denied!
-        </h3>
         <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
           Please Login to continue
         </h3>

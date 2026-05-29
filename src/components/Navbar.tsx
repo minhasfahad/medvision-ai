@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useAuthStore } from "../lib/store/useAuthStore";
 import { usePathname } from "next/navigation";
-
+import { signOut } from "next-auth/react";
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -44,9 +44,9 @@ export const Navbar = () => {
             height={50}
             className="rounded-full w-auto h-10 sm:h-12 object-contain"
           />
-          <span className="self-center whitespace-nowrap text-lg sm:text-xl font-bold text-white">
-            MedVision <span className="text-slate-500">AI</span>
-          </span>
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white m-0">
+            MedVision <span className="text-blue-500 font-medium">AI</span>
+          </h1>
         </Link>
 
         {/* MOBILE HAMBURGER BUTTON - Kicks in at < 1024px now */}
@@ -226,31 +226,35 @@ export const Navbar = () => {
                         Manage Account
                       </Link>
 
-                      <Link href={"/"}>
-                        <button
-                          onClick={() => {
-                            clear();
-                            setIsProfileOpen(false);
-                            setIsMenuOpen(false);
-                          }}
-                          className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-gray-800 pt-2.5 bg-transparent border-0 cursor-pointer text-left"
+                      <button
+                        onClick={async () => {
+                          // 1. Close the UI menus
+                          setIsProfileOpen(false);
+                          setIsMenuOpen(false);
+
+                          // 2. Wipe the Zustand local storage memory
+                          clear();
+
+                          // 3. Destroy the NextAuth cookie AND redirect to the homepage safely
+                          await signOut({ callbackUrl: "/" });
+                        }}
+                        className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-gray-800 pt-2.5 bg-transparent border-0 cursor-pointer text-left"
+                      >
+                        <svg
+                          className="w-4 h-4 mr-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          <svg
-                            className="w-4 h-4 mr-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            ></path>
-                          </svg>
-                          Secure Logout
-                        </button>
-                      </Link>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          ></path>
+                        </svg>
+                        Secure Logout
+                      </button>
                     </div>
                   )}
                 </li>
