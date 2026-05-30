@@ -161,7 +161,9 @@ button{
   margin: 0px
 }
 
-
+h1, h2, h3, h4, h5, h6 {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
 @media screen and (max-width: 400px) {
   .login-signup-btn{
     width: auto;
