@@ -130,7 +130,7 @@ export default function MyAppointmentsPage() {
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2 mb-4">
                     <div className="min-w-0">
                       <h3 className="text-lg sm:text-xl font-bold text-gray-100 truncate">
-                        {appt.doctorName}
+                        Dr. {appt.doctorName}
                       </h3>
                       <p className="text-blue-400 text-xs sm:text-sm font-medium mt-0.5 sm:mt-1 truncate">
                         {appt.tumorType} Consultation
@@ -154,8 +154,23 @@ export default function MyAppointmentsPage() {
                   <div className="space-y-2.5 sm:space-y-3 mb-5 sm:mb-6 bg-[#1e2235] p-3 sm:p-4 rounded-xl border border-gray-700/50">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm">
                       <span className="text-gray-400">Date & Time:</span>
-                      <span className="text-gray-100 font-semibold sm:text-right break-words">
-                        {appt.appointmentDate}
+                      <span className="text-gray-100 font-semibold sm:text-right">
+                        {new Date(appt.appointmentDate).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          },
+                        )}
+                        <span className="mx-2 text-gray-500">|</span>
+                        {new Date(appt.appointmentDate).toLocaleTimeString(
+                          "en-US",
+                          {
+                            hour: "numeric",
+                            minute: "2-digit",
+                          },
+                        )}
                       </span>
                     </div>
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm">

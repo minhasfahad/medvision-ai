@@ -1,47 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
-// Notice I changed the function name to getScanResults (we will update the repo next)
-import { getScanResults, updateScanComment } from "@/src/repositories/result.repository";
 import { connectDB } from "@/src/lib/mongoose";
+import Result from "@/src/models/scanresult.model";
+import Doctor from "@/src/models/doctor.model";
+import { getDoctorPatientScans, updateScanComment } from "@/src/repositories/result.repository";
 
 export async function GET(req: NextRequest) {
     try {
         await connectDB();
-        
-        // Grab the userId from the URL if it exists
         const searchParams = req.nextUrl.searchParams;
         const userId = searchParams.get('userId');
+        const role = searchParams.get('role');
 
-        // Pass the userId to the repository
-        const scanresults = await getScanResults(userId);
-        
-        return NextResponse.json({ success: true, data: scanresults });
+        if (role === 'doctor' && userId) {
+            const doctorProfile = await Doctor.findOne({ userId }).lean();
+            if (!doctorProfile) return NextResponse.json({ success: true, data: [] });
+
+            const scans = await getDoctorPatientScans(doctorProfile._id.toString());
+            return NextResponse.json({ success: true, data: scans });
+        }
+
+        // Patient view
+        const scans = await Result.find({ user: userId }).sort({ createdAt: -1 }).populate("user", "name");
+        return NextResponse.json({ success: true, data: scans });
     } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        return NextResponse.json({ success: false, message: errorMessage }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
     }
 }
 
 export async function PUT(req: NextRequest) {
     try {
         await connectDB();
-        const body = await req.json();
-        const { scanId, comment } = body;
-
-        if (!scanId || !comment) {
-            return NextResponse.json({ 
-                success: false, 
-                message: 'scanId and comment are required' 
-            }, { status: 400 });
-        }
-
+        const { scanId, comment } = await req.json();
         const updatedResult = await updateScanComment(scanId, comment);
-        return NextResponse.json({ 
-            success: true, 
-            data: updatedResult,
-            message: 'Comment saved successfully'
-        });
+        return NextResponse.json({ success: true, data: updatedResult });
     } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        return NextResponse.json({ success: false, message: errorMessage }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Update failed" }, { status: 500 });
     }
 }

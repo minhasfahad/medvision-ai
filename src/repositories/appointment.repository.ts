@@ -28,3 +28,13 @@ export const updateAppointmentStatus = async (appointmentId: string, status: str
     { new: true }
   ).lean();
 };
+
+// Add this to the bottom of src/lib/repositories/appointment.repo.ts
+
+export const getDoctorAppointments = async (doctorId: string) => {
+  await connectDB();
+  // Fetch only appointments booked with this specific doctor
+  return await Appointment.find({ doctorId })
+    .sort({ createdAt: -1 })
+    .lean();
+};

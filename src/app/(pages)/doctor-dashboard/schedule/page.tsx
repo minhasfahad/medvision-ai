@@ -5,10 +5,11 @@ import Image from "next/image";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+
 // Interfaces matching your MongoDB schemas
 interface Appointment {
   _id: string;
-  userId: string | any; // Updated to handle populated objects
+  userId: string | any;
   patientName: string;
   doctorName: string;
   clinic: string;
@@ -21,7 +22,7 @@ interface Appointment {
 
 interface ScanResult {
   _id: string;
-  user: string | any; // Updated to handle populated objects
+  user: string | any;
   imageData: string;
   className: string;
   confidence: number;
@@ -30,7 +31,7 @@ interface ScanResult {
   comment?: string;
 }
 
-export default function DoctorAppointmentsPage() {
+export default function DoctorSchedulePage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [scans, setScans] = useState<ScanResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,8 +45,17 @@ export default function DoctorAppointmentsPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const apptResponse = await api.get("/api/appointments");
-        const scanResponse = await api.get("/api/results");
+        // Secured calls using the logged in doctor's credentials
+        console.log(
+          "Fetching from:",
+          `/api/appointments?userId=${user?.id}&role=doctor`,
+        );
+        const apptResponse = await api.get(
+          `/api/appointments?userId=${user?.id}&role=doctor`,
+        );
+        const scanResponse = await api.get(
+          `/api/results?userId=${user?.id}&role=doctor`,
+        );
 
         if (apptResponse.data.success && scanResponse.data.success) {
           setAppointments(apptResponse.data.data);
@@ -63,7 +73,7 @@ export default function DoctorAppointmentsPage() {
     };
 
     fetchData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.id]);
 
   const handleStatusUpdate = async (
     appointmentId: string,
@@ -92,34 +102,31 @@ export default function DoctorAppointmentsPage() {
     }
   };
 
-  // --- BUG 1 FIX: Safely extract IDs and get the MOST RECENT scan ---
-  const patientScan = selectedAppt
-    ? scans
-        .filter((scan) => {
-          // Safely handle both string IDs and populated object IDs
-          const scanUserId =
-            typeof scan.user === "object" ? scan.user._id : scan.user;
-          const apptUserId =
-            typeof selectedAppt.userId === "object"
-              ? selectedAppt.userId._id
-              : selectedAppt.userId;
-          return scanUserId === apptUserId;
-        })
-        // Sort by date descending so the newest scan is at index [0]
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        )[0]
-    : null;
+  // Replace your existing patientScan filter logic with this:
+// Inside DoctorSchedulePage component:
+const patientScan = selectedAppt
+  ? scans.find((scan) => {
+      // Robust ID comparison
+      const scanUserId = (scan.user as any)?._id?.toString() || scan.user?.toString();
+      const apptUserId = typeof selectedAppt.userId === 'object' && selectedAppt.userId !== null 
+                         ? selectedAppt.userId.toString() 
+                         : selectedAppt.userId.toString();
+      
+      return scanUserId === apptUserId;
+    })
+  : null;
 
-  // --- BUG 2 FIX: Trigger Print ---
+  // const handleDownloadPDF = () => {
+  //   window.print();
+  // };
+
   const handleDownloadPDF = () => {
-    window.print();
+    window.open("/report", "_blank");
   };
 
   if (!isAuthenticated || user?.role?.toLowerCase() !== "doctor") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-white pt-10">
+      <div className="flex flex-col items-center justify-center text-white pt-20">
         <h2 className="text-2xl font-bold mb-4">Clinical Access Only</h2>
         <p className="text-gray-400">
           Please log in with a verified physician account.
@@ -130,15 +137,16 @@ export default function DoctorAppointmentsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-transparent text-white w-full max-w-[1600px] mx-auto pt-6 sm:pt-10 px-4 sm:px-6 pb-12 flex flex-col lg:flex-row gap-6 lg:gap-8 print:block print:p-0 print:m-0 print:bg-white">
+      {/* Adjusted height to fit perfectly inside the new layout without double-scrolling */}
+      <div className="h-auto lg:h-[calc(100vh-80px)] bg-transparent text-white w-full mx-auto pt-6 px-4 sm:px-6 pb-6 flex flex-col lg:flex-row gap-6 lg:gap-8 print:block print:p-0 print:m-0 print:bg-white">
         {/* LEFT COLUMN: APPOINTMENT LIST */}
-        <aside className="w-full lg:w-[400px] flex flex-col gap-4 flex-none h-auto lg:h-[85vh] overflow-y-auto custom-scrollbar pr-0 lg:pr-2 print:hidden">
-          <div className="mb-2 sm:mb-4">
+        <aside className="w-full lg:w-[400px] flex flex-col gap-4 flex-none h-auto lg:h-full overflow-y-auto custom-scrollbar pr-0 lg:pr-2 print:hidden">
+          <div className="mb-2 sm:mb-4 flex-none">
             <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100">
-              All Appointments
+              Todays Schedule
             </h1>
             <p className="text-gray-400 text-xs sm:text-sm">
-              Select a patient to view their clinical report.
+              Select an appointment to manage status and view scans.
             </p>
           </div>
 
@@ -151,12 +159,12 @@ export default function DoctorAppointmentsPage() {
               No appointments found.
             </div>
           ) : (
-            <div className="flex flex-col gap-3 sm:gap-4 max-h-[40vh] lg:max-h-none overflow-y-auto lg:overflow-visible p-1">
+            <div className="flex flex-col gap-3 sm:gap-4 flex-1 overflow-y-auto p-1">
               {appointments.map((appt) => (
                 <div
                   key={appt._id}
                   onClick={() => setSelectedAppt(appt)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-4 rounded-xl border cursor-pointer transition-all flex-none ${
                     selectedAppt?._id === appt._id
                       ? "bg-[#1e2235] border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
                       : "bg-[#121726] border-[#2a3655] hover:border-gray-500"
@@ -191,8 +199,7 @@ export default function DoctorAppointmentsPage() {
         </aside>
 
         {/* RIGHT COLUMN: DETAILED VIEW & PDF REPORT */}
-        {/* BUG 2 FIX: Removed print:absolute print:inset-0 so the browser can print naturally */}
-        <main className="flex-1 bg-[#121726] rounded-2xl border border-[#2a3655] p-4 sm:p-6 lg:p-8 shadow-xl overflow-y-auto h-auto lg:h-[85vh] custom-scrollbar print:block print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:border-none print:shadow-none print:text-black">
+        <main className="flex-1 bg-[#121726] rounded-2xl border border-[#2a3655] p-4 sm:p-6 lg:p-8 shadow-xl overflow-y-auto h-auto lg:h-full custom-scrollbar print:block print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:border-none print:shadow-none print:text-black">
           {!selectedAppt ? (
             <div className="flex items-center justify-center h-48 lg:h-full text-gray-500 text-sm sm:text-base print:hidden">
               Select an appointment from the list to view details.
@@ -227,7 +234,7 @@ export default function DoctorAppointmentsPage() {
                 </div>
               </div>
 
-              {/* Print-Only Header (Shows up ONLY on the PDF) */}
+              {/* Print-Only Header */}
               <div className="hidden print:block text-center mb-6 border-b-2 border-gray-200 pb-4">
                 <h1 className="text-3xl font-bold text-black mb-1">
                   MedVision AI
@@ -273,7 +280,7 @@ export default function DoctorAppointmentsPage() {
                 </div>
               </div>
 
-              {/* Doctor Status Controls (Hidden during PDF print) */}
+              {/* Doctor Status Controls */}
               <div className="flex flex-col sm:flex-row gap-3 print:hidden">
                 {selectedAppt.status === "Cancelled" ? (
                   <div className="w-full text-center py-3 bg-red-900/20 border border-red-500/30 text-red-400 text-sm font-bold rounded-lg">

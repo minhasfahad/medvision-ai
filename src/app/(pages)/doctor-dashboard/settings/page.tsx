@@ -1,0 +1,154 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/src/lib/store/useAuthStore";
+import api from "@/src/lib/axios";
+
+export default function DoctorProfileSettings() {
+  const { user } = useAuthStore();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [formData, setFormData] = useState({
+    specialty: "",
+    expertise: "",
+    clinic: "",
+    experience: "",
+    fee: "",
+    about: "",
+  });
+
+  const [slotInput, setSlotInput] = useState("");
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      try {
+        const res = await api.get(`/api/doctors/profile?userId=${user.id}`);
+        if (res.data.success && res.data.data) {
+          const profile = res.data.data;
+          setFormData({
+            specialty: profile.specialty || "",
+            expertise: profile.expertise ? profile.expertise.join(", ") : "",
+            clinic: profile.clinic || "",
+            experience: profile.experience || "",
+            fee: profile.fee || "",
+            about: profile.about || "",
+          });
+          setAvailableSlots(profile.availableSlots || []);
+        }
+      } catch (error) {
+        console.error("No profile found, starting fresh.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [user?.id]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const addSlot = () => {
+    if (slotInput && !availableSlots.includes(slotInput)) {
+      setAvailableSlots([...availableSlots, slotInput]);
+      setSlotInput("");
+    }
+  };
+
+  const removeSlot = (slotToRemove: string) => {
+    setAvailableSlots(availableSlots.filter((s) => s !== slotToRemove));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      await api.post("/api/doctors/profile/update", {
+        ...formData,
+        availableSlots,
+        userId: user?.id,
+        name: user?.name,
+        image: user?.image,
+        expertise: formData.expertise.split(",").map((item) => item.trim()),
+      });
+      alert("Profile and slots updated successfully!");
+    } catch (error) {
+      alert("Failed to save profile.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) return <div className="text-white text-center py-10">Loading profile...</div>;
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white tracking-wide">Professional Profile</h1>
+        <p className="text-gray-400 mt-2 text-sm">Update your clinical details and available slots below.</p>
+      </div>
+
+      <div className="bg-[#1a163a] rounded-xl border border-gray-800 shadow-2xl p-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Primary Specialty</label>
+              <input type="text" name="specialty" required placeholder="e.g. Neuro-Oncologist" value={formData.specialty} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Clinic / Hospital Location</label>
+              <input type="text" name="clinic" required placeholder="e.g. City General Hospital, Lahore" value={formData.clinic} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Years of Experience</label>
+              <input type="text" name="experience" required placeholder="e.g. 15 Yrs Exp" value={formData.experience} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Consultation Fee</label>
+              <input type="text" name="fee" required placeholder="e.g. Rs. 3000" value={formData.fee} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white" />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Available Slots</label>
+            <div className="flex gap-2">
+              <input type="datetime-local" value={slotInput} onChange={(e) => setSlotInput(e.target.value)} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white [color-scheme:dark]" />
+              <button type="button" onClick={addSlot} className="bg-blue-600 px-6 rounded-lg font-bold hover:bg-blue-500 text-white">Add</button>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              {availableSlots.map((slot) => (
+                <div key={slot} className="bg-gray-800 text-xs text-white px-3 py-2 rounded-lg flex items-center gap-2 border border-gray-600">
+                  {new Date(slot).toLocaleString()}
+                  <button type="button" onClick={() => removeSlot(slot)} className="text-red-400 font-bold">✕</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Expertise (Comma Separated)</label>
+            <input type="text" name="expertise" required placeholder="e.g. Meningioma, Glioma" value={formData.expertise} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">About / Introduction</label>
+            <textarea name="about" required rows={4} placeholder="Briefly describe your background..." value={formData.about} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white resize-none" />
+          </div>
+
+          <div className="flex justify-end pt-4 border-t border-gray-800">
+            <button type="submit" disabled={isSaving} className="bg-blue-600 px-8 py-3 rounded-xl font-bold text-white hover:bg-blue-500">
+              {isSaving ? "Saving..." : "Publish Profile"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

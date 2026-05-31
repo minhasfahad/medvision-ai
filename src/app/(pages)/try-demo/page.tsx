@@ -30,11 +30,15 @@ export default function TryDemoPage() {
 
   const handleBookRedirect = () => {
     if (!analysisData) return;
+
+    // Construct the query parameters
     const query = new URLSearchParams({
       tumor: analysisData.className,
       detected: String(analysisData.detected),
     }).toString();
-    router.push(`/appointments?${query}`);
+
+    // Updated path to reflect the new patient-dashboard structure
+    router.push(`/patient-dashboard/appointments?${query}`);
   };
 
   const handleUpload = async () => {
