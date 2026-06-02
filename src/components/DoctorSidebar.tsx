@@ -9,11 +9,12 @@ export default function DoctorSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
 const links = [
-    { name: "Clinical Dashboard", path: "/doctor-dashboard" },
-    { name: "Patient Scans", path: "/doctor-dashboard/patient-scans" },
-    { name: "My Schedule", path: "/doctor-dashboard/schedule" },
-    { name: "Profile & Settings", path: "/doctor-dashboard/settings" },
-  ];
+  { name: "Clinical Dashboard", path: "/doctor-dashboard" },
+  { name: "Patient Scans", path: "/doctor-dashboard/patient-scans" },
+  { name: "My Scan History", path: "/doctor-dashboard/my-scans" }, // <-- Add this new link
+  { name: "My Schedule", path: "/doctor-dashboard/schedule" },
+  { name: "Profile & Settings", path: "/doctor-dashboard/settings" },
+];
 
   return (
     <>

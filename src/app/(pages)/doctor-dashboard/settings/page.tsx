@@ -139,7 +139,7 @@ export default function DoctorProfileSettings() {
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">About / Introduction</label>
-            <textarea name="about" required rows={4} placeholder="Briefly describe your background..." value={formData.about} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white resize-none" />
+            <textarea name="about" rows={4} placeholder="Briefly describe your background..." value={formData.about} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white resize-none" />
           </div>
 
           <div className="flex justify-end pt-4 border-t border-gray-800">

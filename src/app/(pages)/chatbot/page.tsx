@@ -2,6 +2,7 @@
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import api from "@/src/lib/axios";
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown"; // <-- 1. Imported ReactMarkdown
 
 interface Message {
   role: "user" | "bot";
@@ -112,7 +113,15 @@ const ChatBotPage = () => {
                       : "bg-[#2d2858] text-gray-200 rounded-bl-none"
                   }`}
                 >
-                  {msg.text}
+                  {/* 2. Added Markdown parsing exclusively for bot messages */}
+                  {/* Markdown rendering logic applied only to the bot messages */}
+                  {msg.role === "bot" ? (
+                    <div className="[&>p]:mb-3 [&>p:last-child]:mb-0 [&>ul]:list-disc [&>ul]:ml-5 [&>ul]:mb-3 [&>ol]:list-decimal [&>ol]:ml-5 [&>ol]:mb-3 [&>li]:mb-1 [&>strong]:font-bold [&>strong]:text-purple-300">
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    msg.text
+                  )}
                 </div>
               </div>
             ))}
