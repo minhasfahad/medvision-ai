@@ -16,13 +16,13 @@ interface Doctor {
   clinic: string;
   experience: string;
   nextSlot: string;
-  availableSlots: string[];       // all slots the doctor has set
-  bookedSlots: string[];          // slots already taken (from appointments)
+  availableSlots: string[]; // all slots the doctor has set
+  bookedSlots: string[]; // slots already taken (from appointments)
   fee: string;
   badge?: string;
   image?: string;
   expertise?: string[];
-  isBooked?: boolean;             // did THIS user already book this doctor
+  isBooked?: boolean; // did THIS user already book this doctor
 }
 
 // ─── SVG Fallback Icon ─────────────────────────────────────────────────────────
@@ -67,10 +67,17 @@ interface SlotSelectorProps {
   onChange: (slot: string) => void;
 }
 
-function SlotSelector({ availableSlots, bookedSlots, selectedSlot, onChange }: SlotSelectorProps) {
+function SlotSelector({
+  availableSlots,
+  bookedSlots,
+  selectedSlot,
+  onChange,
+}: SlotSelectorProps) {
   if (!availableSlots || availableSlots.length === 0) {
     return (
-      <p className="text-xs text-gray-500 italic mt-1">No slots configured by doctor.</p>
+      <p className="text-xs text-gray-500 italic mt-1">
+        No slots configured by doctor.
+      </p>
     );
   }
 
@@ -89,7 +96,13 @@ function SlotSelector({ availableSlots, bookedSlots, selectedSlot, onChange }: S
                 title="This slot is already booked"
                 className="flex items-center gap-1 bg-[#1e293b] border border-[#2a3655] text-gray-500 text-[10px] sm:text-xs px-2.5 py-1.5 rounded-lg cursor-not-allowed select-none"
               >
-                <svg className="w-3 h-3 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg
+                  className="w-3 h-3 flex-none"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
                   <rect x="3" y="11" width="18" height="11" rx="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
@@ -141,7 +154,9 @@ function AppointmentContent() {
   const [availableCities, setAvailableCities] = useState<string[]>([]);
 
   // Per-doctor selected slot: { doctorId -> selectedSlot }
-  const [selectedSlots, setSelectedSlots] = useState<Record<string, string>>({});
+  const [selectedSlots, setSelectedSlots] = useState<Record<string, string>>(
+    {},
+  );
 
   const { user } = useAuthStore();
   const searchParams = useSearchParams();
@@ -163,7 +178,7 @@ function AppointmentContent() {
           const initialSlots: Record<string, string> = {};
           data.forEach((doc) => {
             const firstOpen = doc.availableSlots?.find(
-              (s) => !doc.bookedSlots?.includes(s)
+              (s) => !doc.bookedSlots?.includes(s),
             );
             if (firstOpen) initialSlots[doc._id] = firstOpen;
           });
@@ -187,7 +202,9 @@ function AppointmentContent() {
   const filteredDoctors =
     selectedCity === "all"
       ? doctors
-      : doctors.filter((d) => extractCity(d.clinic) === selectedCity.toLowerCase());
+      : doctors.filter(
+          (d) => extractCity(d.clinic) === selectedCity.toLowerCase(),
+        );
 
   // ── Book appointment ──────────────────────────────────────────────────────────
   const handleBookAppointment = async (doctor: Doctor) => {
@@ -220,13 +237,15 @@ function AppointmentContent() {
 
       if (response.data.success) {
         alert(
-          `✅ Appointment confirmed with ${doctor.name} on ${new Date(chosenSlot).toLocaleString("en-US", {
+          `✅ Appointment confirmed with ${doctor.name} on ${new Date(
+            chosenSlot,
+          ).toLocaleString("en-US", {
             month: "short",
             day: "numeric",
             year: "numeric",
             hour: "numeric",
             minute: "2-digit",
-          })}.`
+          })}.`,
         );
 
         // Mark only this specific slot as booked — do NOT lock the whole doctor card.
@@ -238,8 +257,8 @@ function AppointmentContent() {
                   ...doc,
                   bookedSlots: [...(doc.bookedSlots || []), chosenSlot],
                 }
-              : doc
-          )
+              : doc,
+          ),
         );
 
         // Clear the selected slot for this doctor so the patient must pick a new one
@@ -266,7 +285,6 @@ function AppointmentContent() {
     <ProtectedRoute>
       <div className="min-h-screen bg-transparent text-white font-sans pb-10 pt-6 sm:pt-10 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto flex flex-col gap-8 sm:gap-10">
         <main className="w-full">
-
           {/* ── Header ── */}
           <div className="mb-6 sm:mb-8 text-center">
             <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100 mb-2 leading-tight">
@@ -285,7 +303,13 @@ function AppointmentContent() {
           {!isLoading && !error && availableCities.length > 0 && (
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="text-xs text-gray-400 font-medium mr-1 flex items-center gap-1.5">
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  className="w-3.5 h-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
@@ -319,7 +343,8 @@ function AppointmentContent() {
 
               {selectedCity !== "all" && (
                 <span className="text-xs text-gray-500 ml-auto">
-                  {filteredDoctors.length} doctor{filteredDoctors.length !== 1 ? "s" : ""} found
+                  {filteredDoctors.length} doctor
+                  {filteredDoctors.length !== 1 ? "s" : ""} found
                 </span>
               )}
             </div>
@@ -344,18 +369,21 @@ function AppointmentContent() {
             </div>
           )}
 
-          {!isLoading && !error && doctors.length > 0 && filteredDoctors.length === 0 && (
-            <div className="text-gray-400 text-center py-6 text-sm sm:text-base">
-              No doctors found in{" "}
-              <span className="text-white font-medium">{selectedCity}</span>.{" "}
-              <button
-                onClick={() => setSelectedCity("all")}
-                className="text-blue-400 underline hover:text-blue-300"
-              >
-                View all cities
-              </button>
-            </div>
-          )}
+          {!isLoading &&
+            !error &&
+            doctors.length > 0 &&
+            filteredDoctors.length === 0 && (
+              <div className="text-gray-400 text-center py-6 text-sm sm:text-base">
+                No doctors found in{" "}
+                <span className="text-white font-medium">{selectedCity}</span>.{" "}
+                <button
+                  onClick={() => setSelectedCity("all")}
+                  className="text-blue-400 underline hover:text-blue-300"
+                >
+                  View all cities
+                </button>
+              </div>
+            )}
 
           {/* ── Doctor Cards ── */}
           {!isLoading && !error && filteredDoctors.length > 0 && (
@@ -422,7 +450,8 @@ function AppointmentContent() {
                     </p>
 
                     <p className="text-xs sm:text-sm text-gray-400 text-center md:text-left">
-                      <strong className="text-gray-200">Fee:</strong> {doc.fee} Rs.
+                      <strong className="text-gray-200">Fee:</strong> {doc.fee}{" "}
+                      Rs.
                     </p>
 
                     {/* ── Slot Selector ── */}
@@ -431,7 +460,10 @@ function AppointmentContent() {
                       bookedSlots={doc.bookedSlots || []}
                       selectedSlot={selectedSlots[doc._id] || ""}
                       onChange={(slot) =>
-                        setSelectedSlots((prev) => ({ ...prev, [doc._id]: slot }))
+                        setSelectedSlots((prev) => ({
+                          ...prev,
+                          [doc._id]: slot,
+                        }))
                       }
                     />
                   </div>
@@ -440,7 +472,9 @@ function AppointmentContent() {
                   {/* Show "All Slots Taken" only when every configured slot is booked */}
                   <div className="flex flex-col gap-2 w-full md:w-auto md:min-w-[180px] flex-none mt-2 md:mt-0">
                     {doc.availableSlots?.length > 0 &&
-                    doc.availableSlots.every((s) => doc.bookedSlots?.includes(s)) ? (
+                    doc.availableSlots.every((s) =>
+                      doc.bookedSlots?.includes(s),
+                    ) ? (
                       <button
                         disabled
                         className="bg-[#1e293b] border border-[#334155] text-gray-400 w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold cursor-not-allowed flex justify-center items-center gap-2"
@@ -450,13 +484,15 @@ function AppointmentContent() {
                     ) : (
                       <button
                         onClick={() => handleBookAppointment(doc)}
-                        disabled={bookingId === doc._id || !selectedSlots[doc._id]}
+                        disabled={
+                          bookingId === doc._id || !selectedSlots[doc._id]
+                        }
                         title={
                           !selectedSlots[doc._id]
                             ? "Please select a slot first"
                             : "Confirm this appointment"
                         }
-                        className="bg-[#00b85c] hover:bg-[#00a050] text-white w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer w-full lg:w-auto min-h-[40px] whitespace-nowrap"
                       >
                         {bookingId === doc._id ? (
                           <>
@@ -488,7 +524,7 @@ function AppointmentContent() {
                       </button>
                     )}
 
-                    <button className="bg-[#4b5563] hover:bg-[#374151] text-white w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors">
+                    <button className="bg-[#4b5563] hover:bg-[#374151] text-white w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold cursor-pointer w-full lg:w-auto min-h-[40px] whitespace-nowrap">
                       Cancel
                     </button>
                   </div>

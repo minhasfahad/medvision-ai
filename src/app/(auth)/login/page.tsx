@@ -119,7 +119,7 @@ export default function LoginPage() {
                               width={16}
                               height={16}
                             />
-                            Login with Google
+                            Continue with Google
                           </button>
                         </div>
             <div className="m-auto text-sm sm:text-base">

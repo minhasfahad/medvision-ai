@@ -208,7 +208,7 @@ export default function Signup() {
                   width={16}
                   height={16}
                 />
-                Sign Up with Google
+                Continue with Google
               </button>
             </div>
 
