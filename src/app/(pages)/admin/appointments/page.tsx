@@ -1,10 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import api from "@/src/lib/axios";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+
+type AppointmentStatus = "Pending" | "Scheduled" | "Completed" | "Cancelled";
+
+interface AppointmentRecord {
+  _id: string;
+  patientName: string;
+  doctorName: string;
+  appointmentDate: string;
+  clinic?: string;
+  tumorType?: string;
+  confidence?: number;
+  status?: AppointmentStatus;
+  createdAt?: string;
+}
+
 export default function ManageAppointments() {
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<AppointmentRecord[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"All" | AppointmentStatus>(
+    "All",
+  );
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<AppointmentRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -25,7 +46,7 @@ export default function ManageAppointments() {
 
   const handleStatusChange = async (
     appointmentId: string,
-    newStatus: string,
+    newStatus: AppointmentStatus,
   ) => {
     if (
       !confirm(
@@ -55,18 +76,59 @@ export default function ManageAppointments() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status?: AppointmentStatus) => {
     switch (status?.toLowerCase()) {
       case "cancelled":
         return "text-red-400 bg-red-400/10";
+
       case "completed":
         return "text-emerald-400 bg-emerald-400/10";
+
       case "scheduled":
+        return "text-blue-400 bg-blue-400/10";
+
       case "pending":
       default:
-        return "text-blue-400 bg-blue-400/10";
+        return "text-amber-400 bg-amber-400/10";
     }
   };
+
+  const filteredAppointments = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
+
+    return appointments.filter((appointment) => {
+      const matchesSearch =
+        !search ||
+        appointment.patientName?.toLowerCase().includes(search) ||
+        appointment.doctorName?.toLowerCase().includes(search) ||
+        appointment.clinic?.toLowerCase().includes(search) ||
+        appointment.tumorType?.toLowerCase().includes(search);
+
+      const currentStatus = appointment.status || "Pending";
+
+      const matchesStatus =
+        statusFilter === "All" || currentStatus === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [appointments, searchTerm, statusFilter]);
+
+  const appointmentCounts = useMemo(() => {
+    return {
+      total: appointments.length,
+      scheduled: appointments.filter(
+        (appointment) =>
+          appointment.status === "Scheduled" ||
+          appointment.status === "Pending",
+      ).length,
+      completed: appointments.filter(
+        (appointment) => appointment.status === "Completed",
+      ).length,
+      cancelled: appointments.filter(
+        (appointment) => appointment.status === "Cancelled",
+      ).length,
+    };
+  }, [appointments]);
 
   if (loading) {
     return (
@@ -77,7 +139,37 @@ export default function ManageAppointments() {
       </div>
     );
   }
+  const handleDeleteAppointment = async (
+    appointmentId: string,
+    status?: AppointmentStatus,
+  ) => {
+    if (status !== "Completed" && status !== "Cancelled") {
+      alert("Only completed or cancelled appointments can be deleted.");
+      return;
+    }
 
+    const shouldDelete = window.confirm(
+      "This appointment will be permanently removed. Continue?",
+    );
+
+    if (!shouldDelete) return;
+
+    const previousAppointments = appointments;
+
+    setAppointments((current) =>
+      current.filter((appointment) => appointment._id !== appointmentId),
+    );
+
+    try {
+      await api.post("/api/admin/appointments/delete", {
+        appointmentId,
+      });
+    } catch (error) {
+      console.error("Failed to delete appointment:", error);
+      setAppointments(previousAppointments);
+      alert("Failed to delete appointment.");
+    }
+  };
   return (
     <ProtectedRoute>
       <div className="p-4 md:p-6 w-full max-w-full">
@@ -112,7 +204,7 @@ export default function ManageAppointments() {
             </thead>
 
             <tbody className="block md:table-row-group text-sm md:text-base">
-              {appointments.length === 0 ? (
+              {filteredAppointments.length === 0 ? (
                 <tr className="block md:table-row">
                   <td
                     colSpan={6}
@@ -122,7 +214,7 @@ export default function ManageAppointments() {
                   </td>
                 </tr>
               ) : (
-                appointments.map((app: any) => (
+                filteredAppointments.map((app) => (
                   <tr
                     key={app._id}
                     // Mobile: Turns the row into a card layout with margin bottom. Desktop: standard table row.
@@ -179,28 +271,51 @@ export default function ManageAppointments() {
                         Status
                       </span>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${getStatusColor(app.status)}`}
+                        className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${getStatusColor(
+                          app.status || "Pending",
+                        )}`}
                       >
                         {app.status || "Pending"}
                       </span>
                     </td>
 
                     {/* Action */}
+                    {/* Action */}
                     <td className="p-4 md:p-5 flex justify-between md:table-cell items-center text-center bg-[#15122e] md:bg-transparent">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Action
                       </span>
-                      <select
-                        className="bg-[#120f26] border border-gray-700 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto md:w-full min-w-[130px] p-2 cursor-pointer shadow-sm ml-auto md:ml-0"
-                        value={app.status || "Scheduled"}
-                        onChange={(e) =>
-                          handleStatusChange(app._id, e.target.value)
-                        }
-                      >
-                        <option value="Scheduled">Scheduled</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
+
+                      <div className="flex w-full flex-col gap-2 md:mx-auto md:max-w-[150px]">
+                        <select
+                          className="bg-[#120f26] border border-gray-700 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full min-w-[130px] p-2 cursor-pointer"
+                          value={app.status || "Pending"}
+                          onChange={(e) =>
+                            handleStatusChange(
+                              app._id,
+                              e.target.value as AppointmentStatus,
+                            )
+                          }
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Scheduled">Scheduled</option>
+                          <option value="Completed">Completed</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+
+                        {(app.status === "Completed" ||
+                          app.status === "Cancelled") && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleDeleteAppointment(app._id, app.status)
+                            }
+                            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-500 hover:text-white"
+                          >
+                            Delete Record
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -7,7 +7,7 @@ export default function Footer() {
       {/* PRESERVED: Exact color theme 'bg-[#060b30]/90'
         UPGRADED: Global tracking-wide font-sans layout baseline to guarantee sleek alignment
       */}
-      <footer className="mt-12 md:mt-15 bg-[#060b30]/90 foot py-8 md:py-12 px-4 md:px-12 text-white w-full font-sans tracking-wide border-t border-white/5">
+      <footer className="bg-[#060b30]/90 foot py-8 md:py-12 px-4 md:px-12 text-white w-full font-sans tracking-wide border-t border-white/5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1600px] mx-auto text-center md:text-left">
           {/* Section 1: Logo, Mission, and Technical Specificity */}
           <div className="flex flex-col gap-2.5">

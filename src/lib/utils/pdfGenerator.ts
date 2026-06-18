@@ -377,7 +377,7 @@ export const generateDiagnosticPDF = async ({
   pdf.text(wrappedConclusion, 105, conclusionY + 11, { align: "center" });
 
   // ── 8. Recommendation (now AI-generated, not fixed) ───────────────────────
-  
+
   // Shift the recommendation Y coordinate down based on the size of the dynamic conclusion box
   const recommendationY = conclusionY + 5 + conclusionBoxHeight + 6;
 
@@ -391,7 +391,7 @@ export const generateDiagnosticPDF = async ({
   pdf.text(wrappedRec, 15, recommendationY);
 
   // ── 9. Confidence score visual bar (new) ──────────────────────────────────
-  
+
   // Shift the bar Y coordinate down
   const barY = recommendationY + wrappedRec.length * 5 + 8;
 
@@ -519,4 +519,339 @@ export const generateDiagnosticPDF = async ({
       .toISOString()
       .slice(0, 10)}.pdf`
   );
+};
+
+// ─── Interfaces for Saved Scans ───────────────────────────────────────────────
+
+export interface SavedScanUser {
+  name: string;
+  role: string;
+}
+
+export interface SavedScanData {
+  _id: string;
+  originalImage: string;
+  imageData: string;
+  className: string;
+  confidence: number;
+  tumorDetected: boolean;
+  createdAt: string;
+
+  // New AI Narrative Fields
+  reportFindings?: string;
+  reportConclusion?: string;
+  reportRecommendation?: string;
+  reportConfidenceInterpretation?: string;
+
+  comment?: string;
+  doctorCommentedBy?: SavedScanUser;
+  doctorCommentedAt?: string;
+
+  radiologistReviewStatus?: "pending" | "confirmed" | "needs_recheck" | "incorrect" | "unclear";
+  radiologistComment?: string;
+  radiologistRecommendation?: string;
+  reviewedBy?: SavedScanUser;
+  reviewedAt?: string;
+}
+
+interface GenerateSavedPDFParams {
+  scan: SavedScanData;
+  patientName: string;
+}
+
+// ─── Reusable PDF Generator for Saved Scans (ZERO API COST) ───────────────────
+
+export const generateSavedScanReportPDF = async ({
+  scan,
+  patientName,
+}: GenerateSavedPDFParams) => {
+  // Determine report type based on radiologist status
+  const isReviewed = scan.radiologistReviewStatus && scan.radiologistReviewStatus !== "pending";
+  const reportTitle = isReviewed ? "Verified Diagnostic Support Report" : "Preliminary AI Report";
+
+  const riskLevel = getRiskLevel(scan.tumorDetected, scan.confidence);
+
+  // 1. Prioritize saved Claude narrative. 
+  // 2. Fallback to local generated text for old scans that pre-date this feature.
+  let findingsText = scan.reportFindings;
+  let conclusionText = scan.reportConclusion;
+  let recText = scan.reportRecommendation;
+  let interpText = scan.reportConfidenceInterpretation;
+
+  if (!findingsText || !conclusionText) {
+    console.log("No saved AI narrative found. Using local fallback text.");
+    const fallback = generateFallbackContent({
+      className: scan.className,
+      confidence: scan.confidence,
+      detected: scan.tumorDetected
+    }, riskLevel);
+
+    findingsText = fallback.findings;
+    conclusionText = fallback.conclusion;
+    recText = fallback.recommendation;
+    interpText = fallback.confidenceInterpretation;
+  }
+
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
+
+  const primaryColor: [number, number, number] = [30, 58, 138];
+  const accentColor: [number, number, number] = [59, 130, 246];
+  const darkText: [number, number, number] = [31, 41, 55];
+  const lightText: [number, number, number] = [107, 114, 128];
+  const riskColor = getRiskColors(riskLevel);
+
+  // Use realistic SCAN IDs derived from MongoDB _id
+  const scanIdShort = scan._id.slice(-8).toUpperCase();
+  const scanDate = new Date(scan.createdAt).toLocaleDateString();
+
+  // ══════════════════════════════════════════════════════════════════
+  // PAGE 1: AI Findings & Demographics
+  // ══════════════════════════════════════════════════════════════════
+
+  // Watermark
+  pdf.setTextColor(245, 247, 250);
+  pdf.setFontSize(70);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("MedVision AI", 105, 160, { angle: 45, align: "center" });
+
+  // Header banner
+  pdf.setFillColor(...primaryColor);
+  pdf.rect(0, 0, 210, 35, "F");
+
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(24);
+  pdf.text("MedVision AI", 15, 20);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10);
+  pdf.text(reportTitle, 15, 27);
+
+  pdf.setFontSize(11);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(isReviewed ? "VERIFIED" : "PRELIMINARY", 195, 20, { align: "right" });
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(9);
+  pdf.text(`Scan Date: ${scanDate}`, 195, 27, { align: "right" });
+
+  // Risk level badge
+  pdf.setFillColor(...riskColor);
+  pdf.roundedRect(148, 38, 47, 8, 2, 2, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(8);
+  pdf.text(`RISK LEVEL: ${riskLevel}`, 171.5, 43.5, { align: "center" });
+
+  // Patient demographics card
+  pdf.setFillColor(248, 250, 252);
+  pdf.setDrawColor(226, 232, 240);
+  pdf.setLineWidth(0.5);
+  pdf.roundedRect(15, 50, 180, 28, 3, 3, "FD");
+
+  pdf.setTextColor(...darkText);
+  pdf.setFontSize(10);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Patient Name:", 20, 58);
+  pdf.setFont("helvetica", "normal");
+  pdf.text(patientName, 50, 58);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Scan ID:", 120, 58);
+  pdf.setFont("helvetica", "normal");
+  pdf.text(`SCAN-${scanIdShort}`, 145, 58);
+
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Review Status:", 120, 65);
+  pdf.setFont("helvetica", "normal");
+  if (isReviewed) {
+    pdf.setTextColor(22, 163, 74);
+  } else {
+    // Use as const or as number[] depending on your accentColor definition
+    pdf.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
+  }
+
+  pdf.text(scan.radiologistReviewStatus ? scan.radiologistReviewStatus.toUpperCase() : "PENDING", 150, 65);
+  pdf.setTextColor(...darkText);
+
+  // Study title
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(13);
+  pdf.setTextColor(...primaryColor);
+  pdf.text("MAGNETIC RESONANCE IMAGING (MRI) - BRAIN", 105, 92, { align: "center" });
+
+  // Confidence interpretation band
+  pdf.setFillColor(239, 246, 255);
+  pdf.setDrawColor(...accentColor);
+  pdf.setLineWidth(0.3);
+  pdf.roundedRect(15, 100, 180, 10, 2, 2, "FD");
+  pdf.setFont("helvetica", "italic");
+  pdf.setFontSize(8.5);
+  pdf.setTextColor(30, 64, 175);
+  const wrappedInterp = pdf.splitTextToSize(sanitize(`AI Confidence Interpretation: ${interpText}`), 172);
+  pdf.text(wrappedInterp, 19, 106);
+
+  // Findings section
+  const findingsStartY = 100 + wrappedInterp.length * 5 + 10;
+  pdf.setDrawColor(...accentColor);
+  pdf.setLineWidth(1.2);
+  pdf.line(15, findingsStartY, 15, findingsStartY + 6);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(12);
+  pdf.setTextColor(...darkText);
+  pdf.text("AI DIAGNOSTIC FINDINGS", 20, findingsStartY + 5);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10);
+  pdf.setTextColor(60, 60, 60);
+  const wrappedFindings = pdf.splitTextToSize(sanitize(findingsText), 175);
+  pdf.text(wrappedFindings, 15, findingsStartY + 14);
+
+  // Conclusion section
+  const conclusionY = findingsStartY + 14 + wrappedFindings.length * 5 + 10;
+  pdf.setDrawColor(...accentColor);
+  pdf.line(15, conclusionY - 5, 15, conclusionY + 1);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(12);
+  pdf.setTextColor(...darkText);
+  pdf.text("CONCLUSION", 20, conclusionY);
+
+  const wrappedConclusion = pdf.splitTextToSize(sanitize(conclusionText), 170);
+  const conclusionBoxHeight = wrappedConclusion.length * 5 + 6;
+  pdf.setFillColor(250, 250, 250);
+  pdf.setDrawColor(...riskColor);
+  pdf.setLineWidth(0.5);
+  pdf.roundedRect(15, conclusionY + 5, 180, conclusionBoxHeight, 2, 2, "FD");
+  pdf.setFontSize(11);
+  pdf.setTextColor(...riskColor);
+  pdf.text(wrappedConclusion, 105, conclusionY + 11, { align: "center" });
+
+  // Recommendation
+  const recommendationY = conclusionY + 5 + conclusionBoxHeight + 6;
+  pdf.setFont("helvetica", "italic");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...lightText);
+  const wrappedRec = pdf.splitTextToSize(sanitize(`AI Recommendation: ${recText}`), 175);
+  pdf.text(wrappedRec, 15, recommendationY);
+
+  // ══════════════════════════════════════════════════════════════════
+  // PAGE 2: Clinical Reviews & Visual Evidence
+  // ══════════════════════════════════════════════════════════════════
+  pdf.addPage();
+
+  pdf.setFillColor(...primaryColor);
+  pdf.rect(0, 0, 210, 15, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  pdf.text(`Patient: ${patientName} | Scan ID: SCAN-${scanIdShort}`, 15, 10);
+  pdf.text("Appendix A: Clinical Notes & Evidence", 195, 10, { align: "right" });
+
+  let currentY = 30;
+
+  // --- Doctor's Clinical Note ---
+  if (scan.comment) {
+    pdf.setDrawColor(...accentColor);
+    pdf.setLineWidth(1);
+    pdf.line(15, currentY - 5, 15, currentY + 1);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(12);
+    pdf.setTextColor(...darkText);
+    pdf.text("CLINICAL OBSERVATION (DOCTOR)", 20, currentY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.setTextColor(60, 60, 60);
+    const docNote = pdf.splitTextToSize(sanitize(scan.comment), 175);
+    pdf.text(docNote, 15, currentY + 8);
+
+    currentY += 8 + (docNote.length * 5) + 5;
+
+    pdf.setFont("helvetica", "italic");
+    pdf.setFontSize(8);
+    pdf.setTextColor(...lightText);
+    const docName = scan.doctorCommentedBy?.name || "Attending Doctor";
+    const docDate = scan.doctorCommentedAt ? new Date(scan.doctorCommentedAt).toLocaleDateString() : scanDate;
+    pdf.text(`Note added by Dr. ${docName} on ${docDate}`, 15, currentY);
+
+    currentY += 15;
+  }
+
+  // --- Radiologist's Review ---
+  if (isReviewed) {
+    pdf.setDrawColor(22, 163, 74); // Green for verified
+    pdf.setLineWidth(1);
+    pdf.line(15, currentY - 5, 15, currentY + 1);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(12);
+    pdf.setTextColor(...darkText);
+    pdf.text("RADIOLOGIST VERIFICATION", 20, currentY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.setTextColor(60, 60, 60);
+
+    const radNoteText = scan.radiologistComment ? sanitize(scan.radiologistComment) : "No specific comments provided.";
+    const radNote = pdf.splitTextToSize(`Comment: ${radNoteText}`, 175);
+    pdf.text(radNote, 15, currentY + 8);
+    currentY += 8 + (radNote.length * 5);
+
+    if (scan.radiologistRecommendation) {
+      const radRec = pdf.splitTextToSize(`Recommendation: ${sanitize(scan.radiologistRecommendation)}`, 175);
+      pdf.text(radRec, 15, currentY + 2);
+      currentY += 2 + (radRec.length * 5);
+    }
+
+    currentY += 5;
+    pdf.setFont("helvetica", "italic");
+    pdf.setFontSize(8);
+    pdf.setTextColor(...lightText);
+    const radName = scan.reviewedBy?.name || "Radiologist";
+    const radDate = scan.reviewedAt ? new Date(scan.reviewedAt).toLocaleDateString() : scanDate;
+    pdf.text(`Reviewed by Dr. ${radName} on ${radDate}`, 15, currentY);
+
+    currentY += 15;
+  }
+
+  // --- Visual Evidence ---
+  const imgSize = 75;
+
+  if (currentY + imgSize + 20 > 280) {
+    pdf.addPage();
+    currentY = 20;
+  }
+
+  pdf.setTextColor(...darkText);
+  pdf.setFontSize(11);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Original MRI", 55, currentY, { align: "center" });
+  pdf.text("AI Analyzed Output", 155, currentY, { align: "center" });
+
+  currentY += 5;
+
+  pdf.setDrawColor(200, 200, 200);
+  pdf.setLineWidth(0.5);
+
+  pdf.rect(17, currentY, imgSize + 2, imgSize + 2);
+  pdf.addImage(scan.originalImage, "JPEG", 18, currentY + 1, imgSize, imgSize);
+
+  pdf.rect(117, currentY, imgSize + 2, imgSize + 2);
+  pdf.addImage(scan.imageData, "PNG", 118, currentY + 1, imgSize, imgSize);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8);
+  pdf.setTextColor(150, 150, 150);
+  pdf.text(
+    "This report aggregates AI screening data and clinical notes for diagnostic support.",
+    105,
+    285,
+    { align: "center" }
+  );
+
+  const safeName = patientName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  pdf.save(`MedVision_Report_${safeName}_${scanIdShort}.pdf`);
 };

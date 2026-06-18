@@ -5,7 +5,34 @@ import Image from "next/image";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator";
+type ReviewStatus =
+  | "pending"
+  | "confirmed"
+  | "needs_recheck"
+  | "incorrect"
+  | "unclear";
 
+function getStatusBadge(status?: ReviewStatus) {
+  const current = status || "pending";
+  if (current === "confirmed")
+    return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+  if (current === "needs_recheck")
+    return "bg-amber-500/15 text-amber-300 border-amber-500/30";
+  if (current === "incorrect")
+    return "bg-red-500/15 text-red-300 border-red-500/30";
+  if (current === "unclear")
+    return "bg-orange-500/15 text-orange-300 border-orange-500/30";
+  return "bg-purple-500/15 text-purple-300 border-purple-500/30";
+}
+
+function getStatusLabel(status?: ReviewStatus) {
+  if (status === "confirmed") return "Confirmed / Approved";
+  if (status === "needs_recheck") return "Needs Recheck";
+  if (status === "incorrect") return "AI Prediction Incorrect";
+  if (status === "unclear") return "Image Not Clear";
+  return "Pending Radiologist Review";
+}
 // Interfaces matching your MongoDB schemas
 interface Appointment {
   _id: string;
@@ -29,6 +56,12 @@ interface ScanResult {
   tumorDetected: boolean;
   createdAt: string;
   comment?: string;
+  // Radiologist Review Fields
+  radiologistReviewStatus?: ReviewStatus;
+  radiologistComment?: string | null;
+  radiologistRecommendation?: string | null;
+  reviewedAt?: string | null;
+  reviewedBy?: any;
 }
 
 export default function DoctorSchedulePage() {
@@ -36,6 +69,7 @@ export default function DoctorSchedulePage() {
   const [scans, setScans] = useState<ScanResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAppt, setSelectedAppt] = useState<Appointment | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const { user, isAuthenticated } = useAuthStore();
 
@@ -103,25 +137,43 @@ export default function DoctorSchedulePage() {
   };
 
   // Replace your existing patientScan filter logic with this:
-// Inside DoctorSchedulePage component:
-const patientScan = selectedAppt
-  ? scans.find((scan) => {
-      // Robust ID comparison
-      const scanUserId = (scan.user as any)?._id?.toString() || scan.user?.toString();
-      const apptUserId = typeof selectedAppt.userId === 'object' && selectedAppt.userId !== null 
-                         ? selectedAppt.userId.toString() 
-                         : selectedAppt.userId.toString();
-      
-      return scanUserId === apptUserId;
-    })
-  : null;
+  // Inside DoctorSchedulePage component:
+  const patientScan = selectedAppt
+    ? scans.find((scan) => {
+        // Robust ID comparison
+        const scanUserId =
+          (scan.user as any)?._id?.toString() || scan.user?.toString();
+        const apptUserId =
+          typeof selectedAppt.userId === "object" &&
+          selectedAppt.userId !== null
+            ? selectedAppt.userId.toString()
+            : selectedAppt.userId.toString();
 
-  // const handleDownloadPDF = () => {
-  //   window.print();
-  // };
+        return scanUserId === apptUserId;
+      })
+    : null;
 
-  const handleDownloadPDF = () => {
-    window.open("/report", "_blank");
+  const handleDownloadReport = async () => {
+    if (!patientScan) {
+      alert("No scan available for this appointment.");
+      return;
+    }
+
+    try {
+      setIsDownloading(true);
+      // We pull the exact patient name right from the appointment record!
+      const patientName = selectedAppt?.patientName || "Patient";
+
+      await generateSavedScanReportPDF({
+        scan: patientScan as any,
+        patientName,
+      });
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+      alert("An error occurred while downloading the report.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   if (!isAuthenticated || user?.role?.toLowerCase() !== "doctor") {
@@ -192,6 +244,16 @@ const patientScan = selectedAppt
                   <p className="text-gray-500 text-xs truncate">
                     Type: {appt.tumorType}
                   </p>
+                  {appt.status === "Confirmed" && (
+                    <button
+                      onClick={() =>
+                        window.open(`/consultation/${appt._id}`, "_blank")
+                      }
+                      className="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-bold transition-all"
+                    >
+                      Join Video Consultation
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -213,23 +275,32 @@ const patientScan = selectedAppt
                 </h2>
                 <div className="flex gap-3 w-full sm:w-auto">
                   <button
-                    onClick={handleDownloadPDF}
-                    className="bg-[#1e293b] border border-[#334155] hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+                    onClick={handleDownloadReport}
+                    disabled={isDownloading || !patientScan}
+                    className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-[#1e293b] disabled:text-gray-500 disabled:border-[#334155] border border-transparent text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      ></path>
-                    </svg>
-                    Download PDF
+                    {isDownloading ? (
+                      "⏳ Generating..."
+                    ) : !patientScan ? (
+                      "No Scan Available"
+                    ) : (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                          ></path>
+                        </svg>
+                        Download Report
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -284,7 +355,7 @@ const patientScan = selectedAppt
               <div className="flex flex-col sm:flex-row gap-3 print:hidden">
                 {selectedAppt.status === "Cancelled" ? (
                   <div className="w-full text-center py-3 bg-red-900/20 border border-red-500/30 text-red-400 text-sm font-bold rounded-lg">
-                    🔒 Appointment Cancelled by Patient
+                    🔒 Appointment Cancelled.
                   </div>
                 ) : (
                   <>
@@ -375,7 +446,43 @@ const patientScan = selectedAppt
                           )}
                         </p>
                       </div>
+                      {/* --- NEW RADIOLOGIST UI BLOCK --- */}
+                      <div className="p-4 sm:p-6 bg-[#1a163a] rounded-xl border border-purple-500/30 print:bg-transparent print:border-gray-300 mt-2 sm:mt-0">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                          <p className="text-purple-400 text-[11px] sm:text-xs uppercase tracking-wider font-bold print:text-gray-600">
+                            Radiologist Verification
+                          </p>
+                          <span
+                            className={`rounded border px-2 py-1 text-[9px] font-bold uppercase ${getStatusBadge(
+                              patientScan.radiologistReviewStatus,
+                            )}`}
+                          >
+                            {getStatusLabel(
+                              patientScan.radiologistReviewStatus,
+                            )}
+                          </span>
+                        </div>
 
+                        <p className="text-gray-200 text-xs sm:text-sm leading-relaxed print:text-black">
+                          {patientScan.radiologistComment || (
+                            <span className="italic text-gray-500">
+                              This scan is still pending professional
+                              radiologist verification.
+                            </span>
+                          )}
+                        </p>
+
+                        {patientScan.radiologistRecommendation && (
+                          <div className="mt-3 p-3 bg-black/20 rounded-lg border border-gray-700/50">
+                            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-1">
+                              Recommendation
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-300">
+                              {patientScan.radiologistRecommendation}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                       <div className="text-[10px] sm:text-xs text-gray-500 text-right print:text-gray-400">
                         Scan Processed:{" "}
                         {new Date(patientScan.createdAt).toLocaleString()}

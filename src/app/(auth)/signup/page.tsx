@@ -13,7 +13,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("User"); // Defaulting to an initial valid option
+  const [role, setRole] = useState("Patient"); // Defaulting to an initial valid option
   const [age, setAge] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -104,9 +104,6 @@ export default function Signup() {
                 onChange={(e) => setRole(e.target.value)}
                 className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-[#1a163a] w-full pl-10 pr-8 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base cursor-pointer appearance-none"
               >
-                <option value="User" className="bg-[#1a163a]">
-                  User
-                </option>
                 <option value="Patient" className="bg-[#1a163a]">
                   Patient
                 </option>
@@ -115,6 +112,9 @@ export default function Signup() {
                 </option>
                 <option value="Admin" className="bg-[#1a163a]">
                   Admin
+                </option>
+                <option value="Radiologist" className="bg-[#1a163a]">
+                  Radiologist
                 </option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-400">

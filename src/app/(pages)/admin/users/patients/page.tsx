@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import api from "@/src/lib/axios";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 export default function ManagePatients() {
   const [patients, setPatients] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
   // 1. Create a simple counter state to act as a trigger
@@ -41,6 +42,21 @@ export default function ManagePatients() {
     }
   };
 
+  const filteredPatients = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    if (!normalizedSearch) {
+      return patients;
+    }
+
+    return patients.filter((patient) => {
+      return (
+        patient.name?.toLowerCase().includes(normalizedSearch) ||
+        patient.email?.toLowerCase().includes(normalizedSearch)
+      );
+    });
+  }, [patients, searchTerm]);
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center p-8 text-white">
@@ -57,7 +73,20 @@ export default function ManagePatients() {
         <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white tracking-wide">
           Manage Patients
         </h1>
+        <div className="mb-6 grid grid-cols-1 gap-3 rounded-xl border border-gray-800 bg-[#1a163a] p-4 md:grid-cols-[1fr_auto]">
+          <input
+            type="text"
+            placeholder="Search patients by name or email..."
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            className="w-full rounded-lg border border-gray-700 bg-[#120f26] px-4 py-2.5 text-sm text-white outline-none placeholder:text-gray-500 focus:border-blue-500"
+          />
 
+          <div className="flex items-center justify-center rounded-lg border border-gray-700 bg-[#120f26] px-4 py-2.5 text-sm text-gray-400">
+            {filteredPatients.length} patient
+            {filteredPatients.length === 1 ? "" : "s"}
+          </div>
+        </div>
         {/* Desktop specific styles applied to wrapper so the background isn't lost on large screens */}
         <div className="w-full md:bg-[#1a163a] md:rounded-xl md:border md:border-gray-800 md:shadow-2xl md:overflow-hidden">
           <table className="w-full text-left border-collapse block md:table">
@@ -77,17 +106,19 @@ export default function ManagePatients() {
             </thead>
 
             <tbody className="block md:table-row-group text-sm md:text-base">
-              {patients.length === 0 ? (
+              {filteredPatients.length === 0 ? (
                 <tr className="block md:table-row">
                   <td
                     colSpan={3}
                     className="p-6 md:p-8 text-center text-gray-500 block md:table-cell"
                   >
-                    No patients found.
+                    {searchTerm
+                      ? "No patients match your search."
+                      : "No patients found in the system."}
                   </td>
                 </tr>
               ) : (
-                patients.map((user: any) => (
+                filteredPatients.map((user: any) => (
                   <tr
                     key={user._id}
                     /* Mobile: Card layout with margin. Desktop: Transparent row background */

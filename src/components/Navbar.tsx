@@ -17,6 +17,7 @@ export const Navbar = () => {
 
   const isDoctor = user?.role?.toLowerCase() === "doctor";
   const isAdmin = user?.role?.toLowerCase() === "admin";
+  const isRadiologist = user?.role?.toLowerCase() === "radiologist";
 
   const getLinkClasses = (path: string) => {
     const isActive = pathname === path || pathname.startsWith(`${path}/`);
@@ -118,21 +119,27 @@ export const Navbar = () => {
                       ? "/admin"
                       : isDoctor
                         ? "/doctor-dashboard"
-                        : "/patient-dashboard"
+                        : isRadiologist
+                          ? "/radiologist-dashboard"
+                          : "/patient-dashboard"
                   }
                   className={getLinkClasses(
                     isAdmin
                       ? "/admin"
                       : isDoctor
                         ? "/doctor-dashboard"
-                        : "/patient-dashboard",
+                        : isRadiologist
+                          ? "/radiologist-dashboard"
+                          : "/patient-dashboard",
                   )}
                 >
                   {isAdmin
                     ? "Admin Portal"
                     : isDoctor
                       ? "Clinical Portal"
-                      : "Dashboard"}
+                      : isRadiologist
+                        ? "Radiology Portal"
+                        : "Patient Dashboard"}
                 </Link>
               </li>
             )}
@@ -167,9 +174,17 @@ export const Navbar = () => {
                       {user.name}
                     </span>
                     <span
-                      className={`text-xs font-semibold capitalize ${isAdmin ? "text-emerald-400" : isDoctor ? "text-purple-400" : "text-blue-400"}`}
+                      className={`text-xs font-semibold capitalize ${
+                        isAdmin
+                          ? "text-emerald-400"
+                          : isDoctor
+                            ? "text-purple-400"
+                            : isRadiologist
+                              ? "text-amber-400"
+                              : "text-blue-400"
+                      }`}
                     >
-                      {isDoctor ? `Doctor` : user.role}
+                      {isDoctor ? "Doctor" : isRadiologist ? "Radiologist" : user.role}
                     </span>
                   </div>
 

@@ -9,9 +9,10 @@ export async function GET() {
     await connectDB();
 
     // Fetch all aggregations simultaneously for lightning-fast performance
-    const [patientCount, doctorCount, totalScans, totalAppointments] = await Promise.all([
+    const [patientCount, doctorCount, radiologistCount, totalScans, totalAppointments] = await Promise.all([
       UserModel.countDocuments({ role: "patient" }),
       UserModel.countDocuments({ role: "doctor" }),
+      UserModel.countDocuments({ role: "radiologist" }),
       Result.countDocuments(),
       Appointment.countDocuments(), // Count all booked appointments
     ]);
@@ -21,6 +22,7 @@ export async function GET() {
       metrics: {
         totalPatients: patientCount,
         totalDoctors: doctorCount,
+        totalRadiologists: radiologistCount,
         totalScans: totalScans,
         totalAppointments: totalAppointments, // Send the new metric to the frontend
         systemStatus: "Operational"
