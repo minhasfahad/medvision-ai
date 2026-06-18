@@ -39,7 +39,7 @@ export class UserRepository {
   }
 }
 // Fetch by role: 'patient' or 'doctor'
-export const getUsersByRole = async (role: string) => {
+export const getUsersByRole = async (role: "admin" | "patient" | "doctor" | "radiologist") => {
   // Assuming your User model has a 'role' field
   return await UserModel.find({ role: role }).select("-password_hash");
 };
