@@ -1,23 +1,40 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongoose"; // Adjust if your mongoose file is named differently
+import { connectDB } from "@/src/lib/mongoose"; 
 import { UserModel } from "@/src/models/user.model";
-import bcrypt from "bcryptjs"; // Assuming you used bcryptjs for signup
+import bcrypt from "bcryptjs"; 
+// --- NEW: Import Cloudinary helper ---
+import { uploadToCloudinary } from "@/src/lib/cloudinary";
 
-// 1. UPDATE PROFILE INFO (Name & Age)
+// 1. UPDATE PROFILE INFO (Name, Age, & Image)
 export async function PUT(req: Request) {
   try {
     await connectDB();
     const body = await req.json();
-    const { userId, name, age } = body;
+    const { userId, name, age, image } = body;
 
     if (!userId || !name) {
       return NextResponse.json({ success: false, message: "User ID and Name are required" }, { status: 400 });
     }
 
+    // Prepare data to update
+    const updateData: any = { name, age };
+
+    // --- NEW: Handle Cloudinary Upload ---
+    if (image) {
+      // If the image is a fresh Base64 string, upload it
+      if (image.startsWith("data:image")) {
+        const uploadedUrl = await uploadToCloudinary(image, "medvision_avatars");
+        updateData.image = uploadedUrl;
+      } else {
+        // If it's already a URL (user didn't change their picture), just save it back
+        updateData.image = image;
+      }
+    }
+
     // Find user and update
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { name, age },
+      updateData,
       { new: true } // Returns the newly updated document
     );
 
@@ -43,20 +60,17 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ success: false, message: "All fields are required" }, { status: 400 });
     }
 
-    // Find user and explicitly select the password_hash field since it's hidden by default
     const user = await UserModel.findById(userId).select("+password_hash");
     
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
 
-    // Verify current password
     const isMatch = await bcrypt.compare(currentPassword, user.password_hash as string);
     if (!isMatch) {
       return NextResponse.json({ success: false, message: "Incorrect current password" }, { status: 401 });
     }
 
-    // Hash new password and save
     const salt = await bcrypt.genSalt(10);
     user.password_hash = await bcrypt.hash(newPassword, salt);
     await user.save();
@@ -72,7 +86,6 @@ export async function PATCH(req: Request) {
 export async function DELETE(req: Request) {
   try {
     await connectDB();
-    // For DELETE requests, it's safer to pass the ID via URL parameters
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 

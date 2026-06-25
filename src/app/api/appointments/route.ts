@@ -147,30 +147,46 @@ export async function PUT(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
-    const { appointmentId, status } = body;
+    const { appointmentId, status, appointmentDate } = body;
 
-    if (!appointmentId || !status) {
+    if (!appointmentId) {
       return NextResponse.json(
-        { success: false, message: "Missing appointmentId or status." },
+        { success: false, message: "Missing appointmentId." },
         { status: 400 }
       );
     }
 
-    const { updateAppointmentStatus } = await import(
-      "@/src/repositories/appointment.repository"
-    );
-    const updatedAppointment = await updateAppointmentStatus(
+    // Build update object dynamically — only include fields that were sent
+    const updateFields: Record<string, string> = {};
+    if (status) updateFields.status = status;
+    if (appointmentDate) updateFields.appointmentDate = appointmentDate;
+
+    if (Object.keys(updateFields).length === 0) {
+      return NextResponse.json(
+        { success: false, message: "No fields to update." },
+        { status: 400 }
+      );
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
       appointmentId,
-      status
+      { $set: updateFields },
+      { new: true }
     );
 
+    if (!updatedAppointment) {
+      return NextResponse.json(
+        { success: false, message: "Appointment not found." },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({ success: true, data: updatedAppointment });
+
   } catch (error: unknown) {
     console.error("Update Error:", error);
     const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "An unknown error occurred during update.";
+      error instanceof Error ? error.message : "An unknown error occurred.";
     return NextResponse.json(
       { success: false, error: errorMessage },
       { status: 500 }

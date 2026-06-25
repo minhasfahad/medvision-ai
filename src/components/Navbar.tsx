@@ -162,7 +162,7 @@ export const Navbar = () => {
                 </li>
               )}
 
-            {/* USER PROFILE DROPDOWN - Original Styles Restored */}
+            {/* USER PROFILE DROPDOWN */}
             {isAuthenticated && user ? (
               <li className="relative w-full lg:w-auto mt-2 lg:mt-0 lg:ml-4 lg:pl-4 border-t lg:border-t-0 lg:border-l border-gray-800 pt-3 lg:pt-0">
                 <button
@@ -188,14 +188,24 @@ export const Navbar = () => {
                     </span>
                   </div>
 
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-[#1a163a] flex-none">
-                    {getInitials(user.name)}
+                  {/* --- NEW: Image / Initial Render Logic --- */}
+                  <div className="relative w-10 h-10 rounded-full flex-none overflow-hidden border-2 border-[#1a163a] shadow-lg bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt={`${user.name}'s Profile`}
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                      />
+                    ) : (
+                      getInitials(user.name)
+                    )}
                   </div>
                 </button>
 
                 {isProfileOpen && (
                   <div className="absolute right-0 bottom-full mb-2 lg:bottom-auto lg:top-full lg:mt-3 w-full lg:w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    {/* THIS IS THE MISSING LINK */}
                     <Link
                       href="/manage-account"
                       onClick={() => {
@@ -226,7 +236,6 @@ export const Navbar = () => {
                       Manage Account
                     </Link>
 
-                    {/* Secure Logout Button */}
                     <button
                       onClick={async () => {
                         setIsProfileOpen(false);
@@ -256,7 +265,7 @@ export const Navbar = () => {
               </li>
             ) : (
               <>
-                {/* LOGIN/SIGNUP BUTTONS (Unchanged) */}
+                {/* LOGIN/SIGNUP BUTTONS */}
                 <li
                   className="w-full lg:w-auto my-1 lg:my-0 lg:ml-2"
                   onClick={() => setIsMenuOpen(false)}

@@ -70,6 +70,13 @@ export default function RoleModal() {
           >
             I am an Admin
           </button>
+          <button
+            onClick={() => handleRoleSelect("Radiologist")}
+            disabled={loading}
+            className="w-full border-2 border-red-400 shadow-[0_0_10px_#ff7b7b] py-2 px-4 font-bold transition-all hover:bg-white/10 disabled:opacity-50 text-red-200"
+          >
+            I am a Radiologist.
+          </button>
         </div>
 
         {loading && (

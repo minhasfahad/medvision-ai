@@ -456,7 +456,7 @@ export default function PendingScanReviewsPage() {
                       >
                         {savingId === scan._id
                           ? "Saving Review..."
-                          : "Save Radiologist Review"}
+                          : "Save Review"}
                       </button>
                     </div>
                   </div>

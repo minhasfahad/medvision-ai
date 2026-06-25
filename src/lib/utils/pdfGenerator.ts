@@ -36,6 +36,27 @@ const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
+// ─── Helper: URL to Base64 (For Cloudinary Images in jsPDF) ───────────────────
+const urlToBase64 = async (url: string): Promise<string> => {
+  try {
+    // Fetch the image from Cloudinary
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch image from URL: ${response.statusText}`);
+    
+    const blob = await response.blob();
+    
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+    });
+  } catch (error) {
+    console.error("Error converting URL to Base64:", error);
+    throw error;
+  }
+};
+
 // ─── Helper: Sanitize text for jsPDF (Latin-1 safe) ─────────────────────────
 // jsPDF's built-in helvetica font only supports Latin-1 (ISO-8859-1).
 // Any character outside that range causes garbled/spaced output.
@@ -113,7 +134,7 @@ async function generateAIClinicalContent(
       riskLevel,
     };
   } catch (err) {
-    console.log("Using fallback report content.");
+    console.log("Using fallback report content.", err);
     return generateFallbackContent(analysisData, riskLevel);
   }
 }
@@ -188,9 +209,10 @@ export const generateDiagnosticPDF = async ({
   analysisData,
   patientName,
 }: GeneratePDFParams) => {
-  // Generate both in parallel to save time
-  const [originalImageBase64, aiContent] = await Promise.all([
+  // Generate both in parallel and convert the Cloudinary URL to Base64
+  const [originalImageBase64, analyzedImageBase64, aiContent] = await Promise.all([
     fileToBase64(selectedImage),
+    urlToBase64(analyzedImage), // <-- NEW
     generateAIClinicalContent(analysisData),
   ]);
 
@@ -502,7 +524,7 @@ export const generateDiagnosticPDF = async ({
   pdf.setDrawColor(...riskColor);
   pdf.setLineWidth(1.5);
   pdf.rect(58, analyzedY + 2, imgSize + 4, imgSize + 4);
-  pdf.addImage(analyzedImage, "PNG", 60, analyzedY + 4, imgSize, imgSize);
+  pdf.addImage(analyzedImageBase64, "PNG", 60, analyzedY + 4, imgSize, imgSize);
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(8);
@@ -565,6 +587,12 @@ export const generateSavedScanReportPDF = async ({
   scan,
   patientName,
 }: GenerateSavedPDFParams) => {
+  // Convert Cloudinary URLs to Base64 BEFORE starting PDF generation
+  const [originalImageBase64, analyzedImageBase64] = await Promise.all([
+    urlToBase64(scan.originalImage),
+    urlToBase64(scan.imageData)
+  ]);
+
   // Determine report type based on radiologist status
   const isReviewed = scan.radiologistReviewStatus && scan.radiologistReviewStatus !== "pending";
   const reportTitle = isReviewed ? "Verified Diagnostic Support Report" : "Preliminary AI Report";
@@ -837,10 +865,10 @@ export const generateSavedScanReportPDF = async ({
   pdf.setLineWidth(0.5);
 
   pdf.rect(17, currentY, imgSize + 2, imgSize + 2);
-  pdf.addImage(scan.originalImage, "JPEG", 18, currentY + 1, imgSize, imgSize);
+  pdf.addImage(originalImageBase64, "JPEG", 18, currentY + 1, imgSize, imgSize);
 
   pdf.rect(117, currentY, imgSize + 2, imgSize + 2);
-  pdf.addImage(scan.imageData, "PNG", 118, currentY + 1, imgSize, imgSize);
+  pdf.addImage(analyzedImageBase64, "PNG", 118, currentY + 1, imgSize, imgSize);
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(8);

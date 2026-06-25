@@ -3,11 +3,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'; 
 import { UserRepository } from '@/src/repositories/user.repository';
 import { connectDB } from '@/src/lib/mongoose';
+// --- NEW: Import Cloudinary helper ---
+import { uploadToCloudinary } from '@/src/lib/cloudinary';
 
 const userRepo = new UserRepository();
 const JWT_SECRET = process.env.JWT_SECRET!; 
 
-// ✅ Only allow reputable email providers
+// Only allow reputable email providers
 const ALLOWED_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'icloud.com', 'outlook.com', 'hotmail.com'];
 
 function validateEmail(email: string): string | null {
@@ -29,15 +31,16 @@ function validatePassword(password: string): string | null {
 export async function POST(req: Request) {
   try {
     await connectDB();
-    const { name, email, age, password, role } = await req.json();
+    // --- NEW: Extract image from the request body ---
+    const { name, email, age, password, role, image } = await req.json();
 
-    // ✅ Validate email domain
+    // Validate email domain
     const emailError = validateEmail(email);
     if (emailError) {
       return NextResponse.json({ error: emailError }, { status: 400 });
     }
 
-    // ✅ Validate password strength
+    // Validate password strength
     const passwordError = validatePassword(password);
     if (passwordError) {
       return NextResponse.json({ error: passwordError }, { status: 400 });
@@ -48,18 +51,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 400 });
     }
 
+    // --- NEW: Handle Cloudinary Upload for Signup ---
+    let uploadedImageUrl = "";
+    if (image && image.startsWith("data:image")) {
+      uploadedImageUrl = await uploadToCloudinary(image, "medvision_avatars");
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const parsedAge = age ? parseInt(age, 10) : undefined;
     const processedRole = role ? role.toLowerCase() : 'user';
 
+    // --- NEW: Pass the uploaded URL to the repository ---
     const user = await userRepo.create({
       name,
       email,
       age: parsedAge,
       password_hash: hashedPassword,
       role: processedRole,
+      image: uploadedImageUrl || undefined, // Save URL if it exists
     });
 
     const token = jwt.sign(
@@ -76,7 +87,8 @@ export async function POST(req: Request) {
         name: user.name,
         email: user.email,
         age: user.age,
-        role: user.role
+        role: user.role,
+        image: user.image // Return image so the frontend store can update
       }
     }, { status: 201 });
 

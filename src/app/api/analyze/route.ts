@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveScanResult } from "@/src/repositories/result.repository";
 import { connectDB } from "@/src/lib/mongoose";
+// --- NEW: Import Cloudinary helper ---
+import { uploadToCloudinary } from "@/src/lib/cloudinary";
 
 // --- Helpers for generating the prompt metadata ---
 function getConfidenceBand(confidence: number): string {
@@ -59,7 +61,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(pythonData, { status: 200 });
     }
 
-    // --- NEW: Generate AI Narrative BEFORE saving to DB ---
+    // --- Generate AI Narrative BEFORE saving to DB ---
     const confidenceBand = getConfidenceBand(pythonData.confidence);
     const riskLevel = getRiskLevel(pythonData.tumor_detected, pythonData.confidence);
 
@@ -71,7 +73,6 @@ export async function POST(req: NextRequest) {
     };
 
     try {
-      // Call the Claude API internally using the current origin URL
       const baseUrl = req.nextUrl.origin;
       const reportRes = await fetch(`${baseUrl}/api/generate-report`, {
         method: "POST",
@@ -93,26 +94,40 @@ export async function POST(req: NextRequest) {
       }
     } catch (reportErr) {
       console.error("Failed to generate Claude report during upload:", reportErr);
-      // It will just remain undefined, and we can rely on fallbacks in the PDF module
     }
 
-    // --- Save to MongoDB using Repository ---
+    // --- NEW: Upload to Cloudinary ---
+    // Make sure python image has data URI prefix for Cloudinary
+    const predictedImageBase64 = pythonData.image.startsWith('data:') 
+      ? pythonData.image 
+      : `data:image/jpeg;base64,${pythonData.image}`;
+
+    // Upload both images concurrently to save time
+    const [originalImageUrl, predictedImageUrl] = await Promise.all([
+      uploadToCloudinary(originalImageBase64, "medvision_original"),
+      uploadToCloudinary(predictedImageBase64, "medvision_predicted")
+    ]);
+
+    // --- Save to MongoDB using Repository (Now with URLs!) ---
     const savedData = await saveScanResult({
       user: userId as any,
-      originalImage: originalImageBase64,
-      imageData: pythonData.image, 
+      originalImage: originalImageUrl, // Saving Cloudinary URL instead of Base64
+      imageData: predictedImageUrl,    // Saving Cloudinary URL instead of Base64
       className: pythonData.class_name,
       confidence: pythonData.confidence,
       tumorDetected: pythonData.tumor_detected,
-      // Pass the Claude data
       reportFindings: aiReportData.findings,
       reportConclusion: aiReportData.conclusion,
       reportRecommendation: aiReportData.recommendation,
       reportConfidenceInterpretation: aiReportData.confidenceInterpretation,
     });
 
+    // Replace the huge base64 string in the response with the fast Cloudinary URL
+    pythonData.image = predictedImageUrl;
+
     return NextResponse.json({
         ...pythonData,
+        originalImageUrl: originalImageUrl, // Pass back to frontend just in case
         dbId: savedData._id 
     });
 

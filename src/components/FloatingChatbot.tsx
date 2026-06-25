@@ -13,8 +13,10 @@ export const FloatingChatbot = () => {
   }
 
   return (
-    <Link 
+    <Link
       href="/chatbot"
+      target="_blank"
+      rel="noopener noreferrer"
       // Pinned in the bottom-right corner, slightly larger edge spacing for a larger icon
       className="fixed bottom-10 right-10 z-50 group print:hidden no-underline"
     >
@@ -26,13 +28,12 @@ export const FloatingChatbot = () => {
         - Custom Animation: Replaced animate-bounce with animate-bounce-slow.
       */}
       <div className="relative w-20 h-20 rounded-full bg-[#1a163a] border border-purple-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all duration-300 transform group-hover:scale-110 group-hover:-translate-y-2 animate-bounce-slow cursor-pointer">
-        
         {/* Increased image size from 40 to 50 */}
-        <Image 
-          src="/chatbot.png" 
-          width={50} 
-          height={50} 
-          alt="AI Chatbot" 
+        <Image
+          src="/chatbot.png"
+          width={50}
+          height={50}
+          alt="AI Chatbot"
           className="drop-shadow-lg"
         />
 
@@ -41,7 +42,6 @@ export const FloatingChatbot = () => {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-4.5 w-4.5 bg-purple-500 border-2 border-[#1a163a]"></span>
         </span>
-
       </div>
     </Link>
   );

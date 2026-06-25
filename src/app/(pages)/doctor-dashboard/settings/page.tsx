@@ -1,13 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import api from "@/src/lib/axios";
+import Image from "next/image"; // NEW: For avatar preview
 
 export default function DoctorProfileSettings() {
   const { user } = useAuthStore();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // NEW: Reference for hidden file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState(""); // NEW: State for doctor image
 
   const [formData, setFormData] = useState({
     specialty: "",
@@ -37,18 +42,34 @@ export default function DoctorProfileSettings() {
             about: profile.about || "",
           });
           setAvailableSlots(profile.availableSlots || []);
+          // NEW: Load existing image from doctor profile, fallback to user profile image
+          setImage(profile.image || user?.image || "");
         }
       } catch (error) {
-        console.error("No profile found, starting fresh.");
+        console.error("No profile found, starting fresh.", error);
       } finally {
         setIsLoading(false);
       }
     };
     fetchProfile();
-  }, [user?.id]);
+  }, [user?.id, user?.image]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // --- NEW: Handle Image Selection ---
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image is too large. Please select an image under 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => setImage(reader.result as string);
+      reader.readAsDataURL(file);
+    }
   };
 
   const addSlot = () => {
@@ -71,12 +92,14 @@ export default function DoctorProfileSettings() {
         availableSlots,
         userId: user?.id,
         name: user?.name,
-        image: user?.image,
+        image: image, // NEW: Sending the Base64 image string to the backend
         expertise: formData.expertise.split(",").map((item) => item.trim()),
       });
       alert("Profile and slots updated successfully!");
     } catch (error) {
       alert("Failed to save profile.");
+      console.log(error);
+      
     } finally {
       setIsSaving(false);
     }
@@ -88,13 +111,51 @@ export default function DoctorProfileSettings() {
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white tracking-wide">Professional Profile</h1>
-        <p className="text-gray-400 mt-2 text-sm">Update your clinical details and available slots below.</p>
+        <p className="text-gray-400 mt-2 text-sm">Update your clinical details, professional photo, and available slots below.</p>
       </div>
 
       <div className="bg-[#1a163a] rounded-xl border border-gray-800 shadow-2xl p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
+          
+          {/* --- NEW: Professional Photo Uploader --- */}
+          <div className="flex flex-col items-start mb-6 pb-6 border-b border-gray-800">
+            <label className="block text-sm font-medium text-gray-300 mb-3">Professional Photo</label>
+            <div className="flex items-center gap-5">
+              <div 
+                className="relative w-20 h-20 rounded-full overflow-hidden bg-[#120f26] border-2 border-gray-700 cursor-pointer hover:border-blue-500 transition-colors flex-shrink-0"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {image ? (
+                  <Image src={image} alt="Doctor Profile" fill className="object-cover" />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-gray-500">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-sm bg-[#120f26] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Upload Photo
+                </button>
+                <p className="text-xs text-gray-500">JPG, PNG or WEBP. Max 5MB.</p>
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/jpeg, image/png, image/webp"
+                className="hidden"
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Primary Specialty</label>
               <input type="text" name="specialty" required placeholder="e.g. Neuro-Oncologist" value={formData.specialty} onChange={handleChange} className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white" />
@@ -143,7 +204,7 @@ export default function DoctorProfileSettings() {
           </div>
 
           <div className="flex justify-end pt-4 border-t border-gray-800">
-            <button type="submit" disabled={isSaving} className="bg-blue-600 px-8 py-3 rounded-xl font-bold text-white hover:bg-blue-500">
+            <button type="submit" disabled={isSaving} className="bg-blue-600 px-8 py-3 rounded-xl font-bold text-white hover:bg-blue-500 transition-colors">
               {isSaving ? "Saving..." : "Publish Profile"}
             </button>
           </div>
