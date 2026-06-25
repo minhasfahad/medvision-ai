@@ -63,15 +63,44 @@ export default function DoctorProfileSettings() {
   // --- NEW: Handle Image Selection ---
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image is too large. Please select an image under 5MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result as string);
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image is too large. Please select an image under 5MB.");
+      return;
     }
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = document.createElement("img");
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const maxSize = 800;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxSize) {
+          height = (height * maxSize) / width;
+          width = maxSize;
+        }
+      } else {
+        if (height > maxSize) {
+          width = (width * maxSize) / height;
+          height = maxSize;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx?.drawImage(img, 0, 0, width, height);
+      const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+      setImage(compressedBase64);
+      URL.revokeObjectURL(url);
+    };
+
+    img.src = url;
   };
 
   const addSlot = () => {
