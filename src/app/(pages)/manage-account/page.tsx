@@ -10,7 +10,7 @@ import Image from "next/image"; // Added for optimized avatar rendering
 export default function ManageAccountPage() {
   const { user, clear, updateUser } = useAuthStore();
   const router = useRouter();
-  
+
   // Reference for the hidden file input
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -43,18 +43,44 @@ export default function ManageAccountPage() {
   // --- NEW: Image Selection Handler ---
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Check file size (limit to 5MB for profile pics)
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image is too large. Please select an image under 5MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileData({ ...profileData, image: reader.result as string });
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image is too large. Please select an image under 5MB.");
+      return;
     }
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = document.createElement("img");
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const maxSize = 800;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxSize) {
+          height = (height * maxSize) / width;
+          width = maxSize;
+        }
+      } else {
+        if (height > maxSize) {
+          width = (width * maxSize) / height;
+          height = maxSize;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx?.drawImage(img, 0, 0, width, height);
+      const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+      setProfileData({ ...profileData, image: compressedBase64 });
+      URL.revokeObjectURL(url);
+    };
+
+    img.src = url;
   };
 
   // --- HANDLERS ---
@@ -72,7 +98,9 @@ export default function ManageAccountPage() {
     console.log("🚀 SENDING PAYLOAD TO BACKEND:", payload);
 
     if (!payload.userId) {
-      alert("CRITICAL ERROR: Your User ID is completely missing! You must log out and log back in.");
+      alert(
+        "CRITICAL ERROR: Your User ID is completely missing! You must log out and log back in.",
+      );
       return;
     }
 
@@ -123,7 +151,7 @@ export default function ManageAccountPage() {
     if (!user) return;
 
     const confirmDelete = window.confirm(
-      "Are you absolutely sure? This action cannot be undone and will permanently delete your account."
+      "Are you absolutely sure? This action cannot be undone and will permanently delete your account.",
     );
     if (!confirmDelete) return;
 
@@ -171,29 +199,41 @@ export default function ManageAccountPage() {
               Personal Information
             </h2>
 
-            <form onSubmit={handleUpdateProfile} className="space-y-5 sm:space-y-6">
-              
+            <form
+              onSubmit={handleUpdateProfile}
+              className="space-y-5 sm:space-y-6"
+            >
               {/* --- NEW: Avatar Upload Section --- */}
               <div className="flex flex-col items-center sm:items-start mb-6">
                 <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-3">
                   Profile Picture
                 </label>
                 <div className="flex items-center gap-5">
-                  <div 
+                  <div
                     className="relative w-20 h-20 rounded-full overflow-hidden bg-[#1e2235] border-2 border-gray-700 cursor-pointer hover:border-blue-500 transition-colors flex-shrink-0"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     {profileData.image ? (
-                      <Image 
-                        src={profileData.image} 
-                        alt="Profile Preview" 
+                      <Image
+                        src={profileData.image}
+                        alt="Profile Preview"
                         fill
                         className="object-cover"
                       />
                     ) : (
                       <div className="flex items-center justify-center w-full h-full text-gray-500">
-                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <svg
+                          className="w-8 h-8"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
                         </svg>
                       </div>
                     )}
@@ -206,7 +246,9 @@ export default function ManageAccountPage() {
                     >
                       Change Picture
                     </button>
-                    <p className="text-xs text-gray-500">JPG, PNG or WEBP. Max 5MB.</p>
+                    <p className="text-xs text-gray-500">
+                      JPG, PNG or WEBP. Max 5MB.
+                    </p>
                   </div>
                   {/* Hidden file input */}
                   <input
@@ -307,7 +349,10 @@ export default function ManageAccountPage() {
               Security & Password
             </h2>
 
-            <form onSubmit={handleUpdatePassword} className="space-y-5 sm:space-y-6 max-w-md w-full">
+            <form
+              onSubmit={handleUpdatePassword}
+              className="space-y-5 sm:space-y-6 max-w-md w-full"
+            >
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-400 mb-1.5 sm:mb-2">
                   Current Password
@@ -382,12 +427,19 @@ export default function ManageAccountPage() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                ></path>
               </svg>
               Danger Zone
             </h2>
             <p className="text-gray-400 text-xs sm:text-sm mb-5 sm:mb-6 leading-relaxed">
-              Once you delete your account, there is no going back. All your medical scans, history, and appointments will be permanently erased.
+              Once you delete your account, there is no going back. All your
+              medical scans, history, and appointments will be permanently
+              erased.
             </p>
 
             <button
