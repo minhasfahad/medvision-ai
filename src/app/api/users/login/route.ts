@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     const token = jwt.sign(
       claims,
       JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '5d' }
     );
 
     // 4. Return user info (excluding password) and token
@@ -50,6 +50,8 @@ export async function POST(req: Request) {
     });
 
   } catch (error) {
+    console.log(error);
+    
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });
   }
 }

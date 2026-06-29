@@ -2,9 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "../lib/store/useAuthStore";
 
 export default function AdminSidebar() {
+  const checkTokenExpiry = useAuthStore((state) => state.checkTokenExpiry);
+
+  useEffect(() => {
+    // This runs the moment the page loads
+    checkTokenExpiry();
+  }, [checkTokenExpiry]);
+
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 

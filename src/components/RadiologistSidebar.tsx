@@ -2,20 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "../lib/store/useAuthStore";
 
 export default function RadiologistSidebar() {
+  const checkTokenExpiry = useAuthStore((state) => state.checkTokenExpiry);
+
+  useEffect(() => {
+    // This runs the moment the page loads
+    checkTokenExpiry();
+  }, [checkTokenExpiry]);
+
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-const links = [
-  { name: "Radiology Dashboard", path: "/radiologist-dashboard" },
-  { name: "Pending Reviews", path: "/radiologist-dashboard/scan-reviews" },
-  { name: "Reviewed Scans", path: "/radiologist-dashboard/reviewed-scans" },
-  { name: "Needs Recheck", path: "/radiologist-dashboard/needs-recheck" },
-  { name: "My Personal Scans", path: "/radiologist-dashboard/my-scans" },
-  { name: "My Review History", path: "/radiologist-dashboard/my-history" },
-];
+  const links = [
+    { name: "Radiology Dashboard", path: "/radiologist-dashboard" },
+    { name: "Pending Reviews", path: "/radiologist-dashboard/scan-reviews" },
+    { name: "Reviewed Scans", path: "/radiologist-dashboard/reviewed-scans" },
+    { name: "Needs Recheck", path: "/radiologist-dashboard/needs-recheck" },
+    { name: "My Personal Scans", path: "/radiologist-dashboard/my-scans" },
+    { name: "My Review History", path: "/radiologist-dashboard/my-history" },
+  ];
 
   return (
     <>

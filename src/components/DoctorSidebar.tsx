@@ -2,19 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "../lib/store/useAuthStore";
 
 export default function DoctorSidebar() {
+  const checkTokenExpiry = useAuthStore((state) => state.checkTokenExpiry);
+
+  useEffect(() => {
+    // This runs the moment the page loads
+    checkTokenExpiry();
+  }, [checkTokenExpiry]);
+
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-const links = [
-  { name: "Clinical Dashboard", path: "/doctor-dashboard" },
-  { name: "Patient Scans", path: "/doctor-dashboard/patient-scans" },
-  { name: "My Scan History", path: "/doctor-dashboard/my-scans" }, // <-- Add this new link
-  { name: "My Schedule", path: "/doctor-dashboard/schedule" },
-  { name: "Profile & Settings", path: "/doctor-dashboard/settings" },
-];
+  const links = [
+    { name: "Clinical Dashboard", path: "/doctor-dashboard" },
+    { name: "Patient Scans", path: "/doctor-dashboard/patient-scans" },
+    { name: "My Scan History", path: "/doctor-dashboard/my-scans" }, // <-- Add this new link
+    { name: "My Schedule", path: "/doctor-dashboard/schedule" },
+    { name: "Profile & Settings", path: "/doctor-dashboard/settings" },
+  ];
 
   return (
     <>
@@ -26,30 +34,50 @@ const links = [
           bg-[#060b30] text-purple-500 rounded-r-xl border-y border-r border-purple-500/30 
           shadow-[4px_0_15px_rgba(168,85,247,0.2)] focus:outline-none 
           transition-all duration-300 ease-in-out
-          ${isOpen ? 'left-64' : 'left-0'}
+          ${isOpen ? "left-64" : "left-0"}
         `}
       >
         {isOpen ? (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path>
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2.5"
+              d="M15 19l-7-7 7-7"
+            ></path>
           </svg>
         ) : (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path>
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2.5"
+              d="M9 5l7 7-7 7"
+            ></path>
           </svg>
         )}
       </button>
 
       {/* Background Overlay for Mobile */}
       {isOpen && (
-        <div 
+        <div
           className="fixed top-[80px] inset-x-0 bottom-0 bg-black/60 z-[40] lg:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar Container */}
-      <aside 
+      <aside
         className={`
           fixed top-[80px] left-0 z-[50] w-64 border-r border-gray-800 p-6 flex flex-col bg-[#060b30] 
           h-[calc(100dvh-80px)] overflow-y-auto transition-transform duration-300 ease-in-out
@@ -63,7 +91,7 @@ const links = [
         <nav className="space-y-2 lg:space-y-3 flex-1">
           {links.map((link) => {
             const isActive = pathname === link.path;
-            
+
             return (
               <Link
                 key={link.name}
@@ -74,10 +102,10 @@ const links = [
                   text-sm px-3 py-2.5 
                   lg:text-base lg:px-4 lg:py-3 
                   ${
-                  isActive
-                    ? "bg-purple-600/20 text-purple-400 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
-                    : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
-                }`}
+                    isActive
+                      ? "bg-purple-600/20 text-purple-400 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
+                      : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  }`}
               >
                 {link.name}
               </Link>

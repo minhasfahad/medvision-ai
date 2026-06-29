@@ -2,13 +2,28 @@
 import Link from "next/link";
 import api from "@/src/lib/axios";
 import { signIn } from "next-auth/react";
-
+import { useState, useEffect } from "react";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Image from "next/image";
 
 export default function LoginPage() {
+  // 1. Create a state to control the visibility of the message
+  const [showExpiredMessage, setShowExpiredMessage] = useState(false);
+
+  // 2. Check the URL when the page loads
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("expired") === "true") {
+      // A tiny 10-millisecond delay keeps the React linter happy
+      setTimeout(() => {
+        setShowExpiredMessage(true);
+      }, 10);
+
+      window.history.replaceState(null, "", "/login");
+    }
+  }, []);
+
   const router = useRouter();
   const setAuthValues = useAuthStore((state) => state.setAuth);
 
@@ -42,6 +57,17 @@ export default function LoginPage() {
     <>
       <div className="min-h-screen h-[100vh] w-full px-4 flex items-center justify-center">
         <div className="grid h-full w-full items-center justify-items-center">
+          {/* 3. Display the professional warning box if the state is true */}
+
+          {showExpiredMessage && (
+            <div className="mb-6 w-full max-w-md p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded shadow-md">
+              <p className="font-semibold">Session Expired!</p>
+
+              <p className="text-sm">
+                For your security, please log in again to continue.
+              </p>
+            </div>
+          )}
           <form
             onSubmit={handleLogin}
             className="grid gap-6 sm:gap-8 border-2 w-full max-w-md p-6 sm:p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10"
@@ -106,22 +132,22 @@ export default function LoginPage() {
                 {loading ? "Singning in..." : "Sign In"}
               </button>
             </div>
-                        <div className="w-full max-w-sm mx-auto">
-                          <button
-                            className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-1.5 sm:py-2 px-4 text-sm font-bold flex items-center justify-center transition-all"
-                            type="button"
-                            onClick={() => signIn("google", { callbackUrl: "/" })}
-                          >
-                            <Image
-                              className="mr-3 flex-none"
-                              src="/google.png"
-                              alt="google"
-                              width={16}
-                              height={16}
-                            />
-                            Continue with Google
-                          </button>
-                        </div>
+            <div className="w-full max-w-sm mx-auto">
+              <button
+                className="login-signup w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-1.5 sm:py-2 px-4 text-sm font-bold flex items-center justify-center transition-all"
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
+              >
+                <Image
+                  className="mr-3 flex-none"
+                  src="/google.png"
+                  alt="google"
+                  width={16}
+                  height={16}
+                />
+                Continue with Google
+              </button>
+            </div>
             <div className="m-auto text-sm sm:text-base">
               <Link href="/forgot-password" className="underline text-white">
                 Forgot Password?
