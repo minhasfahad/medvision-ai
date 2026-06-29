@@ -10,7 +10,7 @@ interface Message {
 }
 
 const ChatBotPage = () => {
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -46,9 +46,17 @@ const ChatBotPage = () => {
     setLoading(true);
 
     try {
+      console.log("Token being sent:", token);
+      console.log("User:", user);
       const response = await api.post("/api/chat", {
         message: input,
-        username: user?.name || "there", // ← sends username to route.ts
+        username: user?.name || "there",
+        userRole: user?.role || null,
+        token: token || null,
+        history: messages.slice(-20).map((msg) => ({
+          role: msg.role,
+          text: msg.text,
+        })),
       });
       const data = response.data;
 
