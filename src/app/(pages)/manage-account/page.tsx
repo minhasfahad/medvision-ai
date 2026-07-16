@@ -8,7 +8,15 @@ import ProtectedRoute from "@/src/components/ProtectedRoute";
 import AmbientBackground from "@/src/components/AmbientBackground";
 import Reveal from "@/src/components/Reveal";
 import Image from "next/image"; // Added for optimized avatar rendering
-import { User, Lock, AlertTriangle, Camera, Save, KeyRound, Trash2 } from "lucide-react";
+import {
+  User,
+  Lock,
+  AlertTriangle,
+  Camera,
+  Save,
+  KeyRound,
+  Trash2,
+} from "lucide-react";
 
 type SettingsTab = "profile" | "security" | "danger";
 
@@ -175,7 +183,12 @@ export default function ManageAccountPage() {
     }
   };
 
-  const NAV_ITEMS: { key: SettingsTab; label: string; icon: typeof User; danger?: boolean }[] = [
+  const NAV_ITEMS: {
+    key: SettingsTab;
+    label: string;
+    icon: typeof User;
+    danger?: boolean;
+  }[] = [
     { key: "profile", label: "Profile", icon: User },
     { key: "security", label: "Security", icon: Lock },
     { key: "danger", label: "Danger Zone", icon: AlertTriangle, danger: true },
@@ -251,6 +264,7 @@ export default function ManageAccountPage() {
                                 src={profileData.image}
                                 alt="Profile Preview"
                                 fill
+                                unoptimized
                                 className="object-cover"
                               />
                             ) : (
@@ -295,7 +309,10 @@ export default function ManageAccountPage() {
                             type="text"
                             value={profileData.name}
                             onChange={(e) =>
-                              setProfileData({ ...profileData, name: e.target.value })
+                              setProfileData({
+                                ...profileData,
+                                name: e.target.value,
+                              })
                             }
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-500"
                           />
@@ -323,7 +340,10 @@ export default function ManageAccountPage() {
                             type="number"
                             value={profileData.age}
                             onChange={(e) =>
-                              setProfileData({ ...profileData, age: e.target.value })
+                              setProfileData({
+                                ...profileData,
+                                age: e.target.value,
+                              })
                             }
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-500"
                           />
@@ -443,9 +463,9 @@ export default function ManageAccountPage() {
                       Danger Zone
                     </h2>
                     <p className="text-gray-400 text-xs sm:text-sm mb-5 sm:mb-6 leading-relaxed">
-                      Once you delete your account, there is no going back. All your
-                      medical scans, history, and appointments will be permanently
-                      erased.
+                      Once you delete your account, there is no going back. All
+                      your medical scans, history, and appointments will be
+                      permanently erased.
                     </p>
 
                     <button

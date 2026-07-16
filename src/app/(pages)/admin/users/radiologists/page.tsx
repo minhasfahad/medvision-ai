@@ -21,45 +21,31 @@ export default function ManageRadiologists() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    let isMounted = true;
-
     const fetchRadiologists = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await api.get(
-          "/api/admin/users/radiologists",
-        );
+        const response = await api.get("/api/admin/users/radiologists");
 
-        if (isMounted) {
-          setRadiologists(
-            Array.isArray(response.data)
-              ? response.data
-              : response.data.data || [],
-          );
-        }
+        setRadiologists(
+          Array.isArray(response.data)
+            ? response.data
+            : response.data.data || [],
+        );
       } catch (err) {
         console.error("Error loading radiologists:", err);
-
-        if (isMounted) {
-          setError("Failed to load radiologist accounts.");
-        }
+        setError("Failed to load radiologist accounts.");
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
     fetchRadiologists();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [refreshTrigger]);
 
   const filteredRadiologists = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -91,9 +77,13 @@ export default function ManageRadiologists() {
     );
 
     try {
-      await api.post("/api/admin/users/delete", {
+      const res = await api.post("/api/admin/users/delete", {
         userId,
       });
+      if (res.status === 200) {
+        alert(res.data.message);
+      }
+      setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
       console.error("Radiologist deletion failed:", err);
 

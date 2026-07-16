@@ -33,7 +33,10 @@ export default function ManageDoctors() {
       return;
 
     try {
-      await api.post("/api/admin/users/delete", { userId });
+      const res = await api.post("/api/admin/users/delete", { userId });
+      if (res.status === 200) {
+        alert(res.data.message);
+      }
       setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
       console.error("Deletion failed:", error);
@@ -82,8 +85,8 @@ export default function ManageDoctors() {
                 Manage Doctors
               </h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-                Review and manage clinical professional accounts with
-                platform access.
+                Review and manage clinical professional accounts with platform
+                access.
               </p>
             </div>
 

@@ -226,37 +226,27 @@ export default function DoctorPersonalScansPage() {
           {!isLoading && !error && scans.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {scans.map((scan, idx) => {
-                const featured = idx === 0;
-
                 return (
                   <Reveal
                     key={scan._id}
                     delay={idx * 70}
-                    variant={featured ? "zoom" : "up"}
-                    className={featured ? "sm:col-span-2" : ""}
+                    variant="up"
                     fill
                   >
                     <SpotlightCard
                       color="96,165,250"
-                      className={`h-full flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#12172a]/85 backdrop-blur-sm shadow-lg hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 ${
-                        featured ? "sm:flex-row" : ""
-                      }`}
+                      className="h-full flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#12172a]/85 backdrop-blur-sm shadow-lg hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300"
                     >
                       {/* Image block with badges overlaid on top of the scan */}
-                      <div
-                        className={`relative flex-none bg-[#0f111a] overflow-hidden border-gray-800 ${
-                          featured
-                            ? "w-full sm:w-1/2 aspect-square sm:aspect-auto border-b sm:border-b-0 sm:border-r"
-                            : "w-full aspect-square border-b"
-                        }`}
-                      >
+                      <div className="relative flex-none w-full aspect-square bg-[#0f111a] overflow-hidden border-b border-gray-800">
+
                         {scan.imageData ? (
                           <Image
                             src={scan.imageData}
                             alt={scan.className}
                             fill
                             unoptimized
-                            sizes={featured ? "(max-width: 640px) 100vw, 50vw" : "(max-width: 640px) 100vw, 25vw"}
+                            sizes="(max-width: 640px) 100vw, 25vw"
                             className="object-contain"
                           />
                         ) : (
@@ -291,15 +281,10 @@ export default function DoctorPersonalScansPage() {
                           </div>
                         </div>
 
-                        {featured && (
-                          <span className="absolute bottom-3 left-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-[9px] sm:text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider shadow-lg">
-                            Most Recent
-                          </span>
-                        )}
                       </div>
 
                       {/* Content block */}
-                      <div className={`flex flex-1 flex-col p-4 sm:p-5 ${featured ? "sm:justify-between" : ""}`}>
+                      <div className="flex flex-1 flex-col p-4 sm:p-5">
                         {/* AI Result Details */}
                         <div className="flex justify-between items-center gap-2 mb-4">
                           <div className="min-w-0">
@@ -307,7 +292,7 @@ export default function DoctorPersonalScansPage() {
                               AI Detection
                             </p>
                             <p
-                              className={`font-bold truncate ${featured ? "text-lg sm:text-xl" : "text-sm sm:text-base"} ${
+                              className={`font-bold truncate text-sm sm:text-base ${
                                 scan.tumorDetected
                                   ? "text-red-400"
                                   : "text-green-400"

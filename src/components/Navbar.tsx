@@ -164,6 +164,7 @@ export const Navbar = () => {
                         src={user.image}
                         alt={`${user.name}'s Profile`}
                         fill
+                        unoptimized   
                         className="object-cover"
                         sizes="36px"
                       />
@@ -171,9 +172,14 @@ export const Navbar = () => {
                       getInitials(user.name)
                     )}
                   </div>
-                  <span className="text-sm font-bold text-gray-100 max-w-[100px] truncate">
-                    {user.name}
-                  </span>
+                  <div className="flex flex-col items-start min-w-0">
+                    <span className="text-sm font-bold text-gray-100 max-w-[120px] truncate">
+                      {user.name}
+                    </span>
+                    <span className={`text-[11px] font-semibold capitalize ${roleColorClass}`}>
+                      {roleLabel}
+                    </span>
+                  </div>
                   <ChevronDown
                     className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
                       isProfileOpen ? "rotate-180" : ""

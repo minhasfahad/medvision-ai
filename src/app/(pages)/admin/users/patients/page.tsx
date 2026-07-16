@@ -34,10 +34,10 @@ export default function ManagePatients() {
     if (!confirm("Are you sure you want to delete this patient?")) return;
 
     try {
-      await api.post("/api/admin/users/delete", { userId });
-
-      // 4. Instead of calling fetchPatients directly, we just increment the trigger.
-      // This tells the useEffect to run again, giving us our fresh data.
+      const res = await api.post("/api/admin/users/delete", { userId });
+      if (res.status === 200) {
+        alert(res.data.message);
+      }
       setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
       console.error("Deletion failed:", error);
