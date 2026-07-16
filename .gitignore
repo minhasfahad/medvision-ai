@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore heavy AI Models
+*.pt
+*.safetensors
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
