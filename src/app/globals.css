@@ -32,7 +32,7 @@ body {
   background-attachment: fixed;
 }
 
-.header {
+/* .header {
   background-image:
     linear-gradient(rgba(10, 25, 47, 0.7), rgba(88, 28, 135, 0.7)),
     url("/Landing_Back_Image2.png");
@@ -63,16 +63,25 @@ body {
     linear-gradient(to top, black 60%, transparent 100%),
     linear-gradient(to right, black 60%, transparent 100%);
   mask-composite: intersect;
+} */
+
+
+.header {
+  margin-top: 100px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
 }
 
 .header-h1 {
   font-size: 50px;
-  margin: 0px;
+  margin: 20px;
 }
 .header h2,
-p {
-  margin: 0px;
-  box-shadow: #171717;
+.header p {
+  margin-bottom: 10px;
 }
 .login-signup-btn {
   background-color: #9150f3e1;
@@ -81,7 +90,7 @@ p {
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 15px;
   margin: 10px;
 }
 .demo {
@@ -107,15 +116,18 @@ p {
 /* Footer */
 .foot {
   margin-bottom: 0px;
-  padding: 100px;
-  padding-bottom: 30px;
-  padding-top: 30px;
+  padding: 30px;
+  
 }
 .foot-icons {
   font-size: 50px;
   display: flex;
   gap: 50px;
   color: white;
+}
+footer div.grid{
+  max-width: 1230px;
+  /* margin: 0 auto; */
 }
 .footer-buttons {
   background-color: #270772;
@@ -130,10 +142,190 @@ p {
 /* Login Page */
 .login-signup {
   background-color: #9150f3e1;
-  padding: 10px;
+  /* padding: 20px; */
   border-radius: 10vh;
   /* border: none; */
   color: white;
   cursor: pointer;
   font-size: 20px;
+  padding-right: 50px;
+
+}
+button{
+  border: none;
+  cursor: pointer;
+}
+.h2-protected{
+  font-size: 50px;
+  margin: 0px
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+@media screen and (max-width: 400px) {
+  .login-signup-btn{
+    width: auto;
+    font-size: 10px;
+  }
+  .header-h1 {
+    font-size: 40px;
+ 
+  }
+}
+  
+/* Add to the end of your src/app/globals.css file for a slow bounce animation */
+@keyframes bounce-slow {
+  0%, 100% {
+    /* Gentler bounce amount (only 5% up, vs. default 25% up) */
+    transform: translateY(-5%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+.animate-bounce-slow {
+  /* Slow 2-second duration for a very gentle, professional motion */
+  animation: bounce-slow 2s infinite;
+}
+
+/* Shifting gradient-text animation (used across hero headlines) */
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.animate-gradient-x {
+  background-size: 200% auto;
+  animation: gradient-x 4s ease infinite;
+}
+
+/* Gentle dropdown / panel entrance (backs the animate-in utility used on menus) */
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-in {
+  animation: dropdown-in 0.2s ease-out both;
+}
+
+/* Generic fade-up entrance for cards and sections */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out both;
+}
+
+/* Ambient floating gradient orbs — slow independent drift for background atmosphere */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, -30px) scale(1.08);
+  }
+}
+@keyframes float-slower {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-50px, 35px) scale(1.1);
+  }
+}
+.animate-float-slow {
+  animation: float-slow 11s ease-in-out infinite;
+}
+.animate-float-slower {
+  animation: float-slower 15s ease-in-out infinite;
+}
+
+/* Scanning beam sweep — evokes an MRI/tumor scan pass */
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120%);
+    opacity: 0;
+  }
+}
+.animate-scan-sweep {
+  animation: scan-sweep 5s linear infinite;
+}
+
+/* Faint tech grid-mesh, faded toward the edges via a mask */
+.bg-grid-fade {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 20%,
+    #000 40%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 20%,
+    #000 40%,
+    transparent 100%
+  );
+}
+
+/* Scroll-reveal base state, toggled by the <Reveal> component via IntersectionObserver */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* One-shot light sweep, for badges/buttons that want an occasional highlight */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-12deg);
+  }
+}
+.animate-shimmer-sweep {
+  animation: shimmer-sweep 3.5s ease-in-out infinite;
 }
