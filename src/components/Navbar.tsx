@@ -1,147 +1,254 @@
-"use client"; // Required for the mobile menu toggle to work
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useAuthStore } from "../lib/store/useAuthStore";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { Menu, X, Settings, LogOut } from "lucide-react";
 
 export const Navbar = () => {
-  // State to handle mobile menu opening/closing
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const authState = useAuthStore();
-  const Logout = () => {
-    authState.clear();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const { user, isAuthenticated, clear } = useAuthStore();
+
+  const pathname = usePathname();
+
+  const isDoctor = user?.role?.toLowerCase() === "doctor";
+  const isAdmin = user?.role?.toLowerCase() === "admin";
+  const isRadiologist = user?.role?.toLowerCase() === "radiologist";
+
+  const getLinkClasses = (path: string) => {
+    const isActive = pathname === path || pathname.startsWith(`${path}/`);
+    return `px-3 py-2 text-base no-underline transition-all duration-200 block w-full lg:w-auto ${
+      isActive
+        ? "text-blue-400 font-bold bg-white/5 lg:bg-transparent rounded-lg"
+        : "text-gray-300 font-medium hover:text-white hover:bg-white/5 lg:hover:bg-transparent rounded-lg"
+    }`;
+  };
+
+  const getInitials = (name: string) => {
+    return name ? name.charAt(0).toUpperCase() : "U";
   };
 
   return (
-    <nav className="items-center top-0 z-20 w-full border-b border-gray-700 bg-[#060b30]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 items-center">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-800 bg-[#060b30]/90 backdrop-blur-md print:hidden font-sans tracking-wide">
+      <div className="mx-auto flex max-w-7xl items-center justify-between p-4 relative">
         {/* LOGO SECTION */}
         <Link
           href="/"
-          className="no-underline flex items-center space-x-3 rtl:space-x-reverse "
+          className="no-underline flex items-center space-x-2 rtl:space-x-reverse flex-none"
         >
           <Image
-            src="/logoo.jpg" // Make sure this file exists in your public folder!
+            src="/logo-mark.png"
             alt="MedVision Logo"
-            width={150}
-            height={80}
-            className="rounded-full"
+            width={100}
+            height={50}
+            className="w-auto h-10 sm:h-12 object-contain"
           />
-          <span className="self-center whitespace-nowrap text-2xl font-semibold text-white">
-            MedVision <span className="text-slate-500">AI</span>
-          </span>
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white m-0">
+            MedVision <span className="text-blue-500 font-medium">AI</span>
+          </h1>
         </Link>
 
         {/* MOBILE HAMBURGER BUTTON */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 md:hidden"
-          aria-controls="navbar-default"
-          aria-expanded={isMenuOpen}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-white/10 hover:text-white transition-all duration-200 focus:outline-none lg:hidden bg-transparent border-0 cursor-pointer"
         >
-          <span className="sr-only">Open main menu</span>
-          <svg
-            className="h-5 w-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round" // Fixed: React uses camelCase
-              strokeLinejoin="round"
-              strokeWidth="2" // Fixed: React uses camelCase
-              d="M1 1h15M1 7h15M1 13h15"
-            />
-          </svg>
+          {isMenuOpen ? (
+            <X className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          )}
         </button>
 
         {/* LINKS SECTION */}
         <div
           className={`${
-            isMenuOpen ? "block" : "hidden"
-          } w-full md:block md:w-auto`}
-          id="navbar-default"
+            isMenuOpen ? "absolute top-full left-0 right-0 block animate-in" : "hidden"
+          } w-full lg:relative lg:top-auto lg:left-auto lg:right-auto lg:block lg:w-auto bg-[#060b30] lg:bg-transparent border-b border-white/10 lg:border-0 px-4 pb-4 lg:p-0 z-50 shadow-2xl lg:shadow-none max-h-[85vh] overflow-y-auto lg:overflow-visible`}
         >
-          <ul className="flex items-center gap-2 list-none mt-4 flex-col rounded-lg border border-gray-700 bg-gray-800 p-0 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-transparent md:p-0 rtl:space-x-reverse ">
-            <li>
-              <Link
-                href="/"
-                className="no-underline block rounded bg-blue-700 py-2 px-3 text-white md:bg-transparent md:p-0 md:text-blue-500"
-                aria-current="page"
-              >
+          <ul className="flex list-none mt-4 flex-col rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-2 gap-2 lg:mt-0 lg:flex-row lg:items-center lg:gap-1 lg:border-0 lg:bg-transparent lg:p-0">
+            <li
+              className="w-full lg:w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Link href="/" className={getLinkClasses("/")}>
                 Home
               </Link>
             </li>
-            <li>
-              <Link
-                href="/about"
-                className="no-underline block rounded py-2 px-3 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
-              >
+            <li
+              className="w-full lg:w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Link href="/about" className={getLinkClasses("/about")}>
                 About
               </Link>
             </li>
-            <li>
-              <Link
-                href="/contact"
-                className=" no-underline block rounded py-2 px-3 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
-              >
+            <li
+              className="w-full lg:w-auto"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Link href="/contact" className={getLinkClasses("/contact")}>
                 Contact
               </Link>
             </li>
-            {authState.isAuthenticated && (
-              <>
-                <li className="chatbot-img flex gap-2">
-                  <Image
-                    className="chatbot-img gap-2"
-                    src="/chatbot.png"
-                    width={50}
-                    height={50}
-                    alt="Chatbot"
-                  />
-                  <Link
-                    href="/chatbot"
-                    className=" no-underline block rounded py-2 px-3 text-white hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-500"
-                  >
-                    AI ChatBot
-                  </Link>
-                </li>
-                <li>
+
+            {/* DYNAMIC PORTAL LINK */}
+            {isAuthenticated && user && (
+              <li
+                className="w-full lg:w-auto"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Link
+                  href={
+                    isAdmin
+                      ? "/admin"
+                      : isDoctor
+                        ? "/doctor-dashboard"
+                        : isRadiologist
+                          ? "/radiologist-dashboard"
+                          : "/patient-dashboard"
+                  }
+                  className={getLinkClasses(
+                    isAdmin
+                      ? "/admin"
+                      : isDoctor
+                        ? "/doctor-dashboard"
+                        : isRadiologist
+                          ? "/radiologist-dashboard"
+                          : "/patient-dashboard",
+                  )}
+                >
+                  {isAdmin
+                    ? "Admin Portal"
+                    : isDoctor
+                      ? "Clinical Portal"
+                      : isRadiologist
+                        ? "Radiology Portal"
+                        : "Patient Dashboard"}
+                </Link>
+              </li>
+            )}
+
+            {/* SCAN MRI BUTTON */}
+            {isAuthenticated &&
+              user?.role?.trim().toLowerCase() !== "admin" && (
+                <li
+                  className="w-full lg:w-auto my-2 lg:my-0 lg:ml-3 lg:mr-1"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   <Link
                     href="/try-demo"
-                    className=" demo text-xl bg-blue-500 no-underline block rounded py-2 px-3 text-white hover:bg-blue-400 md:border-0 md:p-0 md:hover:text-blck-500"
+                    className="no-underline block w-full lg:w-auto"
                   >
-                    Try Demo
+                    <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:-translate-y-0.5 border-0 cursor-pointer w-full lg:w-auto min-h-[40px] whitespace-nowrap">
+                      Scan MRI Now
+                    </button>
                   </Link>
                 </li>
-                <li>
-                  <button
-                    className="demo  no-underline block rounded py-2 px-3 text-white hover:bg-blue-400 md:border-0  md:hover:text-blck-500 bg-red-500 text-xl p-20"
-                    onClick={Logout}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            )}
-            {!authState.isAuthenticated ? (
-              <>
-                <li>
-                  <Link href="/login">
-                    <button className="login-signup-btn">Login</button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/signup">
-                    <button className="login-signup-btn">Sign Up</button>
-                  </Link>
-                </li>
-              </>
+              )}
+
+            {/* USER PROFILE DROPDOWN */}
+            {isAuthenticated && user ? (
+              <li className="relative w-full lg:w-auto mt-2 lg:mt-0 lg:ml-4 lg:pl-4 border-t lg:border-t-0 lg:border-l border-white/10 pt-3 lg:pt-0">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center justify-between lg:justify-start gap-3 w-full lg:w-auto px-3 py-1.5 rounded-full hover:bg-white/10 transition-all duration-200 focus:outline-none bg-transparent border-0 cursor-pointer text-left"
+                >
+                  <div className="flex flex-col text-left">
+                    <span className="text-sm font-bold text-gray-100 truncate max-w-[120px]">
+                      {user.name}
+                    </span>
+                    <span
+                      className={`text-xs font-semibold capitalize ${
+                        isAdmin
+                          ? "text-emerald-400"
+                          : isDoctor
+                            ? "text-purple-400"
+                            : isRadiologist
+                              ? "text-amber-400"
+                              : "text-blue-400"
+                      }`}
+                    >
+                      {isDoctor ? "Doctor" : isRadiologist ? "Radiologist" : user.role}
+                    </span>
+                  </div>
+
+                  {/* --- NEW: Image / Initial Render Logic --- */}
+                  <div className="relative w-10 h-10 rounded-full flex-none overflow-hidden border-2 border-[#1a163a] shadow-[0_0_15px_rgba(37,99,235,0.4)] bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt={`${user.name}'s Profile`}
+                        fill
+                        unoptimized   
+                        className="object-cover"
+                        sizes="40px"
+                      />
+                    ) : (
+                      getInitials(user.name)
+                    )}
+                  </div>
+                </button>
+
+                {isProfileOpen && (
+                  <div className="absolute right-0 bottom-full mb-2 lg:bottom-auto lg:top-full lg:mt-3 w-full lg:w-56 bg-[#12172a]/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl py-2 z-50 animate-in">
+                    <Link
+                      href="/manage-account"
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors no-underline"
+                    >
+                      <Settings className="w-4 h-4 mr-3 text-gray-400" />
+                      Manage Account
+                    </Link>
+
+                    <button
+                      onClick={async () => {
+                        setIsProfileOpen(false);
+                        setIsMenuOpen(false);
+                        clear();
+                        await signOut({ callbackUrl: "/" });
+                      }}
+                      className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-white/10 pt-2.5 bg-transparent border-0 cursor-pointer text-left"
+                    >
+                      <LogOut className="w-4 h-4 mr-3" />
+                      Secure Logout
+                    </button>
+                  </div>
+                )}
+              </li>
             ) : (
-              <></>
+              <>
+                {/* LOGIN/SIGNUP BUTTONS */}
+                <li
+                  className="w-full lg:w-auto my-1 lg:my-0 lg:ml-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link href="/login" className="no-underline block w-full">
+                    <button className="rounded-xl border-2 border-blue-600/70 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300 bg-transparent cursor-pointer w-full lg:w-auto min-h-[38px]">
+                      Login
+                    </button>
+                  </Link>
+                </li>
+                <li
+                  className="w-full lg:w-auto my-1 lg:my-0"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link href="/signup" className="no-underline block w-full">
+                    <button className="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 border-2 border-transparent px-5 py-2 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 hover:-translate-y-0.5 transition-all duration-300 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] cursor-pointer w-full lg:w-auto min-h-[38px]">
+                      Sign Up
+                    </button>
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
         </div>
@@ -149,5 +256,3 @@ export const Navbar = () => {
     </nav>
   );
 };
-
-export default Navbar;
