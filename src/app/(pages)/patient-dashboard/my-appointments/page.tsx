@@ -5,6 +5,14 @@ import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import Link from "next/link";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import {
+  CalendarClock,
+  CheckCircle2,
+  AlertTriangle,
+  Lock,
+  Clock,
+  Video,
+} from "lucide-react";
 
 interface Appointment {
   _id: string;
@@ -206,8 +214,11 @@ export default function MyAppointmentsPage() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-transparent text-white w-full max-w-[1200px] mx-auto pt-6 sm:pt-10 px-4 sm:px-6 pb-12">
-        <div className="mb-6 sm:mb-10 text-center md:text-left">
-          <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100 mb-1.5">
+        <div className="mb-6 sm:mb-10 text-center md:text-left animate-fade-in-up">
+          <div className="mx-auto md:mx-0 mb-3 w-11 h-11 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+            <CalendarClock className="w-5 h-5 text-blue-400" />
+          </div>
+          <h1 className="text-2xl sm:text-[28px] font-bold mb-1.5 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">
             My Appointments
           </h1>
           <p className="text-gray-400 text-xs sm:text-sm">
@@ -229,12 +240,13 @@ export default function MyAppointmentsPage() {
           )}
 
           {!isLoading && !error && appointments.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 px-4 bg-[#121726] rounded-2xl border border-[#2a3655] text-center">
+            <div className="flex flex-col items-center justify-center py-16 px-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 text-center animate-fade-in-up">
+              <CalendarClock className="w-10 h-10 text-gray-600 mb-4" />
               <p className="text-gray-400 text-base mb-6">
                 You have no booked appointments.
               </p>
               <Link href="/appointments" className="w-full sm:w-auto">
-                <button className="bg-[#00b85c] hover:bg-[#00a050] text-white px-6 py-2.5 rounded-lg font-semibold transition-colors w-full sm:w-auto">
+                <button className="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 font-bold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.35)] hover:-translate-y-1 w-full sm:w-auto">
                   Book a Specialist
                 </button>
               </Link>
@@ -243,7 +255,7 @@ export default function MyAppointmentsPage() {
 
           {!isLoading && !error && appointments.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              {appointments.map((appt) => {
+              {appointments.map((appt, i) => {
                 const expired = isExpired(appt.appointmentDate);
                 const isFinal =
                   appt.status === "Cancelled" ||
@@ -254,10 +266,11 @@ export default function MyAppointmentsPage() {
                 return (
                   <div
                     key={appt._id}
-                    className={`p-4 sm:p-6 bg-[#121726] rounded-2xl border flex flex-col h-full shadow-lg transition-all w-full ${
+                    style={{ animationDelay: `${i * 80}ms` }}
+                    className={`p-4 sm:p-6 bg-white/5 backdrop-blur-sm rounded-2xl border flex flex-col h-full shadow-lg transition-all duration-300 w-full animate-fade-in-up ${
                       expired || isFinal
-                        ? "border-gray-800 opacity-75"
-                        : "border-[#2a3655] hover:border-[#3b4b75]"
+                        ? "border-white/5 opacity-75"
+                        : "border-white/10 hover:border-blue-500/30 hover:-translate-y-1"
                     }`}
                   >
                     {/* Card Header */}
@@ -278,7 +291,7 @@ export default function MyAppointmentsPage() {
                     </div>
 
                     {/* Details */}
-                    <div className="space-y-2.5 mb-5 bg-[#1e2235] p-3 sm:p-4 rounded-xl border border-gray-700/50">
+                    <div className="space-y-2.5 mb-5 bg-black/20 p-3 sm:p-4 rounded-xl border border-white/10">
                       <div className="flex flex-col sm:flex-row sm:justify-between gap-1 text-xs sm:text-sm">
                         <span className="text-gray-400">Date & Time:</span>
                         <span className="text-gray-100 font-semibold sm:text-right">
@@ -319,27 +332,36 @@ export default function MyAppointmentsPage() {
                       {/* CASE 1: Final state banner */}
                       {isFinal && (
                         <div
-                          className={`w-full text-center py-2.5 rounded-lg text-xs font-bold border ${
+                          className={`w-full flex items-center justify-center gap-1.5 text-center py-2.5 rounded-lg text-xs font-bold border ${
                             appt.status === "Completed"
                               ? "bg-blue-900/20 border-blue-500/30 text-blue-400"
                               : appt.status === "Patient Absent"
                                 ? "bg-orange-900/20 border-orange-500/30 text-orange-400"
-                                : "bg-gray-800/50 border-gray-700 text-gray-500"
+                                : "bg-white/5 border-white/10 text-gray-500"
                           }`}
                         >
-                          {appt.status === "Completed" &&
-                            "✅ Consultation completed."}
-                          {appt.status === "Patient Absent" &&
-                            "⚠️ You were marked absent for this appointment."}
-                          {appt.status === "Cancelled" &&
-                            "🔒 This appointment was cancelled."}
+                          {appt.status === "Completed" && (
+                            <>
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Consultation completed.
+                            </>
+                          )}
+                          {appt.status === "Patient Absent" && (
+                            <>
+                              <AlertTriangle className="w-3.5 h-3.5" /> You were marked absent for this appointment.
+                            </>
+                          )}
+                          {appt.status === "Cancelled" && (
+                            <>
+                              <Lock className="w-3.5 h-3.5" /> This appointment was cancelled.
+                            </>
+                          )}
                         </div>
                       )}
 
                       {/* CASE 2: Expired pending */}
                       {expired && appt.status === "Pending" && (
-                        <div className="w-full text-center py-2.5 bg-gray-800/50 border border-gray-700 text-gray-500 text-xs font-bold rounded-lg">
-                          🕐 This appointment expired without confirmation.
+                        <div className="w-full flex items-center justify-center gap-1.5 text-center py-2.5 bg-white/5 border border-white/10 text-gray-500 text-xs font-bold rounded-lg">
+                          <Clock className="w-3.5 h-3.5" /> This appointment expired without confirmation.
                         </div>
                       )}
 
@@ -348,13 +370,13 @@ export default function MyAppointmentsPage() {
                         <div className="flex gap-3">
                           <button
                             onClick={() => handleCancelAppointment(appt._id)}
-                            className="flex-1 bg-[#4b5563] hover:bg-red-600 text-white py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors"
+                            className="flex-1 bg-white/5 border border-white/10 hover:bg-red-600/90 hover:border-red-500/50 text-white py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300"
                           >
                             Cancel
                           </button>
                           <button
                             onClick={() => handleOpenReschedule(appt)}
-                            className="flex-1 bg-[#2a3655] hover:bg-[#3b4b75] text-white py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors"
+                            className="flex-1 bg-white/5 border border-white/10 hover:bg-blue-600/80 hover:border-blue-500/50 text-white py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300"
                           >
                             Reschedule
                           </button>
@@ -363,7 +385,7 @@ export default function MyAppointmentsPage() {
 
                       {/* ✅ RESCHEDULE SLOT PICKER */}
                       {reschedulingId === appt._id && (
-                        <div className="mt-2 p-4 bg-[#1e2235] rounded-xl border border-blue-500/30 flex flex-col gap-3">
+                        <div className="mt-2 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-blue-500/30 flex flex-col gap-3 animate-fade-in-up">
                           <p className="text-blue-400 text-xs font-bold uppercase tracking-wider">
                             Select a New Slot
                           </p>
@@ -404,8 +426,8 @@ export default function MyAppointmentsPage() {
                                     onClick={() => setSelectedNewSlot(slot)}
                                     className={`text-[10px] sm:text-xs px-2.5 py-1.5 rounded-lg border transition-all font-medium ${
                                       selectedNewSlot === slot
-                                        ? "bg-[#00b85c] border-[#00b85c] text-white shadow-sm shadow-green-900"
-                                        : "bg-[#121726] border-[#2a3655] text-gray-300 hover:border-[#4b6aad] hover:text-white"
+                                        ? "bg-emerald-600 border-emerald-500 text-white shadow-sm shadow-emerald-900/40"
+                                        : "bg-white/5 border-white/10 text-gray-300 hover:border-blue-500/40 hover:text-white"
                                     }`}
                                   >
                                     {new Date(slot).toLocaleString("en-US", {
@@ -430,7 +452,7 @@ export default function MyAppointmentsPage() {
                             <button
                               onClick={() => handleRescheduleSubmit(appt._id)}
                               disabled={isRescheduling || !selectedNewSlot}
-                              className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-900/30 disabled:text-blue-500/50 text-white py-2 rounded-lg text-sm font-bold transition-colors"
+                              className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:opacity-40 disabled:hover:from-blue-600 disabled:hover:to-purple-600 text-white py-2 text-sm font-bold transition-all duration-300"
                             >
                               {isRescheduling
                                 ? "Saving..."
@@ -438,7 +460,7 @@ export default function MyAppointmentsPage() {
                             </button>
                             <button
                               onClick={handleCloseReschedule}
-                              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg text-sm font-semibold transition-colors"
+                              className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white py-2 rounded-lg text-sm font-semibold transition-all duration-300"
                             >
                               Cancel
                             </button>
@@ -452,21 +474,9 @@ export default function MyAppointmentsPage() {
                           onClick={() =>
                             window.open(`/consultation/${appt._id}`, "_blank")
                           }
-                          className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2"
+                          className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2"
                         >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                            />
-                          </svg>
+                          <Video className="w-4 h-4" />
                           Join Video Consultation
                         </button>
                       )}

@@ -6,6 +6,7 @@ import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import Image from "next/image";
 import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator";
+import { FileText, Download, Loader2, History } from "lucide-react";
 
 type ReviewStatus =
   | "pending"
@@ -133,7 +134,8 @@ export default function MyReviewHistoryPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="flex h-64 items-center justify-center text-white">
+        <div className="flex h-64 items-center justify-center text-white gap-3">
+          <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
           <span className="text-lg font-medium animate-pulse">
             Loading your review history...
           </span>
@@ -144,10 +146,11 @@ export default function MyReviewHistoryPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-6">
-        <div className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="p-4 sm:p-6">
+        <div className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between animate-fade-in-up">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-wide">
+            <h1 className="text-3xl font-bold text-white tracking-wide flex items-center gap-3">
+              <History className="w-7 h-7 text-purple-400" />
               My Review History
             </h1>
 
@@ -157,15 +160,17 @@ export default function MyReviewHistoryPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-purple-500/30 bg-purple-600/10 px-5 py-3 text-sm text-purple-200">
+          <div className="rounded-xl border border-purple-500/30 bg-purple-600/10 backdrop-blur-sm px-5 py-3 text-sm text-purple-200">
             My Reviews:{" "}
             <span className="font-bold text-white">{scans.length}</span>
           </div>
         </div>
 
         {scans.length === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#1a163a] p-10 text-center shadow-xl">
-            <div className="text-4xl mb-4">📝</div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-10 text-center shadow-xl animate-fade-in-up">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+              <FileText className="w-6 h-6 text-purple-400" />
+            </div>
 
             <h2 className="text-xl font-bold text-white">
               No review history yet
@@ -178,16 +183,17 @@ export default function MyReviewHistoryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
-            {scans.map((scan) => {
+            {scans.map((scan, index) => {
               const status = scan.radiologistReviewStatus || "pending";
               const isCurrentlyDownloading = isDownloading === scan._id;
 
               return (
                 <div
                   key={scan._id}
-                  className="rounded-2xl border border-gray-800 bg-[#1a163a] shadow-xl overflow-hidden"
+                  className="rounded-2xl border border-white/10 bg-[#12172a]/80 backdrop-blur-md shadow-xl overflow-hidden hover:border-purple-500/30 transition-all duration-300 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 80}ms` }}
                 >
-                  <div className="border-b border-gray-800 p-5 flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                  <div className="border-b border-white/10 p-5 flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                     <div>
                       <h2 className="text-xl font-bold text-white">
                         {scan.user?.name || "Unknown Patient"}
@@ -208,7 +214,7 @@ export default function MyReviewHistoryPage() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-col items-end gap-2">
                         <span
                         className={`w-fit rounded-full border px-3 py-1 text-xs font-bold ${getStatusBadge(
@@ -217,20 +223,27 @@ export default function MyReviewHistoryPage() {
                         >
                         {getStatusLabel(status)}
                         </span>
-                        
-                        {/* --- NEW DOWNLOAD BUTTON --- */}
+
                         <button
                           onClick={() => handleDownloadReport(scan)}
                           disabled={isCurrentlyDownloading}
-                          className="w-full sm:w-auto mt-2 rounded-lg bg-emerald-600/20 border border-emerald-500/50 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-600/40 transition-colors disabled:opacity-70 flex items-center justify-center gap-1"
+                          className="w-full sm:w-auto mt-2 rounded-lg bg-emerald-600/20 border border-emerald-500/50 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-600/40 hover:-translate-y-0.5 transition-all disabled:opacity-70 flex items-center justify-center gap-1.5"
                         >
-                          {isCurrentlyDownloading ? "⏳ Generating..." : "📥 Download Report"}
+                          {isCurrentlyDownloading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="w-3.5 h-3.5" /> Download Report
+                            </>
+                          )}
                         </button>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-5">
-                    <div className="rounded-xl border border-gray-800 bg-black/30 p-3">
+                    <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                       <div className="mb-3 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-blue-300">
                           Original MRI
@@ -276,7 +289,7 @@ export default function MyReviewHistoryPage() {
                   </div>
 
                   <div className="mx-5 mb-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         AI Classification
                       </p>
@@ -285,7 +298,7 @@ export default function MyReviewHistoryPage() {
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         AI Confidence
                       </p>
@@ -297,7 +310,7 @@ export default function MyReviewHistoryPage() {
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         Tumor Detected
                       </p>
@@ -322,7 +335,7 @@ export default function MyReviewHistoryPage() {
                       {scan.radiologistComment || "No note added."}
                     </p>
 
-                    <div className="mt-4 rounded-lg border border-gray-700 bg-black/20 p-3">
+                    <div className="mt-4 rounded-lg border border-white/10 bg-black/20 p-3">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         My Recommendation
                       </p>

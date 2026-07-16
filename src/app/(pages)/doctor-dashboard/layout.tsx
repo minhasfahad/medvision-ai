@@ -20,7 +20,7 @@ export default function DoctorDashboardLayout({
           images inside the dashboard from breaking the screen width and causing horizontal scroll.
       */}
       <main className="flex-1 w-full min-w-0 transition-all duration-300 ease-in-out relative">
-        <div className="mx-auto w-full max-w-[1600px]">
+        <div className="mx-auto w-full max-w-[1600px] animate-fade-in-up">
           {children}
         </div>
       </main>

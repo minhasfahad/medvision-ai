@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { Navbar } from "../components/Navbar";
 import Footer from "../components/Footer";
+import AmbientBackground from "../components/AmbientBackground";
+import Reveal from "../components/Reveal";
 import { useAuthStore } from "../lib/store/useAuthStore";
 import {
   Upload,
@@ -125,6 +127,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen font-sans selection:bg-blue-500/30">
+      <AmbientBackground />
       <Navbar />
 
       {/* 1. HERO SECTION */}
@@ -132,24 +135,34 @@ export default function LandingPage() {
         {/* Futuristic Background Glows */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
         <div className="absolute top-20 right-20 w-[400px] h-[400px] bg-purple-600/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+        {/* Scanning beam sweep, echoing an MRI scan pass */}
+        <div className="absolute inset-x-0 top-0 h-full overflow-hidden -z-10 pointer-events-none">
+          <div className="absolute left-0 right-0 h-40 bg-gradient-to-b from-transparent via-blue-400/10 to-transparent animate-scan-sweep"></div>
+        </div>
 
         <div className="max-w-5xl mx-auto z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs sm:text-sm font-semibold mb-8 animate-pulse">
-            <Activity className="w-4 h-4" /> v2.0 YOLOv11 Engine Active
-          </div>
+          <Reveal>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs sm:text-sm font-semibold mb-8 animate-pulse">
+              <Activity className="w-4 h-4" /> v2.0 YOLOv11 Engine Active
+            </div>
+          </Reveal>
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-            AI-Powered <br className="hidden sm:block" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 animate-gradient-x">
-              Brain Tumor Detection
-            </span>
-          </h1>
+          <Reveal delay={100}>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+              AI-Powered <br className="hidden sm:block" />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 animate-gradient-x">
+                Brain Tumor Detection
+              </span>
+            </h1>
+          </Reveal>
 
-          <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Empowering neurologists and medical professionals with real-time,
-            high-accuracy MRI analysis using specialized Deep Learning models
-            and advanced segmentation.
-          </p>
+          <Reveal delay={200}>
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+              Empowering neurologists and medical professionals with real-time,
+              high-accuracy MRI analysis using specialized Deep Learning models
+              and advanced segmentation.
+            </p>
+          </Reveal>
 
           {/* AUTH LOGIC KEPT EXACTLY AS REQUESTED */}
           {authState.isAuthenticated && (
@@ -166,122 +179,161 @@ export default function LandingPage() {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md mx-auto">
-            {authState.isAuthenticated ? (
-              <Link href="/try-demo" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg hover:from-blue-500 hover:to-purple-500 transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-                  <ScanLine className="w-5 h-5" /> Test AI Diagnostics
-                </button>
-              </Link>
-            ) : (
-              <>
+          <Reveal delay={300}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md mx-auto">
+              {authState.isAuthenticated ? (
                 <Link href="/try-demo" className="w-full sm:w-auto">
-                  <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-base hover:from-blue-500 hover:to-purple-500 transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] hover:-translate-y-1">
-                    Try Live Demo
+                  <button className="relative w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg hover:from-blue-500 hover:to-purple-500 transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2 overflow-hidden">
+                    <ScanLine className="w-5 h-5" /> Test AI Diagnostics
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent w-1/3 animate-shimmer-sweep pointer-events-none"></span>
                   </button>
                 </Link>
-                <Link href="/login" className="w-full sm:w-auto">
-                  <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-base hover:bg-white/10 transition-all hover:-translate-y-1">
-                    Login to Platform
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
+              ) : (
+                <>
+                  <Link href="/try-demo" className="w-full sm:w-auto">
+                    <button className="relative w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-base hover:from-blue-500 hover:to-purple-500 transition-all shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] hover:-translate-y-1 overflow-hidden">
+                      Try Live Demo
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent w-1/3 animate-shimmer-sweep pointer-events-none"></span>
+                    </button>
+                  </Link>
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-base hover:bg-white/10 transition-all hover:-translate-y-1">
+                      Login to Platform
+                    </button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* 2. TRUST / STATS SECTION */}
       <section className="py-12 border-y border-white/5 bg-black/20">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard number="6,000+" text="Diagnostic MRI Scans Processed " />
-          <StatCard number="98.4%" text="Detection Accuracy" />
-          <StatCard number="< 2.5s" text="Real-Time Analysis" />
-          <StatCard number="256-bit" text="Secure Encrypted Storage" />
+          <Reveal delay={0}>
+            <StatCard number="6,000+" text="Diagnostic MRI Scans Processed " />
+          </Reveal>
+          <Reveal delay={80}>
+            <StatCard number="98.4%" text="Detection Accuracy" />
+          </Reveal>
+          <Reveal delay={160}>
+            <StatCard number="< 2.5s" text="Real-Time Analysis" />
+          </Reveal>
+          <Reveal delay={240}>
+            <StatCard number="256-bit" text="Secure Encrypted Storage" />
+          </Reveal>
         </div>
       </section>
 
       {/* 3. FEATURES GRID SECTION */}
-      <section className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Platform Capabilities
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            A comprehensive suite of AI tools designed to integrate seamlessly
-            into modern neuro-diagnostic workflows.
-          </p>
-        </div>
+      <section className="py-24 px-4 max-w-7xl mx-auto relative">
+        <div className="absolute inset-0 bg-grid-fade -z-10 opacity-60"></div>
+        <Reveal>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Platform Capabilities
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              A comprehensive suite of AI tools designed to integrate seamlessly
+              into modern neuro-diagnostic workflows.
+            </p>
+          </div>
+        </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <FeatureCard
-            icon={Upload}
-            title="Smart MRI Upload"
-            desc="Securely upload DICOM, JPG, or PNG scans. Our preprocessing pipeline automatically normalizes images for optimal AI analysis."
-          />
-          <FeatureCard
-            icon={Brain}
-            title="AI Tumor Detection"
-            desc="Powered by YOLOv11s-seg, our model identifies and classifies gliomas, meningiomas, and pituitary tumors instantly."
-          />
-          <FeatureCard
-            icon={Microscope}
-            title="Precise Segmentation"
-            desc="Go beyond detection. The AI draws pixel-perfect bounding boxes and segmented masks to isolate tumor mass boundaries."
-          />
-          <FeatureCard
-            icon={ShieldCheck}
-            title="Validation Guardrail"
-            desc="An integrated MobileNetV3 model acts as a security layer, ensuring only valid brain MRI scans are processed by the core engine."
-          />
-          <FeatureCard
-            icon={MessageSquare}
-            title="AI Medical Chatbot"
-            desc="Interact with our DistilBERT-powered assistant for instant querying of platform knowledge and medical terminology support."
-          />
-          <FeatureCard
-            icon={FileText}
-            title="Clinical PDF Reports"
-            desc="Generate and download comprehensive, timestamped diagnostic reports ready for patient files or secondary doctor review."
-          />
+          <Reveal delay={0}>
+            <FeatureCard
+              icon={Upload}
+              title="Smart MRI Upload"
+              desc="Securely upload DICOM, JPG, or PNG scans. Our preprocessing pipeline automatically normalizes images for optimal AI analysis."
+            />
+          </Reveal>
+          <Reveal delay={80}>
+            <FeatureCard
+              icon={Brain}
+              title="AI Tumor Detection"
+              desc="Powered by YOLOv11s-seg, our model identifies and classifies gliomas, meningiomas, and pituitary tumors instantly."
+            />
+          </Reveal>
+          <Reveal delay={160}>
+            <FeatureCard
+              icon={Microscope}
+              title="Precise Segmentation"
+              desc="Go beyond detection. The AI draws pixel-perfect bounding boxes and segmented masks to isolate tumor mass boundaries."
+            />
+          </Reveal>
+          <Reveal delay={240}>
+            <FeatureCard
+              icon={ShieldCheck}
+              title="Validation Guardrail"
+              desc="An integrated MobileNetV3 model acts as a security layer, ensuring only valid brain MRI scans are processed by the core engine."
+            />
+          </Reveal>
+          <Reveal delay={320}>
+            <FeatureCard
+              icon={MessageSquare}
+              title="AI Medical Chatbot"
+              desc="Interact with our DistilBERT-powered assistant for instant querying of platform knowledge and medical terminology support."
+            />
+          </Reveal>
+          <Reveal delay={400}>
+            <FeatureCard
+              icon={FileText}
+              title="Clinical PDF Reports"
+              desc="Generate and download comprehensive, timestamped diagnostic reports ready for patient files or secondary doctor review."
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* 4. HOW IT WORKS SECTION */}
       <section className="py-24 px-4 bg-gradient-to-b from-transparent via-[#0a0f25]/80 to-transparent relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Seamless Clinical Workflow
-            </h2>
-            <p className="text-gray-400">
-              From upload to diagnosis in four simple steps.
-            </p>
-          </div>
+          <Reveal>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Seamless Clinical Workflow
+              </h2>
+              <p className="text-gray-400">
+                From upload to diagnosis in four simple steps.
+              </p>
+            </div>
+          </Reveal>
 
           <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Connecting Line for Desktop */}
-            <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-blue-900 via-blue-500 to-purple-900 z-0"></div>
+            <div className="hidden md:block absolute top-12 left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-blue-900 via-blue-500 to-purple-900 z-0 overflow-hidden">
+              <div className="absolute inset-y-0 w-1/4 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shimmer-sweep"></div>
+            </div>
 
-            <StepCard
-              number="01"
-              title="Upload Scan"
-              desc="Upload a patient's brain MRI via our secure, encrypted dashboard interface."
-            />
-            <StepCard
-              number="02"
-              title="Guardrail Check"
-              desc="System validates the image to ensure it is a legitimate anatomical MRI scan."
-            />
-            <StepCard
-              number="03"
-              title="AI Processing"
-              desc="Deep learning models analyze the scan, extracting anomalies and segmenting tumors."
-            />
-            <StepCard
-              number="04"
-              title="Review & Export"
-              desc="Doctor reviews the visual output, adds clinical notes, and downloads the official PDF."
-            />
+            <Reveal delay={0}>
+              <StepCard
+                number="01"
+                title="Upload Scan"
+                desc="Upload a patient's brain MRI via our secure, encrypted dashboard interface."
+              />
+            </Reveal>
+            <Reveal delay={120}>
+              <StepCard
+                number="02"
+                title="Guardrail Check"
+                desc="System validates the image to ensure it is a legitimate anatomical MRI scan."
+              />
+            </Reveal>
+            <Reveal delay={240}>
+              <StepCard
+                number="03"
+                title="AI Processing"
+                desc="Deep learning models analyze the scan, extracting anomalies and segmenting tumors."
+              />
+            </Reveal>
+            <Reveal delay={360}>
+              <StepCard
+                number="04"
+                title="Review & Export"
+                desc="Doctor reviews the visual output, adds clinical notes, and downloads the official PDF."
+              />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -351,69 +403,78 @@ export default function LandingPage() {
 
       {/* 5. AI PREVIEW GALLERY SECTION */}
       <section className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-wide">
-            Research-Grade Precision Gallery
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
-            Visualizing the raw power of our customized YOLOv11 instance
-            segmentation engine in isolating complex brain anomalies.
-          </p>
-        </div>
+        <Reveal>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-wide">
+              Research-Grade Precision Gallery
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+              Visualizing the raw power of our customized YOLOv11 instance
+              segmentation engine in isolating complex brain anomalies.
+            </p>
+          </div>
+        </Reveal>
 
-        <div className="bg-[#0b0e24]/90 border border-blue-900/40 rounded-3xl p-6 md:p-10 shadow-2xl shadow-blue-950/40 flex flex-col lg:flex-row gap-10 items-center">
+        <div className="relative bg-[#0b0e24]/90 border border-blue-900/40 rounded-3xl p-6 md:p-10 shadow-2xl shadow-blue-950/40 flex flex-col lg:flex-row gap-10 items-center overflow-hidden">
+          <div className="absolute inset-0 bg-grid-fade opacity-40 -z-10"></div>
           {/* Left Side: Technical Performance Checkpoints */}
           <div className="flex-1 space-y-6 w-full order-2 lg:order-1">
-            <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 font-mono text-xs flex-none mt-1">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-1">
-                    Multi-Class Identification
-                  </h4>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    Accurately distinguishes spatial variations between Gliomas,
-                    Meningiomas, and Pituitary tumors.
-                  </p>
+            <Reveal delay={0}>
+              <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 font-mono text-xs flex-none mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-white mb-1">
+                      Multi-Class Identification
+                    </h4>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      Accurately distinguishes spatial variations between Gliomas,
+                      Meningiomas, and Pituitary tumors.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 font-mono text-xs flex-none mt-1">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-1">
-                    Pixel-Level Instance Masking
-                  </h4>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    Generates exact irregular coordinates of tumor mass volume
-                    borders rather than simple rigid box outlines.
-                  </p>
+            <Reveal delay={100}>
+              <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 font-mono text-xs flex-none mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-white mb-1">
+                      Pixel-Level Instance Masking
+                    </h4>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      Generates exact irregular coordinates of tumor mass volume
+                      borders rather than simple rigid box outlines.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
 
-            <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 font-mono text-xs flex-none mt-1">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-white mb-1">
-                    Confidence Layer Matrix
-                  </h4>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    Provides clear statistical probability scores directly
-                    integrated alongside diagnostic bounding coordinates.
-                  </p>
+            <Reveal delay={200}>
+              <div className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/20 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 font-mono text-xs flex-none mt-1">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold text-white mb-1">
+                      Confidence Layer Matrix
+                    </h4>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      Provides clear statistical probability scores directly
+                      integrated alongside diagnostic bounding coordinates.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
 
           {/* Right Side: Interactive Real-Time Before/After Viewer */}
@@ -446,6 +507,8 @@ export default function LandingPage() {
 
             {/* Main Image Display Box */}
             <div className="w-full relative aspect-[4/3] rounded-2xl bg-[#070919] border border-white/10 overflow-hidden shadow-inner flex items-center justify-center">
+              {/* Scanning beam sweep overlay, reinforcing the "active scan" feel */}
+              <div className="absolute left-0 right-0 h-16 bg-gradient-to-b from-transparent via-blue-400/20 to-transparent animate-scan-sweep pointer-events-none z-10"></div>
               {activeMriTab === "original" ? (
                 <>
                   {/* 1. Original View Profile */}
@@ -499,65 +562,71 @@ export default function LandingPage() {
       {/* 7. WHY MEDVISION AI */}
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Why Choose MedVision AI?
-            </h2>
-            <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-              We bridge the gap between cutting-edge artificial intelligence and
-              practical clinical application. Our platform acts as a powerful
-              second opinion tool, reducing diagnostic fatigue and accelerating
-              patient care timelines.
-            </p>
-            <ul className="space-y-4">
-              <li className="flex items-center gap-3 text-gray-200">
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-blue-400" />
-                </div>
-                Accelerate diagnosis from days to milliseconds.
-              </li>
-              <li className="flex items-center gap-3 text-gray-200">
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <Lock className="w-4 h-4 text-blue-400" />
-                </div>
-                HIPAA-compliant architecture and data anonymization.
-              </li>
-              <li className="flex items-center gap-3 text-gray-200">
-                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                  <History className="w-4 h-4 text-blue-400" />
-                </div>
-                Maintain persistent, searchable patient diagnostic histories.
-              </li>
-            </ul>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#12172a]/80 p-6 rounded-2xl border border-white/5 mt-8 hover:-translate-y-2 transition-transform duration-300">
-              <h4 className="text-3xl font-bold text-white mb-2">24/7</h4>
-              <p className="text-sm text-gray-400">
-                Automated availability for emergency radiologist support.
+          <Reveal>
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                Why Choose MedVision AI?
+              </h2>
+              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                We bridge the gap between cutting-edge artificial intelligence and
+                practical clinical application. Our platform acts as a powerful
+                second opinion tool, reducing diagnostic fatigue and accelerating
+                patient care timelines.
               </p>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3 text-gray-200">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-blue-400" />
+                  </div>
+                  Accelerate diagnosis from days to milliseconds.
+                </li>
+                <li className="flex items-center gap-3 text-gray-200">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <Lock className="w-4 h-4 text-blue-400" />
+                  </div>
+                  HIPAA-compliant architecture and data anonymization.
+                </li>
+                <li className="flex items-center gap-3 text-gray-200">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <History className="w-4 h-4 text-blue-400" />
+                  </div>
+                  Maintain persistent, searchable patient diagnostic histories.
+                </li>
+              </ul>
             </div>
-            <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 p-6 rounded-2xl border border-blue-500/20 hover:-translate-y-2 transition-transform duration-300">
-              <h4 className="text-3xl font-bold text-white mb-2">3+</h4>
-              <p className="text-sm text-gray-400">
-                Major tumor classes identified simultaneously.
-              </p>
+          </Reveal>
+          <Reveal delay={150}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-[#12172a]/80 p-6 rounded-2xl border border-white/5 mt-8 hover:-translate-y-2 transition-transform duration-300">
+                <h4 className="text-3xl font-bold text-white mb-2">24/7</h4>
+                <p className="text-sm text-gray-400">
+                  Automated availability for emergency radiologist support.
+                </p>
+              </div>
+              <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 p-6 rounded-2xl border border-blue-500/20 hover:-translate-y-2 transition-transform duration-300">
+                <h4 className="text-3xl font-bold text-white mb-2">3+</h4>
+                <p className="text-sm text-gray-400">
+                  Major tumor classes identified simultaneously.
+                </p>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* 8. TESTIMONIALS */}
       <section className="py-24 px-4 bg-[#050816]/50 border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Trusted by Professionals
-            </h2>
-            <p className="text-gray-400">
-              Hear from the researchers and clinicians using MedVision AI.
-            </p>
-          </div>
+          <Reveal>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Trusted by Professionals
+              </h2>
+              <p className="text-gray-400">
+                Hear from the researchers and clinicians using MedVision AI.
+              </p>
+            </div>
+          </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
@@ -576,19 +645,18 @@ export default function LandingPage() {
                 role: "Chief Radiologist",
               },
             ].map((t, i) => (
-              <div
-                key={i}
-                className="bg-white/5 border border-white/10 p-8 rounded-2xl relative"
-              >
-                <div className="text-blue-500/20 text-6xl font-serif absolute top-4 left-4"></div>
-                <p className="text-gray-300 relative z-10 mb-6 italic">
-                  {t.text}
-                </p>
-                <div>
-                  <h4 className="text-white font-bold">{t.author}</h4>
-                  <p className="text-blue-400 text-sm">{t.role}</p>
+              <Reveal key={i} delay={i * 100}>
+                <div className="bg-white/5 border border-white/10 p-8 rounded-2xl relative hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300">
+                  <div className="text-blue-500/20 text-6xl font-serif absolute top-4 left-4"></div>
+                  <p className="text-gray-300 relative z-10 mb-6 italic">
+                    {t.text}
+                  </p>
+                  <div>
+                    <h4 className="text-white font-bold">{t.author}</h4>
+                    <p className="text-blue-400 text-sm">{t.role}</p>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -596,53 +664,69 @@ export default function LandingPage() {
 
       {/* 9. FAQ SECTION */}
       <section className="py-24 px-4 max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          {/* Fixed "text-blak" typo to "text-white" */}
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Frequently Asked Questions
-          </h2>
-        </div>
+        <Reveal>
+          <div className="text-center mb-12">
+            {/* Fixed "text-blak" typo to "text-white" */}
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Frequently Asked Questions
+            </h2>
+          </div>
+        </Reveal>
         <div className="space-y-4">
-          <FAQItem
-            question="Is this a replacement for human doctors?"
-            answer="Absolutely not. MedVision AI is designed as a clinical decision support system (CDSS). It acts as a highly accurate 'second opinion' to assist radiologists and reduce diagnostic oversight."
-          />
-          <FAQItem
-            question="Which MRI formats are supported?"
-            answer="Currently, the platform accepts standard image formats like JPG and PNG for the demo. Enterprise deployments support native DICOM medical formats."
-          />
-          <FAQItem
-            question="How accurate is the YOLOv11 model?"
-            answer="Our customized YOLOv11s-seg model has been trained on thousands of varied MRI scans, achieving over 96% accuracy in detecting and segmenting core tumor classes."
-          />
-          <FAQItem
-            question="Are reports downloadable?"
-            answer="Yes. Once an analysis is complete, doctors can add clinical notes and export a timestamped, professional PDF report instantly."
-          />
-          <FAQItem
-            question="Is patient data secure?"
-            answer="Security is our top priority. We use robust encryption and do not share your medical scans with third-party advertisers."
-          />
+          <Reveal delay={0}>
+            <FAQItem
+              question="Is this a replacement for human doctors?"
+              answer="Absolutely not. MedVision AI is designed as a clinical decision support system (CDSS). It acts as a highly accurate 'second opinion' to assist radiologists and reduce diagnostic oversight."
+            />
+          </Reveal>
+          <Reveal delay={60}>
+            <FAQItem
+              question="Which MRI formats are supported?"
+              answer="Currently, the platform accepts standard image formats like JPG and PNG for the demo. Enterprise deployments support native DICOM medical formats."
+            />
+          </Reveal>
+          <Reveal delay={120}>
+            <FAQItem
+              question="How accurate is the YOLOv11 model?"
+              answer="Our customized YOLOv11s-seg model has been trained on thousands of varied MRI scans, achieving over 96% accuracy in detecting and segmenting core tumor classes."
+            />
+          </Reveal>
+          <Reveal delay={180}>
+            <FAQItem
+              question="Are reports downloadable?"
+              answer="Yes. Once an analysis is complete, doctors can add clinical notes and export a timestamped, professional PDF report instantly."
+            />
+          </Reveal>
+          <Reveal delay={240}>
+            <FAQItem
+              question="Is patient data secure?"
+              answer="Security is our top priority. We use robust encryption and do not share your medical scans with third-party advertisers."
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* 10. FINAL CTA */}
       <section className="py-24 px-4">
-        <div className="max-w-5xl mx-auto bg-gradient-to-tr from-blue-900/60 to-purple-900/60 rounded-3xl p-10 md:p-16 text-center border border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.2)] relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-[80px] pointer-events-none"></div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 relative z-10">
-            Experience the Future of Neuro-Diagnostics
-          </h2>
-          <p className="text-gray-300 text-lg mb-10 max-w-2xl mx-auto relative z-10">
-            Join the platform redefining speed and precision in medical imaging
-            analysis.
-          </p>
-          <Link href="/try-demo" className="relative z-10">
-            <button className="px-10 py-4 rounded-full bg-white text-[#0a192f] font-bold text-lg hover:bg-gray-200 hover:scale-105 transition-all flex items-center gap-2 mx-auto">
-              Start AI Scan <ChevronRight className="w-5 h-5" />
-            </button>
-          </Link>
-        </div>
+        <Reveal>
+          <div className="max-w-5xl mx-auto bg-gradient-to-tr from-blue-900/60 to-purple-900/60 rounded-3xl p-10 md:p-16 text-center border border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.2)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-[80px] pointer-events-none"></div>
+            <div className="absolute inset-0 bg-grid-fade opacity-30 pointer-events-none"></div>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 relative z-10">
+              Experience the Future of Neuro-Diagnostics
+            </h2>
+            <p className="text-gray-300 text-lg mb-10 max-w-2xl mx-auto relative z-10">
+              Join the platform redefining speed and precision in medical imaging
+              analysis.
+            </p>
+            <Link href="/try-demo" className="relative z-10">
+              <button className="relative px-10 py-4 rounded-full bg-white text-[#0a192f] font-bold text-lg hover:bg-gray-200 hover:scale-105 transition-all flex items-center gap-2 mx-auto overflow-hidden">
+                Start AI Scan <ChevronRight className="w-5 h-5" />
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent w-1/3 animate-shimmer-sweep pointer-events-none"></span>
+              </button>
+            </Link>
+          </div>
+        </Reveal>
       </section>
 
       <Footer />

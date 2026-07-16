@@ -6,6 +6,7 @@ import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator";
+import { X, Download, Loader2, Inbox, Send } from "lucide-react";
 
 type RadiologistReviewStatus =
   | "pending"
@@ -154,7 +155,7 @@ export default function PatientScansPage() {
   return (
     <ProtectedRoute>
       <div className="p-6 h-auto lg:h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar">
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-6 sm:mb-8 animate-fade-in-up">
           <h1 className="text-3xl font-bold text-white tracking-wide">
             Patient Scan Logs
           </h1>
@@ -164,7 +165,8 @@ export default function PatientScansPage() {
         </div>
 
         {isLoading && (
-          <div className="text-blue-400 animate-pulse text-base">
+          <div className="flex items-center gap-2 text-blue-400 text-base">
+            <Loader2 className="w-5 h-5 animate-spin" />
             Loading diagnostic records...
           </div>
         )}
@@ -176,20 +178,24 @@ export default function PatientScansPage() {
         )}
 
         {!isLoading && !error && scans.length === 0 && (
-          <div className="text-gray-500 bg-[#1a163a] p-8 rounded-xl border border-gray-800 text-center shadow-xl">
+          <div className="flex flex-col items-center gap-4 text-gray-400 bg-white/5 backdrop-blur-sm p-8 sm:p-10 rounded-2xl border border-white/10 text-center shadow-xl animate-fade-in-up">
+            <div className="w-14 h-14 rounded-full bg-blue-900/30 border border-blue-500/20 flex items-center justify-center">
+              <Inbox className="w-6 h-6 text-blue-400" />
+            </div>
             No patient scans available. Scans will appear here automatically once a patient books an appointment with you.
           </div>
         )}
 
         {!isLoading && !error && scans.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-12">
-            {scans.map((scan) => (
+            {scans.map((scan, idx) => (
               <div
                 key={scan._id}
-                className={`p-5 bg-[#1a163a] rounded-2xl border flex flex-col h-full shadow-xl transition-all ${
+                style={{ animationDelay: `${idx * 80}ms` }}
+                className={`p-5 bg-white/5 backdrop-blur-sm rounded-2xl border flex flex-col h-full shadow-xl transition-all duration-300 hover:-translate-y-1 animate-fade-in-up ${
                   scan.tumorDetected
                     ? "border-red-500/50 hover:border-red-400"
-                    : "border-[#2a3655] hover:border-green-500/50"
+                    : "border-white/10 hover:border-green-500/50"
                 }`}
               >
                 {/* Clean Header */}
@@ -287,7 +293,7 @@ export default function PatientScansPage() {
                           [scan._id]: e.target.value,
                         }))
                       }
-                      className="flex-1 min-w-0 px-3 py-2 bg-[#120f26] text-white text-xs sm:text-sm rounded-lg border border-gray-700 focus:border-blue-500 outline-none placeholder:text-gray-500"
+                      className="flex-1 min-w-0 px-3 py-2 bg-white/5 text-white text-xs sm:text-sm rounded-xl border border-white/10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none placeholder-gray-500 transition-colors"
                       disabled={savingComments[scan._id]}
                     />
                     <button
@@ -296,16 +302,23 @@ export default function PatientScansPage() {
                         savingComments[scan._id] ||
                         !commentInputs[scan._id]?.trim()
                       }
-                      className="px-3 sm:px-4 py-2 flex-none bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 text-white text-xs sm:text-sm rounded-lg font-semibold transition-colors min-h-[36px]"
+                      className="px-3 sm:px-4 py-2 flex-none flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white text-xs sm:text-sm rounded-xl font-semibold transition-colors min-h-[36px]"
                     >
-                      {savingComments[scan._id] ? "..." : "Save"}
+                      {savingComments[scan._id] ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          Save
+                        </>
+                      )}
                     </button>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => setSelectedScan(scan)}
-                    className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2.5 text-xs font-bold text-white transition-all hover:from-blue-500 hover:to-purple-500"
+                    className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2.5 text-xs font-bold text-white transition-all hover:from-blue-500 hover:to-purple-500 hover:-translate-y-0.5"
                   >
                     View Full Details
                   </button>
@@ -319,8 +332,8 @@ export default function PatientScansPage() {
       {/* FULL DETAILS MODAL */}
       {selectedScan && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4 py-6 backdrop-blur-sm">
-          <div className="relative max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-[#2a3655] bg-[#121726] shadow-2xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#2a3655] bg-[#121726]/95 px-5 py-4 backdrop-blur">
+          <div className="relative max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-white/10 bg-[#121726] shadow-2xl animate-fade-in-up">
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-[#121726]/95 px-5 py-4 backdrop-blur">
               <div>
                 <h2 className="text-xl font-bold text-white sm:text-2xl">
                   Patient MRI Scan Details
@@ -337,9 +350,9 @@ export default function PatientScansPage() {
               <button
                 type="button"
                 onClick={() => setSelectedScan(null)}
-                className="rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2 text-sm font-bold text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+                className="rounded-lg border border-white/10 bg-white/5 p-2 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -489,12 +502,20 @@ export default function PatientScansPage() {
                   disabled={isDownloading}
                   className="w-full sm:w-auto rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                  {isDownloading ? "⏳ Generating..." : "📥 Download Report"}
+                  {isDownloading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" /> Download Report
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedScan(null)}
-                  className="w-full sm:w-auto rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:from-blue-500 hover:to-purple-500"
+                  className="w-full sm:w-auto rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:from-blue-500 hover:to-purple-500 hover:-translate-y-0.5"
                 >
                   Close Details
                 </button>

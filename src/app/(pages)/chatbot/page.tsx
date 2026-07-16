@@ -3,6 +3,7 @@ import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import api from "@/src/lib/axios";
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown"; // <-- 1. Imported ReactMarkdown
+import { Bot, Send, Sparkles } from "lucide-react";
 
 interface Message {
   role: "user" | "bot";
@@ -84,17 +85,26 @@ const ChatBotPage = () => {
 
   return (
     // FIXED: Adjusted h-screen down to an isolated fluid dynamic viewport layout wrapper
-    <div className="min-h-[calc(100vh-100px)] text-white w-full font-sans tracking-wide flex flex-col justify-center items-center">
+    <div className="min-h-[calc(100vh-100px)] text-white w-full font-sans tracking-wide flex flex-col justify-center items-center px-2 sm:px-4">
       <main className="w-full flex flex-col items-center justify-center p-2 sm:p-4 max-w-5xl mx-auto">
+        <div className="mb-4 sm:mb-6 text-center animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold mb-2">
+            <Sparkles className="w-3.5 h-3.5" /> DistilBERT Medical Assistant
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 animate-gradient-x">
+            Ask MedVision AI
+          </h1>
+        </div>
+
         {/* Chat Container Wrapper */}
-        <div className="w-full bg-[#1a163a] rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[75vh] sm:h-[80vh] border border-white/10 relative">
+        <div className="w-full bg-[#0f1123]/70 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[75vh] sm:h-[80vh] border border-white/10 relative animate-fade-in-up">
           {/* Header */}
-          <div className="bg-[#2d2858] p-3 sm:p-4 flex items-center border-b border-white/5 flex-none">
-            <div className="bg-purple-600/20 p-2 rounded-full mr-2.5 sm:mr-3 flex-none">
-              <i className="fa-solid fa-robot text-purple-400 text-lg sm:text-xl"></i>
+          <div className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 p-3 sm:p-4 flex items-center border-b border-white/10 flex-none">
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2 rounded-xl mr-2.5 sm:mr-3 flex-none shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div className="min-w-0">
-              <h2 className="font-bold text-sm sm:text-base truncate">
+              <h2 className="font-bold text-sm sm:text-base truncate text-white">
                 MedVision AI Assistant
               </h2>
               <p className="text-[11px] sm:text-xs text-green-400 flex items-center mt-0.5">
@@ -112,13 +122,13 @@ const ChatBotPage = () => {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex animate-fade-in-up ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`max-w-[85%] sm:max-w-[80%] p-3 sm:p-4 rounded-2xl text-sm sm:text-base break-words shadow-sm ${
                     msg.role === "user"
-                      ? "bg-purple-600 text-white rounded-br-none"
-                      : "bg-[#2d2858] text-gray-200 rounded-bl-none"
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-none shadow-[0_0_15px_rgba(37,99,235,0.25)]"
+                      : "bg-white/5 border border-white/10 backdrop-blur-sm text-gray-200 rounded-bl-none"
                   }`}
                 >
                   {/* 2. Added Markdown parsing exclusively for bot messages */}
@@ -135,8 +145,8 @@ const ChatBotPage = () => {
             ))}
 
             {loading && (
-              <div className="flex justify-start">
-                <div className="bg-[#2d2858] p-3 sm:p-4 rounded-2xl rounded-bl-none flex space-x-1.5 sm:space-x-2 items-center">
+              <div className="flex justify-start animate-fade-in-up">
+                <div className="bg-white/5 border border-white/10 backdrop-blur-sm p-3 sm:p-4 rounded-2xl rounded-bl-none flex space-x-1.5 sm:space-x-2 items-center">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full animate-bounce"></div>
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full animate-bounce delay-100"></div>
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-400 rounded-full animate-bounce delay-200"></div>
@@ -148,21 +158,21 @@ const ChatBotPage = () => {
           {/* Input Area */}
           <form
             onSubmit={handleSend}
-            className="p-3 sm:p-4 bg-[#1a163a] border-t border-white/5 flex gap-2 sm:gap-4 items-center flex-none"
+            className="p-3 sm:p-4 bg-[#0f1123]/80 border-t border-white/10 flex gap-2 sm:gap-4 items-center flex-none"
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about brain tumors or upload help..."
-              className="flex-grow bg-[#0f0c29] border border-gray-700 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-white focus:outline-none focus:border-purple-500 transition min-w-0 placeholder:text-gray-500"
+              className="flex-grow bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all min-w-0"
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed flex-none flex items-center justify-center min-h-[40px] min-w-[40px]"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.35)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex-none flex items-center justify-center min-h-[40px] min-w-[40px]"
             >
-              <i className="fa-solid fa-paper-plane text-sm sm:text-base"></i>
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </form>
         </div>

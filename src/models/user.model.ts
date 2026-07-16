@@ -5,7 +5,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password_hash?: string;
-  role: "admin" | "patient" | "doctor" | "radiologist";
+  role: "admin" | "patient" | "doctor" | "radiologist" | "user";
   age?: number;   // <-- NEW: Optional age attribute
   image?: string; // <-- NEW: Optional image attribute (will store URL or base64)
   createdAt: Date;
@@ -37,7 +37,7 @@ const UserSchema: Schema = new Schema(
     role: {
       type: String,
       required: true,
-      enum: ["admin", "patient", "doctor", "radiologist"],
+      enum: ["admin", "patient", "doctor", "radiologist", "user"],
       default: "patient"
     },
     age: {

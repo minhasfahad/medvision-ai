@@ -6,6 +6,7 @@ import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import Image from "next/image";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import { Lock, MapPin, Loader2, CalendarClock } from "lucide-react";
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -94,18 +95,9 @@ function SlotSelector({
               <div
                 key={slot}
                 title="This slot is already booked"
-                className="flex items-center gap-1 bg-[#1e293b] border border-[#2a3655] text-gray-500 text-[10px] sm:text-xs px-2.5 py-1.5 rounded-lg cursor-not-allowed select-none"
+                className="flex items-center gap-1 bg-white/5 border border-white/10 text-gray-500 text-[10px] sm:text-xs px-2.5 py-1.5 rounded-lg cursor-not-allowed select-none"
               >
-                <svg
-                  className="w-3 h-3 flex-none"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+                <Lock className="w-3 h-3 flex-none" strokeWidth={2.5} />
                 {new Date(slot).toLocaleString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -123,8 +115,8 @@ function SlotSelector({
               onClick={() => onChange(slot)}
               className={`text-[10px] sm:text-xs px-2.5 py-1.5 rounded-lg border transition-all font-medium ${
                 isSelected
-                  ? "bg-[#00b85c] border-[#00b85c] text-white shadow-sm shadow-green-900"
-                  : "bg-[#121726] border-[#2a3655] text-gray-300 hover:border-[#4b6aad] hover:text-white"
+                  ? "bg-emerald-600 border-emerald-500 text-white shadow-sm shadow-emerald-900/40"
+                  : "bg-white/5 border-white/10 text-gray-300 hover:border-blue-500/40 hover:text-white"
               }`}
             >
               {new Date(slot).toLocaleString("en-US", {
@@ -286,8 +278,11 @@ function AppointmentContent() {
       <div className="min-h-screen bg-transparent text-white font-sans pb-10 pt-6 sm:pt-10 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto flex flex-col gap-8 sm:gap-10">
         <main className="w-full">
           {/* ── Header ── */}
-          <div className="mb-6 sm:mb-8 text-center">
-            <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100 mb-2 leading-tight">
+          <div className="mb-6 sm:mb-8 text-center animate-fade-in-up">
+            <div className="mx-auto mb-4 w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+              <CalendarClock className="w-6 h-6 text-blue-400" />
+            </div>
+            <h1 className="text-2xl sm:text-[28px] font-bold mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">
               {tumorType && tumorType !== "No Tumor"
                 ? `Recommended Specialists for ${tumorType}`
                 : "Available Specialists"}
@@ -301,18 +296,9 @@ function AppointmentContent() {
 
           {/* ── Location Filter Bar ── */}
           {!isLoading && !error && availableCities.length > 0 && (
-            <div className="mb-6 flex flex-wrap items-center gap-2">
+            <div className="mb-6 flex flex-wrap items-center gap-2 animate-fade-in-up">
               <span className="text-xs text-gray-400 font-medium mr-1 flex items-center gap-1.5">
-                <svg
-                  className="w-3.5 h-3.5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
+                <MapPin className="w-3.5 h-3.5" />
                 City:
               </span>
 
@@ -320,8 +306,8 @@ function AppointmentContent() {
                 onClick={() => setSelectedCity("all")}
                 className={`text-xs px-3 py-1.5 rounded-full border transition-all font-medium ${
                   selectedCity === "all"
-                    ? "bg-[#2a3655] border-[#4b6aad] text-white"
-                    : "bg-transparent border-[#2a3655] text-gray-400 hover:text-white hover:border-[#3b4b75]"
+                    ? "bg-blue-600/20 border-blue-500/40 text-blue-300"
+                    : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
                 }`}
               >
                 All Cities
@@ -333,8 +319,8 @@ function AppointmentContent() {
                   onClick={() => setSelectedCity(city)}
                   className={`text-xs px-3 py-1.5 rounded-full border transition-all font-medium ${
                     selectedCity === city
-                      ? "bg-[#2a3655] border-[#4b6aad] text-white"
-                      : "bg-transparent border-[#2a3655] text-gray-400 hover:text-white hover:border-[#3b4b75]"
+                      ? "bg-blue-600/20 border-blue-500/40 text-blue-300"
+                      : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
                   }`}
                 >
                   {city}
@@ -358,7 +344,7 @@ function AppointmentContent() {
           )}
 
           {error && (
-            <div className="text-red-500 p-4 bg-red-900/20 border border-red-500 rounded-lg text-center text-sm sm:text-base">
+            <div className="text-red-400 p-4 bg-red-900/20 border border-red-500/30 rounded-xl text-center text-sm sm:text-base">
               {error}
             </div>
           )}
@@ -388,13 +374,14 @@ function AppointmentContent() {
           {/* ── Doctor Cards ── */}
           {!isLoading && !error && filteredDoctors.length > 0 && (
             <div className="space-y-4 sm:space-y-5">
-              {filteredDoctors.map((doc) => (
+              {filteredDoctors.map((doc, i) => (
                 <div
                   key={doc._id}
-                  className="bg-[#121726] p-4 sm:p-5 rounded-2xl border border-[#2a3655] flex flex-col md:flex-row items-center gap-4 sm:gap-6 shadow-md hover:border-[#3b4b75] transition-all"
+                  style={{ animationDelay: `${i * 80}ms` }}
+                  className="bg-white/5 backdrop-blur-sm p-4 sm:p-5 rounded-2xl border border-white/10 flex flex-col md:flex-row items-center gap-4 sm:gap-6 shadow-lg hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
                 >
                   {/* ── Doctor Image / Fallback Icon ── */}
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-none bg-[#1e2a40] shadow-inner">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-none bg-white/5 border border-white/10 shadow-inner">
                     {doc.image ? (
                       <Image
                         src={doc.image}
@@ -416,13 +403,13 @@ function AppointmentContent() {
                         Dr. {doc.name}
                       </h3>
                       {doc.badge && (
-                        <span className="bg-[#2a2f42] text-gray-300 text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full font-medium whitespace-nowrap">
+                        <span className="bg-white/10 border border-white/10 text-gray-300 text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full font-medium whitespace-nowrap">
                           {doc.badge}
                         </span>
                       )}
                     </div>
 
-                    <p className="text-[#8498c7] text-xs sm:text-sm font-medium mb-1 text-center md:text-left">
+                    <p className="text-blue-300 text-xs sm:text-sm font-medium mb-1 text-center md:text-left">
                       {doc.specialty}
                     </p>
 
@@ -436,7 +423,7 @@ function AppointmentContent() {
                               tumorType &&
                               tag.toLowerCase() === tumorType.toLowerCase()
                                 ? "bg-green-900/30 border-green-700/50 text-green-400"
-                                : "bg-[#1e2a40] border-[#2a3655] text-gray-400"
+                                : "bg-white/5 border-white/10 text-gray-400"
                             }`}
                           >
                             {tag}
@@ -477,9 +464,9 @@ function AppointmentContent() {
                     ) ? (
                       <button
                         disabled
-                        className="bg-[#1e293b] border border-[#334155] text-gray-400 w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold cursor-not-allowed flex justify-center items-center gap-2"
+                        className="bg-white/5 border border-white/10 text-gray-500 w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold cursor-not-allowed flex justify-center items-center gap-2"
                       >
-                        🔒 All Slots Taken
+                        <Lock className="w-4 h-4" /> All Slots Taken
                       </button>
                     ) : (
                       <button
@@ -496,26 +483,7 @@ function AppointmentContent() {
                       >
                         {bookingId === doc._id ? (
                           <>
-                            <svg
-                              className="animate-spin h-4 w-4 text-white"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              />
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              />
-                            </svg>
+                            <Loader2 className="animate-spin h-4 w-4 text-white" />
                             Booking...
                           </>
                         ) : (
@@ -524,7 +492,7 @@ function AppointmentContent() {
                       </button>
                     )}
 
-                    <button className="bg-[#4b5563] hover:bg-[#374151] text-white w-full py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold cursor-pointer w-full lg:w-auto min-h-[40px] whitespace-nowrap">
+                    <button className="flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all duration-300 px-5 py-2.5 text-xs sm:text-sm font-semibold cursor-pointer w-full lg:w-auto min-h-[40px] whitespace-nowrap">
                       Cancel
                     </button>
                   </div>

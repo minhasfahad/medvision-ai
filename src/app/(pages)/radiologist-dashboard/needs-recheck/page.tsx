@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "@/src/lib/axios";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import Image from "next/image";
+import { AlertTriangle, CheckCircle2, Loader2 } from "lucide-react";
 type ReviewStatus =
   | "pending"
   | "confirmed"
@@ -101,7 +102,8 @@ export default function NeedsRecheckPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="flex h-64 items-center justify-center text-white">
+        <div className="flex h-64 items-center justify-center text-white gap-3">
+          <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
           <span className="text-lg font-medium animate-pulse">
             Loading scans that need recheck...
           </span>
@@ -112,10 +114,11 @@ export default function NeedsRecheckPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-6">
-        <div className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="p-4 sm:p-6">
+        <div className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between animate-fade-in-up">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-wide">
+            <h1 className="text-3xl font-bold text-white tracking-wide flex items-center gap-3">
+              <AlertTriangle className="w-7 h-7 text-red-400" />
               Needs Recheck
             </h1>
 
@@ -125,15 +128,17 @@ export default function NeedsRecheckPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-red-500/30 bg-red-600/10 px-5 py-3 text-sm text-red-200">
+          <div className="rounded-xl border border-red-500/30 bg-red-600/10 backdrop-blur-sm px-5 py-3 text-sm text-red-200">
             Needs Attention:{" "}
             <span className="font-bold text-white">{scans.length}</span>
           </div>
         </div>
 
         {scans.length === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#1a163a] p-10 text-center shadow-xl">
-            <div className="text-4xl mb-4">✅</div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-10 text-center shadow-xl animate-fade-in-up">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+            </div>
             <h2 className="text-xl font-bold text-white">
               No scans need recheck
             </h2>
@@ -144,15 +149,16 @@ export default function NeedsRecheckPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
-            {scans.map((scan) => {
+            {scans.map((scan, index) => {
               const status = scan.radiologistReviewStatus;
 
               return (
                 <div
                   key={scan._id}
-                  className="rounded-2xl border border-gray-800 bg-[#1a163a] shadow-xl overflow-hidden"
+                  className="rounded-2xl border border-white/10 bg-[#12172a]/80 backdrop-blur-md shadow-xl overflow-hidden hover:border-red-500/30 transition-all duration-300 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 80}ms` }}
                 >
-                  <div className="border-b border-gray-800 p-5 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                  <div className="border-b border-white/10 p-5 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                     <div>
                       <h2 className="text-xl font-bold text-white">
                         {scan.user?.name || "Unknown Patient"}
@@ -184,7 +190,7 @@ export default function NeedsRecheckPage() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-5">
-                    <div className="rounded-xl border border-gray-800 bg-black/30 p-3">
+                    <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                       <div className="mb-3 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-blue-300">
                           Original MRI
@@ -230,7 +236,7 @@ export default function NeedsRecheckPage() {
                   </div>
 
                   <div className="mx-5 mb-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         AI Classification
                       </p>
@@ -239,7 +245,7 @@ export default function NeedsRecheckPage() {
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         AI Confidence
                       </p>
@@ -251,7 +257,7 @@ export default function NeedsRecheckPage() {
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         Tumor Detected
                       </p>
@@ -276,7 +282,7 @@ export default function NeedsRecheckPage() {
                       {scan.radiologistComment || "No note added."}
                     </p>
 
-                    <div className="mt-4 rounded-lg border border-gray-700 bg-black/20 p-3">
+                    <div className="mt-4 rounded-lg border border-white/10 bg-black/20 p-3">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         Recommendation
                       </p>

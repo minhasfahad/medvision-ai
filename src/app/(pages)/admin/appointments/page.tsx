@@ -132,10 +132,13 @@ export default function ManageAppointments() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center p-8 text-white">
-        <span className="text-lg font-semibold animate-pulse">
-          Loading clinic schedule...
-        </span>
+      <div className="flex min-h-[50vh] items-center justify-center p-8 text-white">
+        <div className="text-center animate-fade-in-up">
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-blue-500/30 border-t-blue-500" />
+          <p className="mt-4 text-sm font-medium text-gray-400">
+            Loading clinic schedule...
+          </p>
+        </div>
       </div>
     );
   }
@@ -172,32 +175,44 @@ export default function ManageAppointments() {
   };
   return (
     <ProtectedRoute>
-      <div className="p-4 md:p-6 w-full max-w-full">
-        <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-white tracking-wide">
-          Global Appointment Ledger
-        </h1>
+      <div className="p-4 sm:p-6 lg:p-8 w-full max-w-full">
+        <div className="mb-6 animate-fade-in-up">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-400">
+            Scheduling
+          </p>
+          <h1 className="text-xl md:text-2xl font-bold text-white tracking-wide sm:text-3xl">
+            Global Appointment Ledger
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
+            Review, reschedule, and manage every clinical appointment booked
+            across the platform.
+          </p>
+        </div>
 
-        <div className="w-full">
+        <div
+          className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-2xl overflow-hidden animate-fade-in-up"
+          style={{ animationDelay: "80ms" }}
+        >
           <table className="w-full text-left border-collapse block md:table">
             {/* Desktop Header - Hidden on Mobile */}
-            <thead className="hidden md:table-header-group bg-[#120f26] text-gray-400 text-sm uppercase tracking-wider rounded-t-xl">
+            <thead className="hidden md:table-header-group bg-[#120f26]/80 text-gray-400 text-sm uppercase tracking-wider rounded-t-xl">
               <tr>
-                <th className="p-5 font-semibold border-b border-gray-800">
+                <th className="p-5 font-semibold border-b border-white/10">
                   Patient
                 </th>
-                <th className="p-5 font-semibold border-b border-gray-800">
+                <th className="p-5 font-semibold border-b border-white/10">
                   Doctor
                 </th>
-                <th className="p-5 font-semibold border-b border-gray-800">
+                <th className="p-5 font-semibold border-b border-white/10">
                   Time & Location
                 </th>
-                <th className="p-5 font-semibold border-b border-gray-800">
+                <th className="p-5 font-semibold border-b border-white/10">
                   Reason
                 </th>
-                <th className="p-5 font-semibold border-b border-gray-800 text-center">
+                <th className="p-5 font-semibold border-b border-white/10 text-center">
                   Status
                 </th>
-                <th className="p-5 font-semibold text-center border-b border-gray-800">
+                <th className="p-5 font-semibold text-center border-b border-white/10">
                   Action
                 </th>
               </tr>
@@ -208,20 +223,21 @@ export default function ManageAppointments() {
                 <tr className="block md:table-row">
                   <td
                     colSpan={6}
-                    className="p-6 md:p-8 text-center text-gray-500 block md:table-cell"
+                    className="p-8 md:p-10 text-center text-gray-500 block md:table-cell"
                   >
                     No appointments found in the system.
                   </td>
                 </tr>
               ) : (
-                filteredAppointments.map((app) => (
+                filteredAppointments.map((app, idx) => (
                   <tr
                     key={app._id}
+                    style={{ animationDelay: `${idx * 60}ms` }}
                     // Mobile: Turns the row into a card layout with margin bottom. Desktop: standard table row.
-                    className="block md:table-row bg-[#1a163a] md:bg-transparent border border-gray-800 md:border-none rounded-xl md:rounded-none mb-4 md:mb-0 text-gray-200 hover:bg-[#201c45] transition-colors duration-200 overflow-hidden shadow-lg md:shadow-none"
+                    className="block md:table-row bg-white/5 md:bg-transparent border border-white/10 md:border-none rounded-xl md:rounded-none mb-4 md:mb-0 text-gray-200 hover:bg-white/10 transition-colors duration-200 overflow-hidden shadow-lg md:shadow-none animate-fade-in-up"
                   >
                     {/* Patient */}
-                    <td className="p-4 md:p-5 border-b border-gray-800 md:border-none flex justify-between md:table-cell items-center">
+                    <td className="p-4 md:p-5 border-b border-white/10 md:border-none flex justify-between md:table-cell items-center">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Patient
                       </span>
@@ -231,7 +247,7 @@ export default function ManageAppointments() {
                     </td>
 
                     {/* Doctor */}
-                    <td className="p-4 md:p-5 border-b border-gray-800 md:border-none flex justify-between md:table-cell items-center">
+                    <td className="p-4 md:p-5 border-b border-white/10 md:border-none flex justify-between md:table-cell items-center">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Doctor
                       </span>
@@ -241,7 +257,7 @@ export default function ManageAppointments() {
                     </td>
 
                     {/* Time & Location */}
-                    <td className="p-4 md:p-5 border-b border-gray-800 md:border-none flex justify-between md:table-cell items-center">
+                    <td className="p-4 md:p-5 border-b border-white/10 md:border-none flex justify-between md:table-cell items-center">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Time & Loc
                       </span>
@@ -256,7 +272,7 @@ export default function ManageAppointments() {
                     </td>
 
                     {/* Reason */}
-                    <td className="p-4 md:p-5 border-b border-gray-800 md:border-none flex justify-between md:table-cell items-center">
+                    <td className="p-4 md:p-5 border-b border-white/10 md:border-none flex justify-between md:table-cell items-center">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Reason
                       </span>
@@ -266,7 +282,7 @@ export default function ManageAppointments() {
                     </td>
 
                     {/* Status */}
-                    <td className="p-4 md:p-5 border-b border-gray-800 md:border-none flex justify-between md:table-cell items-center text-center">
+                    <td className="p-4 md:p-5 border-b border-white/10 md:border-none flex justify-between md:table-cell items-center text-center">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Status
                       </span>
@@ -280,15 +296,14 @@ export default function ManageAppointments() {
                     </td>
 
                     {/* Action */}
-                    {/* Action */}
-                    <td className="p-4 md:p-5 flex justify-between md:table-cell items-center text-center bg-[#15122e] md:bg-transparent">
+                    <td className="p-4 md:p-5 flex justify-between md:table-cell items-center text-center bg-white/[0.03] md:bg-transparent">
                       <span className="md:hidden text-xs uppercase text-gray-400 font-bold">
                         Action
                       </span>
 
                       <div className="flex w-full flex-col gap-2 md:mx-auto md:max-w-[150px]">
                         <select
-                          className="bg-[#120f26] border border-gray-700 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full min-w-[130px] p-2 cursor-pointer"
+                          className="bg-[#120f26] border border-white/10 text-gray-300 text-sm rounded-lg outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 block w-full min-w-[130px] p-2 cursor-pointer transition-colors"
                           value={app.status || "Pending"}
                           onChange={(e) =>
                             handleStatusChange(
@@ -310,7 +325,7 @@ export default function ManageAppointments() {
                             onClick={() =>
                               handleDeleteAppointment(app._id, app.status)
                             }
-                            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-500 hover:text-white"
+                            className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 transition-all duration-300 shadow-[0_0_10px_rgba(239,68,68,0)] hover:bg-red-500 hover:text-white hover:shadow-[0_0_15px_rgba(239,68,68,0.4)]"
                           >
                             Delete Record
                           </button>

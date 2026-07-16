@@ -7,6 +7,7 @@ import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import Link from "next/link";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator"; // NEW IMPORT
+import { History, X, Loader2, Download, ScanLine } from "lucide-react";
 
 // 1. Interface for the Scan Data
 type RadiologistReviewStatus =
@@ -159,8 +160,11 @@ export default function MyHistoryPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-transparent text-white w-full max-w-[1400px] mx-auto pt-6 sm:pt-10 px-4 sm:px-6 pb-12">
         {/* Header Section */}
-        <div className="mb-6 sm:mb-10 text-center md:text-left">
-          <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100 mb-1.5 sm:mb-2 leading-tight">
+        <div className="mb-6 sm:mb-10 text-center md:text-left animate-fade-in-up">
+          <div className="mx-auto md:mx-0 mb-3 w-11 h-11 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+            <History className="w-5 h-5 text-blue-400" />
+          </div>
+          <h1 className="text-2xl sm:text-[28px] font-bold mb-1.5 sm:mb-2 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">
             My Medical History
           </h1>
           <p className="text-gray-400 text-xs sm:text-sm max-w-xl mx-auto md:mx-0">
@@ -182,12 +186,13 @@ export default function MyHistoryPage() {
           )}
 
           {!isLoading && !error && scans.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 bg-[#121726] rounded-2xl border border-[#2a3655] text-center">
+            <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 text-center animate-fade-in-up">
+              <ScanLine className="w-10 h-10 text-gray-600 mb-4" />
               <p className="text-gray-400 text-base sm:text-lg mb-4 sm:mb-6">
                 You have no MRI scans in your history.
               </p>
               <Link href="/try-demo" className="w-full sm:w-auto">
-                <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors shadow-lg shadow-blue-900/20 w-full sm:w-auto">
+                <button className="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 font-bold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.35)] hover:-translate-y-1 w-full sm:w-auto">
                   Scan New MRI
                 </button>
               </Link>
@@ -196,14 +201,15 @@ export default function MyHistoryPage() {
 
           {!isLoading && !error && scans.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {scans.map((scan) => (
+              {scans.map((scan, i) => (
                 <div
                   key={scan._id}
-                  className="p-4 sm:p-5 bg-[#121726] rounded-2xl border border-[#2a3655] flex flex-col h-full shadow-lg hover:border-[#3b4b75] transition-all w-full"
+                  style={{ animationDelay: `${i * 70}ms` }}
+                  className="p-4 sm:p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 flex flex-col h-full shadow-lg hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 w-full animate-fade-in-up"
                 >
                   {/* Date Badge */}
                   <div className="flex justify-between items-center gap-2 mb-4">
-                    <span className="bg-[#1e2235] text-gray-300 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full border border-gray-700 whitespace-nowrap">
+                    <span className="bg-white/10 text-gray-300 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full border border-white/10 whitespace-nowrap">
                       {new Date(scan.createdAt).toLocaleDateString("en-US", {
                         day: "numeric",
                         month: "short",
@@ -230,7 +236,7 @@ export default function MyHistoryPage() {
                   </div>
 
                   {/* Scan Image */}
-                  <div className="w-full aspect-square bg-[#0f111a] rounded-xl mb-4 flex items-center justify-center overflow-hidden border border-gray-800 shadow-inner">
+                  <div className="w-full aspect-square bg-[#0f111a] rounded-xl mb-4 flex items-center justify-center overflow-hidden border border-white/10 shadow-inner">
                     {scan.imageData ? (
                       <Image
                         src={scan.imageData}
@@ -271,7 +277,7 @@ export default function MyHistoryPage() {
 
                   {/* Doctor + Radiologist Review Section */}
                   {/* Compact Review Summary */}
-                  <div className="mt-auto pt-4 border-t border-[#2a3655] space-y-3">
+                  <div className="mt-auto pt-4 border-t border-white/10 space-y-3">
                     <div className="grid grid-cols-2 gap-2">
                       <div className="rounded-lg border border-blue-500/20 bg-blue-900/10 p-2">
                         <p className="text-[9px] text-blue-400 uppercase font-bold tracking-wider">
@@ -301,7 +307,7 @@ export default function MyHistoryPage() {
                     <button
                       type="button"
                       onClick={() => setSelectedScan(scan)}
-                      className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-xs font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all"
+                      className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-xs font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 hover:-translate-y-0.5"
                     >
                       View Full Details
                     </button>
@@ -314,9 +320,9 @@ export default function MyHistoryPage() {
       </div>
       {selectedScan && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4 py-6">
-          <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[#2a3655] bg-[#121726] shadow-2xl">
+          <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#12172a] shadow-2xl animate-fade-in-up">
             {/* Modal Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#2a3655] bg-[#121726]/95 px-5 py-4 backdrop-blur">
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-[#12172a]/95 px-5 py-4 backdrop-blur">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white">
                   MRI Scan Full Details
@@ -337,9 +343,9 @@ export default function MyHistoryPage() {
               <button
                 type="button"
                 onClick={() => setSelectedScan(null)}
-                className="rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2 text-sm font-bold text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="rounded-lg border border-white/10 bg-white/5 p-2 text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -347,7 +353,7 @@ export default function MyHistoryPage() {
             <div className="p-5">
               {/* Images */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <div className="rounded-xl border border-gray-800 bg-black/30 p-3">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                   <div className="mb-3 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-blue-300">
                       Original MRI
@@ -394,7 +400,7 @@ export default function MyHistoryPage() {
 
               {/* AI Result Details */}
               <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase tracking-wider text-gray-500">
                     AI Classification
                   </p>
@@ -409,7 +415,7 @@ export default function MyHistoryPage() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase tracking-wider text-gray-500">
                     AI Confidence
                   </p>
@@ -418,7 +424,7 @@ export default function MyHistoryPage() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase tracking-wider text-gray-500">
                     Tumor Detected
                   </p>
@@ -587,13 +593,21 @@ export default function MyHistoryPage() {
                 <button
                   onClick={handleDownloadReport}
                   disabled={isDownloading}
-                  className="w-full sm:w-auto rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-500 transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
                 >
-                  {isDownloading ? "⏳ Generating..." : "📥 Download Report"}
+                  {isDownloading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" /> Download Report
+                    </>
+                  )}
                 </button>
 
                 <Link href="/try-demo" className="w-full sm:w-auto">
-                  <button className="w-full rounded-lg border border-gray-700 bg-gray-800/60 px-5 py-2.5 text-sm font-bold text-gray-200 hover:bg-gray-700 transition-colors">
+                  <button className="w-full rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-bold text-gray-200 hover:bg-white/10 transition-all duration-300">
                     Scan New MRI
                   </button>
                 </Link>
@@ -602,7 +616,7 @@ export default function MyHistoryPage() {
                   href="/patient-dashboard/appointments"
                   className="w-full sm:w-auto"
                 >
-                  <button className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all">
+                  <button className="w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 transition-all duration-300 hover:-translate-y-0.5">
                     Book Appointment
                   </button>
                 </Link>

@@ -7,20 +7,22 @@ export default function Footer() {
       {/* PRESERVED: Exact color theme 'bg-[#060b30]/90'
         UPGRADED: Global tracking-wide font-sans layout baseline to guarantee sleek alignment
       */}
-      <footer className="bg-[#060b30]/90 foot py-8 md:py-12 px-4 md:px-12 text-white w-full font-sans tracking-wide border-t border-white/5">
+      <footer className="relative bg-[#060b30]/90 py-8 md:py-12 px-4 md:px-12 text-white w-full font-sans tracking-wide border-t border-white/5 overflow-hidden">
+        {/* Subtle ambient glow to echo the hero/section backgrounds */}
+        <div className="absolute -top-24 left-1/4 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1600px] mx-auto text-center md:text-left">
           {/* Section 1: Logo, Mission, and Technical Specificity */}
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2.5 animate-fade-in-up">
             <Link
               href="/"
               className="no-underline flex items-center space-x-2 rtl:space-x-reverse flex-none"
             >
               <Image
-                src="/logoo.jpg"
+                src="/logo-mark.png"
                 alt="MedVision Logo"
                 width={100}
                 height={50}
-                className="rounded-full w-auto h-10 sm:h-12 object-contain"
+                className="w-auto h-10 sm:h-12 object-contain"
               />
               <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white m-0">
                 MedVision <span className="text-blue-500 font-medium">AI</span>
@@ -37,7 +39,10 @@ export default function Footer() {
           </div>
 
           {/* Section 2: Legal Disclaimer & Direct Operational Routing Buttons */}
-          <div className="flex flex-col gap-3 items-center md:items-start">
+          <div
+            className="flex flex-col gap-3 items-center md:items-start animate-fade-in-up"
+            style={{ animationDelay: "80ms" }}
+          >
             <h2 className="text-sm font-bold text-gray-300 uppercase tracking-widest m-0">
               Research Disclaimer
             </h2>
@@ -53,7 +58,7 @@ export default function Footer() {
                 href="/privacy-policy"
                 className="w-full sm:w-auto no-underline"
               >
-                <button className="footer-buttons w-full sm:w-auto text-xs font-bold px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 hover:text-white rounded-lg transition-all duration-200 cursor-pointer">
+                <button className="w-full sm:w-auto text-xs font-bold px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 hover:text-white rounded-lg transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
                   Privacy Policy
                 </button>
               </Link>
@@ -62,7 +67,7 @@ export default function Footer() {
                 href="/terms-of-service"
                 className="w-full sm:w-auto no-underline"
               >
-                <button className="footer-buttons w-full sm:w-auto text-xs font-bold px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 hover:text-white rounded-lg transition-all duration-200 cursor-pointer">
+                <button className="w-full sm:w-auto text-xs font-bold px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 hover:text-white rounded-lg transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
                   Terms of Service
                 </button>
               </Link>
@@ -70,7 +75,10 @@ export default function Footer() {
           </div>
 
           {/* Section 3: Contact Channels & Premium Scaled Interactive Icons */}
-          <div className="flex flex-col gap-2.5 md:col-span-2 lg:col-span-1 items-center md:items-start">
+          <div
+            className="flex flex-col gap-2.5 md:col-span-2 lg:col-span-1 items-center md:items-start animate-fade-in-up"
+            style={{ animationDelay: "160ms" }}
+          >
             <h2 className="text-sm font-bold text-gray-300 uppercase tracking-widest m-0">
               Clinical Network Support
             </h2>
@@ -86,33 +94,33 @@ export default function Footer() {
               </p>
             </div>
 
-            <div className="foot-icons flex gap-4 mt-3 justify-center md:justify-start">
+            <div className="flex gap-3 mt-3 justify-center md:justify-start">
               <Link
                 href="https://github.com/minhasfahad"
-                className="text-lg text-gray-400 hover:text-white transition-colors duration-200"
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 hover:-translate-y-1 transition-all duration-300"
                 aria-label="Github Profile"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-github"></i>
+                <i className="fa-brands fa-github text-base"></i>
               </Link>
               <Link
                 href="https://www.linkedin.com/in/fahad-hamza-minhas/"
-                className="text-lg text-gray-400 hover:text-blue-400 transition-colors duration-200"
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-blue-400 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300"
                 aria-label="LinkedIn Profile"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-linkedin"></i>
+                <i className="fa-brands fa-linkedin text-base"></i>
               </Link>
               <Link
                 href="#"
-                className="text-lg text-gray-400 hover:text-blue-500 transition-colors duration-200"
+                className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-blue-500 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300"
                 aria-label="Facebook Profile"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-facebook"></i>
+                <i className="fa-brands fa-facebook text-base"></i>
               </Link>
             </div>
           </div>

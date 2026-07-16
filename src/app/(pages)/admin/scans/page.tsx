@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import api from "@/src/lib/axios";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import { Search, X, Eye, Trash2 } from "lucide-react";
 
 type RadiologistReviewStatus =
   | "pending"
@@ -206,8 +207,8 @@ export default function ManageScans() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="flex min-h-[50vh] items-center justify-center text-white">
-          <div className="text-center">
+        <div className="flex min-h-[50vh] items-center justify-center text-white p-4 sm:p-6 lg:p-8">
+          <div className="text-center animate-fade-in-up">
             <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-purple-500/30 border-t-purple-500" />
 
             <p className="mt-4 text-sm text-gray-400">
@@ -223,12 +224,12 @@ export default function ManageScans() {
     <ProtectedRoute>
       <div className="w-full p-4 sm:p-6 lg:p-8">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 animate-fade-in-up">
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-purple-400">
             Scan Administration
           </p>
 
-          <h1 className="text-2xl font-bold tracking-wide text-white sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-wide text-white sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 animate-gradient-x">
             System Scan Logs
           </h1>
 
@@ -239,14 +240,20 @@ export default function ManageScans() {
         </div>
 
         {/* Controls */}
-        <div className="mb-6 grid grid-cols-1 gap-3 rounded-xl border border-gray-800 bg-[#1a163a] p-4 md:grid-cols-[1fr_230px_auto]">
-          <input
-            type="text"
-            placeholder="Search patient, diagnosis, doctor, or radiologist..."
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            className="w-full rounded-lg border border-gray-700 bg-[#120f26] px-4 py-2.5 text-sm text-white outline-none placeholder:text-gray-500 focus:border-purple-500"
-          />
+        <div
+          className="mb-6 grid grid-cols-1 gap-3 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 md:grid-cols-[1fr_230px_auto] animate-fade-in-up"
+          style={{ animationDelay: "80ms" }}
+        >
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search patient, diagnosis, doctor, or radiologist..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              className="w-full rounded-lg border border-white/10 bg-[#120f26] pl-10 pr-4 py-2.5 text-sm text-white outline-none placeholder:text-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-colors"
+            />
+          </div>
 
           <select
             value={statusFilter}
@@ -257,7 +264,7 @@ export default function ManageScans() {
                   | RadiologistReviewStatus,
               )
             }
-            className="rounded-lg border border-gray-700 bg-[#120f26] px-4 py-2.5 text-sm text-gray-200 outline-none focus:border-purple-500"
+            className="rounded-lg border border-white/10 bg-[#120f26] px-4 py-2.5 text-sm text-gray-200 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 cursor-pointer transition-colors"
           >
             <option value="all">All review statuses</option>
             <option value="pending">Pending review</option>
@@ -267,23 +274,26 @@ export default function ManageScans() {
             <option value="unclear">Image unclear</option>
           </select>
 
-          <div className="flex items-center justify-center rounded-lg border border-gray-700 bg-[#120f26] px-4 py-2.5 text-sm text-gray-400">
+          <div className="flex items-center justify-center rounded-lg border border-white/10 bg-[#120f26] px-4 py-2.5 text-sm text-gray-400">
             {filteredScans.length} record
             {filteredScans.length === 1 ? "" : "s"}
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300">
+          <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 backdrop-blur-sm p-4 text-sm text-red-300 animate-fade-in-up">
             {error}
           </div>
         )}
 
         {/* Desktop table */}
-        <div className="hidden overflow-hidden rounded-xl border border-gray-800 bg-[#1a163a] shadow-xl lg:block">
+        <div
+          className="hidden overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-xl lg:block animate-fade-in-up"
+          style={{ animationDelay: "160ms" }}
+        >
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
-              <thead className="bg-[#120f26] text-xs uppercase tracking-wider text-gray-400">
+              <thead className="bg-[#120f26]/80 text-xs uppercase tracking-wider text-gray-400">
                 <tr>
                   <th className="p-4 font-semibold">Scan</th>
                   <th className="p-4 font-semibold">Patient</th>
@@ -297,19 +307,19 @@ export default function ManageScans() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y divide-white/10">
                 {filteredScans.map((scan) => (
                   <tr
                     key={scan._id}
-                    className="text-sm text-gray-200 transition-colors hover:bg-[#201c45]"
+                    className="text-sm text-gray-200 transition-colors hover:bg-white/5"
                   >
                     <td className="p-4">
-                      <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-700 bg-black">
+                      <div className="relative h-20 w-20 overflow-hidden rounded-lg border border-white/10 bg-black">
                         <Image
                           src={
                             scan.imageData ||
                             scan.originalImage ||
-                            "/logoo.jpg"
+                            "/logo-mark.png"
                           }
                           alt={`${scan.className} MRI scan`}
                           fill
@@ -398,8 +408,9 @@ export default function ManageScans() {
                         <button
                           type="button"
                           onClick={() => setSelectedScan(scan)}
-                          className="rounded-lg border border-purple-500/30 bg-purple-900/20 px-3 py-2 text-xs font-bold text-purple-300 transition-colors hover:bg-purple-600 hover:text-white"
+                          className="flex items-center gap-1.5 rounded-lg border border-purple-500/30 bg-purple-900/20 px-3 py-2 text-xs font-bold text-purple-300 transition-all duration-300 hover:bg-purple-600 hover:text-white hover:-translate-y-0.5"
                         >
+                          <Eye className="h-3.5 w-3.5" />
                           View
                         </button>
 
@@ -407,8 +418,9 @@ export default function ManageScans() {
                           type="button"
                           onClick={() => handleDelete(scan._id)}
                           disabled={deletingId === scan._id}
-                          className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                          className="flex items-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400 transition-all duration-300 hover:bg-red-500 hover:text-white hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:translate-y-0"
                         >
+                          <Trash2 className="h-3.5 w-3.5" />
                           {deletingId === scan._id
                             ? "Deleting..."
                             : "Delete"}
@@ -424,18 +436,19 @@ export default function ManageScans() {
 
         {/* Mobile and tablet cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:hidden">
-          {filteredScans.map((scan) => (
+          {filteredScans.map((scan, idx) => (
             <div
               key={scan._id}
-              className="rounded-xl border border-gray-800 bg-[#1a163a] p-4 shadow-xl"
+              style={{ animationDelay: `${idx * 60}ms` }}
+              className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 animate-fade-in-up"
             >
               <div className="flex gap-4">
-                <div className="relative h-24 w-24 flex-none overflow-hidden rounded-lg border border-gray-700 bg-black">
+                <div className="relative h-24 w-24 flex-none overflow-hidden rounded-lg border border-white/10 bg-black">
                   <Image
                     src={
                       scan.imageData ||
                       scan.originalImage ||
-                      "/logoo.jpg"
+                      "/logo-mark.png"
                     }
                     alt={`${scan.className} MRI scan`}
                     fill
@@ -510,8 +523,9 @@ export default function ManageScans() {
                 <button
                   type="button"
                   onClick={() => setSelectedScan(scan)}
-                  className="flex-1 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2.5 text-xs font-bold text-white"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2.5 text-xs font-bold text-white transition-all duration-300 hover:from-blue-500 hover:to-purple-500 hover:-translate-y-0.5 shadow-[0_0_15px_rgba(37,99,235,0.3)]"
                 >
+                  <Eye className="h-3.5 w-3.5" />
                   View Details
                 </button>
 
@@ -519,8 +533,9 @@ export default function ManageScans() {
                   type="button"
                   onClick={() => handleDelete(scan._id)}
                   disabled={deletingId === scan._id}
-                  className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-xs font-bold text-red-400 disabled:opacity-50"
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-xs font-bold text-red-400 transition-all duration-300 hover:bg-red-500 hover:text-white disabled:opacity-50"
                 >
+                  <Trash2 className="h-3.5 w-3.5" />
                   Delete
                 </button>
               </div>
@@ -529,7 +544,7 @@ export default function ManageScans() {
         </div>
 
         {filteredScans.length === 0 && (
-          <div className="rounded-xl border border-gray-800 bg-[#1a163a] p-10 text-center text-sm text-gray-500">
+          <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-10 text-center text-sm text-gray-500 animate-fade-in-up">
             No scans match the current search or review filter.
           </div>
         )}
@@ -537,9 +552,9 @@ export default function ManageScans() {
 
       {/* Full details modal */}
       {selectedScan && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 px-4 py-6 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-gray-700 bg-[#121726] shadow-2xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-800 bg-[#121726]/95 px-5 py-4 backdrop-blur">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 px-4 py-6 backdrop-blur-sm animate-in">
+          <div className="max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-2xl border border-white/10 bg-[#121726] shadow-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#121726]/95 px-5 py-4 backdrop-blur">
               <div>
                 <h2 className="text-xl font-bold text-white">
                   Administrative Scan Review
@@ -553,15 +568,15 @@ export default function ManageScans() {
               <button
                 type="button"
                 onClick={() => setSelectedScan(null)}
-                className="rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2 text-gray-300 hover:bg-gray-700"
+                className="rounded-lg border border-white/10 bg-white/5 p-2 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
               >
-                ✕
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="p-5">
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <div className="rounded-xl border border-gray-800 bg-black/30 p-3">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                   <p className="mb-3 text-sm font-bold text-blue-300">
                     Original MRI
                   </p>
@@ -597,7 +612,7 @@ export default function ManageScans() {
               </div>
 
               <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-4">
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase text-gray-500">
                     Patient
                   </p>
@@ -606,7 +621,7 @@ export default function ManageScans() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase text-gray-500">
                     Classification
                   </p>
@@ -621,7 +636,7 @@ export default function ManageScans() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase text-gray-500">
                     Confidence
                   </p>
@@ -630,7 +645,7 @@ export default function ManageScans() {
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                   <p className="text-xs uppercase text-gray-500">
                     Scan Date
                   </p>
@@ -744,7 +759,7 @@ export default function ManageScans() {
                         </p>
                       </div>
 
-                      <div className="mt-4 rounded-lg border border-gray-700 bg-black/20 p-3">
+                      <div className="mt-4 rounded-lg border border-white/10 bg-black/20 p-3">
                         <p className="text-[10px] font-bold uppercase text-gray-500">
                           Recommendation
                         </p>
@@ -780,7 +795,7 @@ export default function ManageScans() {
                 <button
                   type="button"
                   onClick={() => setSelectedScan(null)}
-                  className="rounded-lg border border-gray-700 bg-gray-800/60 px-5 py-2.5 text-sm font-bold text-gray-200 hover:bg-gray-700"
+                  className="rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-bold text-gray-200 transition-colors hover:bg-white/10"
                 >
                   Close
                 </button>
@@ -789,8 +804,9 @@ export default function ManageScans() {
                   type="button"
                   onClick={() => handleDelete(selectedScan._id)}
                   disabled={deletingId === selectedScan._id}
-                  className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-500 disabled:opacity-50"
+                  className="flex items-center gap-1.5 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:bg-red-500 hover:-translate-y-0.5 disabled:opacity-50 disabled:translate-y-0"
                 >
+                  <Trash2 className="h-4 w-4" />
                   {deletingId === selectedScan._id
                     ? "Deleting..."
                     : "Delete Record"}

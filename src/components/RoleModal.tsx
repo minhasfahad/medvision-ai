@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import api from "@/src/lib/axios"; // Using your existing axios setup
+import { Sparkles, User, Stethoscope, ShieldCheck, Microscope } from "lucide-react";
 
 export default function RoleModal() {
   const { user, updateUser } = useAuthStore();
@@ -38,10 +39,13 @@ export default function RoleModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="w-full max-w-md p-8 border-2 border-blue-400 shadow-[0_0_20px_#5ed4ff] rounded-lg bg-[#1a163a] text-white text-center">
-        <h2 className="text-2xl font-bold mb-2">Welcome to MedVision AI!</h2>
-        <p className="text-gray-300 mb-6 text-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+      <div className="w-full max-w-md p-8 border border-white/10 shadow-[0_0_40px_rgba(37,99,235,0.25)] rounded-2xl bg-[#12172a]/95 backdrop-blur-md text-white text-center animate-fade-in-up">
+        <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+          <Sparkles className="w-7 h-7 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2 text-white">Welcome to MedVision AI!</h2>
+        <p className="text-gray-400 mb-6 text-sm leading-relaxed">
           To complete your account setup, please tell us how you will be using
           the platform.
         </p>
@@ -50,32 +54,44 @@ export default function RoleModal() {
           <button
             onClick={() => handleRoleSelect("Patient")}
             disabled={loading}
-            className="w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9] py-2 px-4 font-bold transition-all hover:bg-white/10 disabled:opacity-50"
+            className="w-full flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 py-3 px-4 font-bold text-gray-100 transition-all duration-300 hover:bg-white/10 hover:border-blue-500/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
+            <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center flex-none">
+              <User className="w-5 h-5 text-blue-400" />
+            </div>
             I am a Patient
           </button>
 
           <button
             onClick={() => handleRoleSelect("Doctor")}
             disabled={loading}
-            className="w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9] py-2 px-4 font-bold transition-all hover:bg-white/10 disabled:opacity-50"
+            className="w-full flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 py-3 px-4 font-bold text-gray-100 transition-all duration-300 hover:bg-white/10 hover:border-purple-500/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
+            <div className="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center flex-none">
+              <Stethoscope className="w-5 h-5 text-purple-400" />
+            </div>
             I am a Doctor
           </button>
 
           <button
             onClick={() => handleRoleSelect("Admin")}
             disabled={loading}
-            className="w-full border-2 border-red-400 shadow-[0_0_10px_#ff7b7b] py-2 px-4 font-bold transition-all hover:bg-white/10 disabled:opacity-50 text-red-200"
+            className="w-full flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 py-3 px-4 font-bold text-gray-100 transition-all duration-300 hover:bg-white/10 hover:border-emerald-500/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
+            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-none">
+              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            </div>
             I am an Admin
           </button>
           <button
             onClick={() => handleRoleSelect("Radiologist")}
             disabled={loading}
-            className="w-full border-2 border-red-400 shadow-[0_0_10px_#ff7b7b] py-2 px-4 font-bold transition-all hover:bg-white/10 disabled:opacity-50 text-red-200"
+            className="w-full flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 py-3 px-4 font-bold text-gray-100 transition-all duration-300 hover:bg-white/10 hover:border-amber-500/40 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
-            I am a Radiologist.
+            <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center flex-none">
+              <Microscope className="w-5 h-5 text-amber-400" />
+            </div>
+            I am a Radiologist
           </button>
         </div>
 

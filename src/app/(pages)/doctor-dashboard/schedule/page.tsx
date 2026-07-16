@@ -6,6 +6,15 @@ import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Video,
+  Loader2,
+  Lock,
+} from "lucide-react";
 
 type ReviewStatus =
   | "pending"
@@ -213,7 +222,7 @@ export default function DoctorSchedulePage() {
         
         {/* LEFT COLUMN: APPOINTMENT LIST */}
         <aside className="w-full lg:w-[400px] flex flex-col gap-4 flex-none h-auto lg:h-full overflow-y-auto custom-scrollbar pr-0 lg:pr-2 print:hidden">
-          <div className="mb-2 sm:mb-4 flex-none">
+          <div className="mb-2 sm:mb-4 flex-none animate-fade-in-up">
             <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100">
               Todays Schedule
             </h1>
@@ -223,25 +232,27 @@ export default function DoctorSchedulePage() {
           </div>
 
           {isLoading ? (
-            <div className="text-blue-400 animate-pulse text-sm py-4">
+            <div className="flex items-center gap-2 text-blue-400 text-sm py-4">
+              <Loader2 className="w-4 h-4 animate-spin" />
               Loading schedules...
             </div>
           ) : appointments.length === 0 ? (
-            <div className="text-gray-500 bg-[#121726] p-6 rounded-xl border border-gray-800 text-center text-sm">
+            <div className="text-gray-500 bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 text-center text-sm animate-fade-in-up">
               No appointments found.
             </div>
           ) : (
             <div className="flex flex-col gap-3 sm:gap-4 flex-1 overflow-y-auto p-1">
-              {appointments.map((appt) => {
+              {appointments.map((appt, idx) => {
                 const expired = isExpired(appt.appointmentDate);
                 return (
                   <div
                     key={appt._id}
                     onClick={() => setSelectedAppt(appt)}
-                    className={`p-4 rounded-xl border cursor-pointer transition-all flex-none ${
+                    style={{ animationDelay: `${idx * 60}ms` }}
+                    className={`p-4 rounded-xl border cursor-pointer transition-all duration-300 flex-none animate-fade-in-up hover:-translate-y-0.5 ${
                       selectedAppt?._id === appt._id
-                        ? "bg-[#1e2235] border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.1)]"
-                        : "bg-[#121726] border-[#2a3655] hover:border-gray-500"
+                        ? "bg-[#1e2235] border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                        : "bg-white/5 backdrop-blur-sm border-white/10 hover:border-gray-500"
                     }`}
                   >
                     <div className="flex justify-between items-start gap-2 mb-2">
@@ -268,8 +279,9 @@ export default function DoctorSchedulePage() {
                           e.stopPropagation();
                           window.open(`/consultation/${appt._id}`, "_blank");
                         }}
-                        className="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-bold transition-all"
+                        className="mt-4 w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5"
                       >
+                        <Video className="w-4 h-4" />
                         Join Video Consultation
                       </button>
                     )}
@@ -281,7 +293,7 @@ export default function DoctorSchedulePage() {
         </aside>
 
         {/* RIGHT COLUMN */}
-        <main className="flex-1 bg-[#121726] rounded-2xl border border-[#2a3655] p-4 sm:p-6 lg:p-8 shadow-xl overflow-y-auto h-auto lg:h-full custom-scrollbar print:block print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:border-none print:shadow-none print:text-black">
+        <main className="flex-1 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4 sm:p-6 lg:p-8 shadow-xl overflow-y-auto h-auto lg:h-full custom-scrollbar print:block print:w-full print:h-auto print:overflow-visible print:bg-white print:p-0 print:border-none print:shadow-none print:text-black">
           {!selectedAppt ? (
             <div className="flex items-center justify-center h-48 lg:h-full text-gray-500 text-sm print:hidden">
               Select an appointment from the list to view details.
@@ -301,10 +313,11 @@ export default function DoctorSchedulePage() {
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-100">
                       Consultation Details
                     </h2>
-                    {/* ✅ Expired warning banner */}
+                    {/* Expired warning banner */}
                     {expired && !isFinal && (
-                      <p className="text-amber-400 text-xs mt-1 font-semibold">
-                        ⚠️ This appointment time has passed.
+                      <p className="text-amber-400 text-xs mt-1 font-semibold flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        This appointment time has passed.
                       </p>
                     )}
                   </div>
@@ -313,7 +326,13 @@ export default function DoctorSchedulePage() {
                     disabled={isDownloading || !patientScan}
                     className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-[#1e293b] disabled:text-gray-500 border border-transparent text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                   >
-                    {isDownloading ? "⏳ Generating..." : !patientScan ? "No Scan Available" : (
+                    {isDownloading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Generating...
+                      </>
+                    ) : !patientScan ? (
+                      "No Scan Available"
+                    ) : (
                       <>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -325,7 +344,7 @@ export default function DoctorSchedulePage() {
                 </div>
 
                 {/* Details Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#1e2235] p-4 sm:p-6 rounded-xl border border-gray-700/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/5 backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-white/10">
                   <div>
                     <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Patient Name</p>
                     <p className="text-base font-bold text-gray-100">{selectedAppt.patientName || "Unknown"}</p>
@@ -351,16 +370,28 @@ export default function DoctorSchedulePage() {
 
                   {/* CASE 1: Already in a final state */}
                   {isFinal && (
-                    <div className={`w-full text-center py-3 rounded-lg text-sm font-bold border ${
+                    <div className={`w-full text-center py-3 rounded-lg text-sm font-bold border flex items-center justify-center gap-2 ${
                       selectedAppt.status === "Completed"
                         ? "bg-blue-900/20 border-blue-500/30 text-blue-400"
                         : selectedAppt.status === "Patient Absent"
                         ? "bg-orange-900/20 border-orange-500/30 text-orange-400"
                         : "bg-red-900/20 border-red-500/30 text-red-400"
                     }`}>
-                      {selectedAppt.status === "Completed" && "✅ Consultation marked as Completed."}
-                      {selectedAppt.status === "Patient Absent" && "⚠️ Patient was marked as Absent."}
-                      {selectedAppt.status === "Cancelled" && "🔒 Appointment was Cancelled."}
+                      {selectedAppt.status === "Completed" && (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" /> Consultation marked as Completed.
+                        </>
+                      )}
+                      {selectedAppt.status === "Patient Absent" && (
+                        <>
+                          <AlertTriangle className="w-4 h-4" /> Patient was marked as Absent.
+                        </>
+                      )}
+                      {selectedAppt.status === "Cancelled" && (
+                        <>
+                          <Lock className="w-4 h-4" /> Appointment was Cancelled.
+                        </>
+                      )}
                     </div>
                   )}
 
@@ -370,14 +401,16 @@ export default function DoctorSchedulePage() {
                       <button
                         onClick={() => handleStatusUpdate(selectedAppt._id, "Confirmed")}
                         disabled={selectedAppt.status === "Confirmed"}
-                        className="flex-1 bg-green-600 hover:bg-green-500 disabled:bg-green-900/30 disabled:text-green-500/50 text-white py-3 rounded-lg text-sm font-bold transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 disabled:bg-green-900/30 disabled:text-green-500/50 text-white py-3 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5"
                       >
-                        {selectedAppt.status === "Confirmed" ? "✓ Already Confirmed" : "Confirm Appointment"}
+                        <CheckCircle2 className="w-4 h-4" />
+                        {selectedAppt.status === "Confirmed" ? "Already Confirmed" : "Confirm Appointment"}
                       </button>
                       <button
                         onClick={() => handleStatusUpdate(selectedAppt._id, "Cancelled")}
-                        className="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg text-sm font-bold transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5"
                       >
+                        <XCircle className="w-4 h-4" />
                         Cancel Appointment
                       </button>
                     </div>
@@ -392,15 +425,17 @@ export default function DoctorSchedulePage() {
                       <div className="flex flex-col sm:flex-row gap-3">
                         <button
                           onClick={() => handleStatusUpdate(selectedAppt._id, "Completed")}
-                          className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg text-sm font-bold transition-colors"
+                          className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5"
                         >
-                          ✅ Mark as Completed
+                          <CheckCircle2 className="w-4 h-4" />
+                          Mark as Completed
                         </button>
                         <button
                           onClick={() => handleStatusUpdate(selectedAppt._id, "Patient Absent")}
-                          className="flex-1 bg-orange-600 hover:bg-orange-500 text-white py-3 rounded-lg text-sm font-bold transition-colors"
+                          className="flex-1 flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 text-white py-3 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5"
                         >
-                          ⚠️ Patient Absent
+                          <AlertTriangle className="w-4 h-4" />
+                          Patient Absent
                         </button>
                       </div>
                     </div>
@@ -408,8 +443,9 @@ export default function DoctorSchedulePage() {
 
                   {/* CASE 4: Time HAS passed AND status is still Pending → expired, lock it */}
                   {expired && selectedAppt.status === "Pending" && (
-                    <div className="w-full text-center py-3 bg-gray-800/50 border border-gray-700 text-gray-500 text-sm font-bold rounded-lg">
-                      🕐 This appointment expired without confirmation.
+                    <div className="w-full flex items-center justify-center gap-2 text-center py-3 bg-white/5 border border-white/10 text-gray-500 text-sm font-bold rounded-lg">
+                      <Clock className="w-4 h-4" />
+                      This appointment expired without confirmation.
                     </div>
                   )}
                 </div>
@@ -418,12 +454,12 @@ export default function DoctorSchedulePage() {
                 <div className="mt-2 border-t border-gray-800 pt-6">
                   <h3 className="text-lg font-bold text-gray-100 mb-4">Analysis Result</h3>
                   {!patientScan ? (
-                    <div className="text-gray-500 text-center py-10 bg-[#0f111a] rounded-xl border border-gray-800 border-dashed text-sm">
+                    <div className="text-gray-500 text-center py-10 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 border-dashed text-sm">
                       No recent MRI scans found for this patient.
                     </div>
                   ) : (
                     <div className="flex flex-col gap-6">
-                      <div className="w-full xl:w-1/2 aspect-square bg-[#0f111a] rounded-xl border border-gray-800 overflow-hidden flex items-center justify-center p-2">
+                      <div className="w-full xl:w-1/2 aspect-square bg-[#0f111a] rounded-xl border border-white/10 overflow-hidden flex items-center justify-center p-2">
                         {patientScan.imageData ? (
                           <Image
                             src={patientScan.imageData}
@@ -444,13 +480,13 @@ export default function DoctorSchedulePage() {
                             {patientScan.className}
                           </h4>
                           <div className="w-full bg-gray-800 rounded-full h-2.5 mt-4">
-                            <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${patientScan.confidence}%` }} />
+                            <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${patientScan.confidence}%` }} />
                           </div>
                           <p className="text-right text-xs text-gray-400 mt-2 font-semibold">
                             {patientScan.confidence.toFixed(2)}% AI Certainty
                           </p>
                         </div>
-                        <div className="p-4 sm:p-6 bg-[#1e2235] rounded-xl border border-gray-700/50">
+                        <div className="p-4 sm:p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
                           <p className="text-gray-400 text-xs uppercase tracking-wider mb-3">Clinical Observations</p>
                           <p className="text-gray-200 text-sm leading-relaxed">
                             {patientScan.comment || <span className="italic text-gray-500">No clinical notes added yet.</span>}

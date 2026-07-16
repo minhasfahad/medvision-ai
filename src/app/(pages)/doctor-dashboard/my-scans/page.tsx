@@ -7,6 +7,7 @@ import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import Link from "next/link";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator";
+import { X, Download, Loader2, Upload as UploadIcon, ImageOff } from "lucide-react";
 
 type RadiologistReviewStatus =
   | "pending"
@@ -155,7 +156,7 @@ export default function DoctorPersonalScansPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-transparent text-white w-full max-w-[1400px] mx-auto pt-6 sm:pt-10 px-4 sm:px-6 pb-12">
         {/* Header Section */}
-        <div className="mb-6 sm:mb-10 text-center md:text-left">
+        <div className="mb-6 sm:mb-10 text-center md:text-left animate-fade-in-up">
           <h1 className="text-2xl sm:text-[28px] font-bold text-gray-100 mb-1.5 sm:mb-2 leading-tight">
             My Personal Scans
           </h1>
@@ -167,7 +168,8 @@ export default function DoctorPersonalScansPage() {
 
         <section>
           {isLoading && (
-            <div className="text-purple-400 animate-pulse text-base sm:text-lg text-center md:text-left py-4">
+            <div className="flex items-center justify-center gap-2 text-purple-400 text-base sm:text-lg md:justify-start py-4">
+              <Loader2 className="w-5 h-5 animate-spin" />
               Retrieving your personal records...
             </div>
           )}
@@ -179,12 +181,16 @@ export default function DoctorPersonalScansPage() {
           )}
 
           {!isLoading && !error && scans.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 bg-[#121726] rounded-2xl border border-[#2a3655] text-center">
+            <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 text-center animate-fade-in-up">
+              <div className="w-14 h-14 rounded-full bg-purple-900/30 border border-purple-500/20 flex items-center justify-center mb-4">
+                <ImageOff className="w-6 h-6 text-purple-400" />
+              </div>
               <p className="text-gray-400 text-base sm:text-lg mb-4 sm:mb-6">
                 You have no personal MRI scans in your history.
               </p>
               <Link href="/try-demo" className="w-full sm:w-auto">
-                <button className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors shadow-lg shadow-purple-900/20 w-full sm:w-auto">
+                <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-1 w-full sm:w-auto">
+                  <UploadIcon className="w-4 h-4" />
                   Upload New Scan
                 </button>
               </Link>
@@ -193,10 +199,11 @@ export default function DoctorPersonalScansPage() {
 
           {!isLoading && !error && scans.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-              {scans.map((scan) => (
+              {scans.map((scan, idx) => (
                 <div
                   key={scan._id}
-                  className="p-4 sm:p-5 bg-[#121726] rounded-2xl border border-[#2a3655] flex flex-col h-full shadow-lg hover:border-[#3b4b75] transition-all w-full"
+                  style={{ animationDelay: `${idx * 80}ms` }}
+                  className="p-4 sm:p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 flex flex-col h-full shadow-lg hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 w-full animate-fade-in-up"
                 >
                   {/* Date + Badges */}
                   <div className="flex justify-between items-center gap-2 mb-4">
@@ -314,9 +321,9 @@ export default function DoctorPersonalScansPage() {
       {/* Full Details Modal */}
       {selectedScan && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4 py-6">
-          <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[#2a3655] bg-[#121726] shadow-2xl">
+          <div className="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#121726] shadow-2xl animate-fade-in-up">
             {/* Modal Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#2a3655] bg-[#121726]/95 px-5 py-4 backdrop-blur">
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-[#121726]/95 px-5 py-4 backdrop-blur">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white">
                   Personal MRI Scan Details
@@ -337,9 +344,9 @@ export default function DoctorPersonalScansPage() {
               <button
                 type="button"
                 onClick={() => setSelectedScan(null)}
-                className="rounded-lg border border-gray-700 bg-gray-800/60 px-3 py-2 text-sm font-bold text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                className="rounded-lg border border-white/10 bg-white/5 p-2 text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -533,7 +540,7 @@ export default function DoctorPersonalScansPage() {
               {/* Footer actions */}
               <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:justify-end">
                 <Link href="/try-demo" className="w-full sm:w-auto">
-                  <button className="w-full rounded-lg border border-gray-700 bg-gray-800/60 px-5 py-2.5 text-sm font-bold text-gray-200 hover:bg-gray-700 transition-colors">
+                  <button className="w-full rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-bold text-gray-200 hover:bg-white/10 transition-colors">
                     Scan New MRI
                   </button>
                 </Link>
@@ -542,12 +549,20 @@ export default function DoctorPersonalScansPage() {
                   disabled={isDownloading}
                   className="w-full sm:w-auto rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-500 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                  {isDownloading ? "⏳ Generating..." : "📥 Download Report"}
+                  {isDownloading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" /> Download Report
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedScan(null)}
-                  className="w-full sm:w-auto rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:from-purple-500 hover:to-blue-500 transition-all"
+                  className="w-full sm:w-auto rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:from-purple-500 hover:to-blue-500 hover:-translate-y-0.5 transition-all"
                 >
                   Close Details
                 </button>

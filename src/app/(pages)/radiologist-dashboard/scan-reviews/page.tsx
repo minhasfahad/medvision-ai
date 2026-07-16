@@ -6,6 +6,7 @@ import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import Image from "next/image";
 import { generateSavedScanReportPDF } from "@/src/lib/utils/pdfGenerator";
+import { Clock, CheckCircle2, Download, Loader2 } from "lucide-react";
 
 type ReviewStatus =
   | "pending"
@@ -185,7 +186,8 @@ export default function PendingScanReviewsPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="flex h-64 items-center justify-center text-white">
+        <div className="flex h-64 items-center justify-center text-white gap-3">
+          <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
           <span className="text-lg font-medium animate-pulse">
             Loading pending MRI reviews...
           </span>
@@ -196,10 +198,11 @@ export default function PendingScanReviewsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-6">
-        <div className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="p-4 sm:p-6">
+        <div className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between animate-fade-in-up">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-wide">
+            <h1 className="text-3xl font-bold text-white tracking-wide flex items-center gap-3">
+              <Clock className="w-7 h-7 text-purple-400" />
               Pending MRI Scan Reviews
             </h1>
 
@@ -209,15 +212,17 @@ export default function PendingScanReviewsPage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-purple-500/30 bg-purple-600/10 px-5 py-3 text-sm text-purple-200">
+          <div className="rounded-xl border border-purple-500/30 bg-purple-600/10 backdrop-blur-sm px-5 py-3 text-sm text-purple-200">
             Pending Reviews:{" "}
             <span className="font-bold text-white">{scans.length}</span>
           </div>
         </div>
 
         {scans.length === 0 ? (
-          <div className="rounded-2xl border border-gray-800 bg-[#1a163a] p-10 text-center shadow-xl">
-            <div className="text-4xl mb-4">✅</div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-10 text-center shadow-xl animate-fade-in-up">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+            </div>
             <h2 className="text-xl font-bold text-white">
               No pending scans right now
             </h2>
@@ -227,17 +232,18 @@ export default function PendingScanReviewsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
-            {scans.map((scan) => {
+            {scans.map((scan, index) => {
               const status = scan.radiologistReviewStatus || "pending";
               const isCurrentlyDownloading = downloadingId === scan._id;
 
               return (
                 <div
                   key={scan._id}
-                  className="rounded-2xl border border-gray-800 bg-[#1a163a] shadow-xl overflow-hidden"
+                  className="rounded-2xl border border-white/10 bg-[#12172a]/80 backdrop-blur-md shadow-xl overflow-hidden hover:border-purple-500/30 transition-all duration-300 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 80}ms` }}
                 >
                   {/* Header */}
-                  <div className="border-b border-gray-800 p-5 flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                  <div className="border-b border-white/10 p-5 flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                     <div>
                       <h2 className="text-xl font-bold text-white">
                         {scan.user?.name || "Unknown Patient"}
@@ -262,20 +268,27 @@ export default function PendingScanReviewsPage() {
                           {getStatusLabel(status)}
                         </span>
 
-                        {/* --- NEW DOWNLOAD BUTTON --- */}
                         <button
                           onClick={() => handleDownloadReport(scan)}
                           disabled={isCurrentlyDownloading}
-                          className="w-full sm:w-auto mt-2 rounded-lg bg-emerald-600/20 border border-emerald-500/50 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-600/40 transition-colors disabled:opacity-70 flex items-center justify-center gap-1"
+                          className="w-full sm:w-auto mt-2 rounded-lg bg-emerald-600/20 border border-emerald-500/50 px-3 py-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-600/40 hover:-translate-y-0.5 transition-all disabled:opacity-70 flex items-center justify-center gap-1.5"
                         >
-                          {isCurrentlyDownloading ? "⏳ Generating..." : "📥 Download Report"}
+                          {isCurrentlyDownloading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="w-3.5 h-3.5" /> Download Report
+                            </>
+                          )}
                         </button>
                     </div>
                   </div>
 
                   {/* Images */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-5">
-                    <div className="rounded-xl border border-gray-800 bg-black/30 p-3">
+                    <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                       <div className="mb-3 flex items-center justify-between">
                         <h3 className="text-sm font-bold text-blue-300">
                           Original MRI
@@ -321,7 +334,7 @@ export default function PendingScanReviewsPage() {
 
                   {/* AI Details */}
                   <div className="mx-5 mb-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         AI Classification
                       </p>
@@ -330,7 +343,7 @@ export default function PendingScanReviewsPage() {
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         AI Confidence
                       </p>
@@ -342,7 +355,7 @@ export default function PendingScanReviewsPage() {
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-gray-800 bg-black/20 p-4">
+                    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                       <p className="text-xs uppercase tracking-wider text-gray-500">
                         Tumor Detected
                       </p>
@@ -371,7 +384,7 @@ export default function PendingScanReviewsPage() {
                   )}
 
                   {/* Radiologist Review Form */}
-                  <div className="border-t border-gray-800 p-5">
+                  <div className="border-t border-white/10 p-5">
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                       <div>
                         <label className="mb-2 block text-sm font-semibold text-gray-300">
@@ -387,10 +400,10 @@ export default function PendingScanReviewsPage() {
                               e.target.value as ReviewStatus,
                             )
                           }
-                          className="w-full rounded-xl border border-gray-700 bg-[#060b30] px-4 py-3 text-sm text-white outline-none focus:border-purple-500"
+                          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-colors"
                         >
                           {statusOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
+                            <option key={option.value} value={option.value} className="bg-[#12172a] text-white">
                               {option.label}
                             </option>
                           ))}
@@ -411,11 +424,11 @@ export default function PendingScanReviewsPage() {
                               e.target.value,
                             )
                           }
-                          className="w-full rounded-xl border border-gray-700 bg-[#060b30] px-4 py-3 text-sm text-white outline-none focus:border-purple-500"
+                          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-colors"
                         >
-                          <option value="">Select recommendation</option>
+                          <option value="" className="bg-[#12172a] text-white">Select recommendation</option>
                           {recommendationOptions.map((option) => (
-                            <option key={option} value={option}>
+                            <option key={option} value={option} className="bg-[#12172a] text-white">
                               {option}
                             </option>
                           ))}
@@ -439,7 +452,7 @@ export default function PendingScanReviewsPage() {
                         }
                         rows={4}
                         placeholder="Example: AI prediction reviewed. The highlighted region appears consistent with the abnormal area. Clinical correlation is recommended."
-                        className="w-full resize-none rounded-xl border border-gray-700 bg-[#060b30] px-4 py-3 text-sm leading-6 text-white outline-none focus:border-purple-500"
+                        className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm leading-6 text-white placeholder-gray-500 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-colors"
                       />
                     </div>
 
@@ -452,8 +465,11 @@ export default function PendingScanReviewsPage() {
                       <button
                         onClick={() => handleSaveReview(scan)}
                         disabled={savingId === scan._id}
-                        className="rounded-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(168,85,247,0.35)] transition-all hover:from-blue-500 hover:to-purple-500 disabled:opacity-60"
+                        className="rounded-xl border-0 bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(168,85,247,0.35)] transition-all hover:from-blue-500 hover:to-purple-500 hover:-translate-y-1 disabled:opacity-60 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
                       >
+                        {savingId === scan._id && (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        )}
                         {savingId === scan._id
                           ? "Saving Review..."
                           : "Save Review"}

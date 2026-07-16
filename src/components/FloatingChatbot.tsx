@@ -27,7 +27,12 @@ export const FloatingChatbot = () => {
         - Professional Glow: The shadow shadow-xl shadow-purple-500/30 adds depth.
         - Custom Animation: Replaced animate-bounce with animate-bounce-slow.
       */}
-      <div className="relative w-20 h-20 rounded-full bg-[#1a163a] border border-purple-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all duration-300 transform group-hover:scale-110 group-hover:-translate-y-2 animate-bounce-slow cursor-pointer">
+      {/* Tooltip label, fades in on hover */}
+      <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-[#12172a]/95 backdrop-blur-md border border-white/10 text-xs font-semibold text-gray-200 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 pointer-events-none shadow-xl">
+        Ask MedVision AI
+      </span>
+
+      <div className="relative w-20 h-20 rounded-full bg-[#1a163a] border border-purple-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all duration-300 transform group-hover:scale-110 group-hover:-translate-y-2 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] animate-bounce-slow cursor-pointer">
         {/* Increased image size from 40 to 50 */}
         <Image
           src="/chatbot.png"

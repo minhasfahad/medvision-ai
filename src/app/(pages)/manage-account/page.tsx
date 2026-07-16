@@ -6,6 +6,7 @@ import api from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import Image from "next/image"; // Added for optimized avatar rendering
+import { User, Lock, AlertTriangle, Camera, Save, KeyRound, Trash2 } from "lucide-react";
 
 export default function ManageAccountPage() {
   const { user, clear, updateUser } = useAuthStore();
@@ -172,7 +173,7 @@ export default function ManageAccountPage() {
       <div className="min-h-screen bg-transparent text-white pt-20 sm:pt-24 px-4 pb-12">
         <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
           <div className="text-left">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
               Account Settings
             </h1>
             <p className="text-gray-400 text-xs sm:text-sm mt-1">
@@ -181,21 +182,9 @@ export default function ManageAccountPage() {
           </div>
 
           {/* 1. PROFILE INFORMATION CARD */}
-          <div className="bg-[#121726] border border-[#2a3655] rounded-2xl p-5 sm:p-8 shadow-xl">
+          <div className="bg-[#0f1123]/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 sm:p-8 shadow-xl animate-fade-in-up">
             <h2 className="text-lg sm:text-xl font-bold text-white mb-5 sm:mb-6 flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-blue-500 flex-none"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                ></path>
-              </svg>
+              <User className="w-5 h-5 text-blue-500 flex-none" />
               Personal Information
             </h2>
 
@@ -210,7 +199,7 @@ export default function ManageAccountPage() {
                 </label>
                 <div className="flex items-center gap-5">
                   <div
-                    className="relative w-20 h-20 rounded-full overflow-hidden bg-[#1e2235] border-2 border-gray-700 cursor-pointer hover:border-blue-500 transition-colors flex-shrink-0"
+                    className="group relative w-20 h-20 rounded-full overflow-hidden bg-white/5 border-2 border-white/10 cursor-pointer hover:border-blue-500 transition-colors flex-shrink-0"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     {profileData.image ? (
@@ -218,33 +207,26 @@ export default function ManageAccountPage() {
                         src={profileData.image}
                         alt="Profile Preview"
                         fill
+                        unoptimized   
                         className="object-cover"
+                        sizes="40px"
                       />
                     ) : (
                       <div className="flex items-center justify-center w-full h-full text-gray-500">
-                        <svg
-                          className="w-8 h-8"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
+                        <User className="w-8 h-8" />
                       </div>
                     )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <Camera className="w-6 h-6 text-white" />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-sm bg-[#1e2235] hover:bg-gray-700 border border-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+                      className="text-sm bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2 w-fit"
                     >
-                      Change Picture
+                      <Camera className="w-4 h-4" /> Change Picture
                     </button>
                     <p className="text-xs text-gray-500">
                       JPG, PNG or WEBP. Max 5MB.
@@ -273,7 +255,7 @@ export default function ManageAccountPage() {
                     onChange={(e) =>
                       setProfileData({ ...profileData, name: e.target.value })
                     }
-                    className="w-full bg-[#1e2235] border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-500"
                   />
                 </div>
 
@@ -286,7 +268,7 @@ export default function ManageAccountPage() {
                     type="email"
                     value={user?.email || ""}
                     disabled
-                    className="w-full bg-[#1e2235]/50 border border-gray-800 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-gray-500 cursor-not-allowed truncate"
+                    className="w-full bg-white/5 border border-white/5 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-gray-500 cursor-not-allowed truncate"
                   />
                 </div>
 
@@ -301,7 +283,7 @@ export default function ManageAccountPage() {
                     onChange={(e) =>
                       setProfileData({ ...profileData, age: e.target.value })
                     }
-                    className="w-full bg-[#1e2235] border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-500"
                   />
                 </div>
 
@@ -314,38 +296,26 @@ export default function ManageAccountPage() {
                     type="text"
                     value={user?.role || ""}
                     disabled
-                    className="w-full bg-[#1e2235]/50 border border-gray-800 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-gray-500 cursor-not-allowed capitalize"
+                    className="w-full bg-white/5 border border-white/5 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-gray-500 cursor-not-allowed capitalize"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end pt-4 border-t border-gray-800">
+              <div className="flex justify-end pt-4 border-t border-white/10">
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors w-full sm:w-auto"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-1 w-full sm:w-auto flex items-center justify-center gap-2"
                 >
-                  Save Changes
+                  <Save className="w-4 h-4" /> Save Changes
                 </button>
               </div>
             </form>
           </div>
 
           {/* 2. SECURITY CARD */}
-          <div className="bg-[#121726] border border-[#2a3655] rounded-2xl p-5 sm:p-8 shadow-xl">
+          <div className="bg-[#0f1123]/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 sm:p-8 shadow-xl animate-fade-in-up" style={{ animationDelay: "80ms" }}>
             <h2 className="text-lg sm:text-xl font-bold text-white mb-5 sm:mb-6 flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-emerald-500 flex-none"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                ></path>
-              </svg>
+              <Lock className="w-5 h-5 text-emerald-500 flex-none" />
               Security & Password
             </h2>
 
@@ -366,7 +336,7 @@ export default function ManageAccountPage() {
                       currentPassword: e.target.value,
                     })
                   }
-                  className="w-full bg-[#1e2235] border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   required
                 />
               </div>
@@ -384,7 +354,7 @@ export default function ManageAccountPage() {
                       newPassword: e.target.value,
                     })
                   }
-                  className="w-full bg-[#1e2235] border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   required
                 />
               </div>
@@ -402,38 +372,26 @@ export default function ManageAccountPage() {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="w-full bg-[#1e2235] border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   required
                 />
               </div>
 
-              <div className="pt-4 border-t border-gray-800">
+              <div className="pt-4 border-t border-white/10">
                 <button
                   type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors w-full sm:w-auto"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.4)] hover:-translate-y-1 w-full sm:w-auto flex items-center justify-center gap-2"
                 >
-                  Update Password
+                  <KeyRound className="w-4 h-4" /> Update Password
                 </button>
               </div>
             </form>
           </div>
 
           {/* 3. DANGER ZONE CARD */}
-          <div className="bg-red-950/10 border border-red-900/30 rounded-2xl p-5 sm:p-8 shadow-xl w-full">
+          <div className="bg-red-950/10 backdrop-blur-md border border-red-900/30 rounded-2xl p-5 sm:p-8 shadow-xl w-full animate-fade-in-up" style={{ animationDelay: "160ms" }}>
             <h2 className="text-lg sm:text-xl font-bold text-red-500 mb-2 flex items-center gap-2">
-              <svg
-                className="w-5 h-5 flex-none"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                ></path>
-              </svg>
+              <AlertTriangle className="w-5 h-5 flex-none" />
               Danger Zone
             </h2>
             <p className="text-gray-400 text-xs sm:text-sm mb-5 sm:mb-6 leading-relaxed">
@@ -444,9 +402,9 @@ export default function ManageAccountPage() {
 
             <button
               onClick={handleDeleteAccount}
-              className="bg-red-600/20 border border-red-500 hover:bg-red-600 text-red-400 hover:text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors w-full sm:w-auto"
+              className="bg-red-600/20 border border-red-500 hover:bg-red-600 text-red-400 hover:text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-1 w-full sm:w-auto flex items-center justify-center gap-2"
             >
-              Delete Account
+              <Trash2 className="w-4 h-4" /> Delete Account
             </button>
           </div>
         </div>

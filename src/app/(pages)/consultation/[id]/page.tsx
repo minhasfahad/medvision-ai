@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import { Video, ShieldCheck } from "lucide-react";
 
 export default function ConsultationRoom() {
   const { user } = useAuthStore();
@@ -23,15 +24,26 @@ export default function ConsultationRoom() {
   return (
     <ProtectedRoute>
       <div className="flex h-screen w-full flex-col overflow-hidden">
-        <div className="flex items-center justify-between p-4">
-          <div>
-            <h1 className="text-lg font-bold text-white">
-              MedVision Secure Telehealth
-            </h1>
-            <p className="text-xs text-green-400">
-              End-to-end encrypted connection
-            </p>
+        <div className="flex items-center justify-between p-4 bg-[#0f1123]/80 backdrop-blur-md border-b border-white/10 shadow-lg relative z-10 animate-fade-in-up">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-none shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+              <Video className="w-4 h-4 text-white" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-white truncate">
+                MedVision Secure Telehealth
+              </h1>
+              <p className="text-[11px] sm:text-xs text-green-400 flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 flex-none" />
+                End-to-end encrypted connection
+              </p>
+            </div>
           </div>
+
+          <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-900/20 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-300 flex-none">
+            <span className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></span>
+            Live Session
+          </span>
         </div>
         <iframe
           src={roomUrl}

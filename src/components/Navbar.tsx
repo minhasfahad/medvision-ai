@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAuthStore } from "../lib/store/useAuthStore";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { Menu, X, Settings, LogOut } from "lucide-react";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,11 +42,11 @@ export const Navbar = () => {
           className="no-underline flex items-center space-x-2 rtl:space-x-reverse flex-none"
         >
           <Image
-            src="/logoo.jpg"
+            src="/logo-mark.png"
             alt="MedVision Logo"
             width={100}
             height={50}
-            className="rounded-full w-auto h-10 sm:h-12 object-contain"
+            className="w-auto h-10 sm:h-12 object-contain"
           />
           <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white m-0">
             MedVision <span className="text-blue-500 font-medium">AI</span>
@@ -56,32 +57,22 @@ export const Navbar = () => {
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-gray-800/60 focus:outline-none lg:hidden bg-transparent border-0 cursor-pointer"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg p-2 text-sm text-gray-400 hover:bg-white/10 hover:text-white transition-all duration-200 focus:outline-none lg:hidden bg-transparent border-0 cursor-pointer"
         >
-          <svg
-            className="h-5 w-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 1h15M1 7h15M1 13h15"
-            />
-          </svg>
+          {isMenuOpen ? (
+            <X className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          )}
         </button>
 
         {/* LINKS SECTION */}
         <div
           className={`${
-            isMenuOpen ? "absolute top-full left-0 right-0 block" : "hidden"
-          } w-full lg:relative lg:top-auto lg:left-auto lg:right-auto lg:block lg:w-auto bg-[#060b30] lg:bg-transparent border-b border-gray-800 lg:border-0 px-4 pb-4 lg:p-0 z-50 shadow-2xl lg:shadow-none max-h-[85vh] overflow-y-auto lg:overflow-visible`}
+            isMenuOpen ? "absolute top-full left-0 right-0 block animate-in" : "hidden"
+          } w-full lg:relative lg:top-auto lg:left-auto lg:right-auto lg:block lg:w-auto bg-[#060b30] lg:bg-transparent border-b border-white/10 lg:border-0 px-4 pb-4 lg:p-0 z-50 shadow-2xl lg:shadow-none max-h-[85vh] overflow-y-auto lg:overflow-visible`}
         >
-          <ul className="flex list-none mt-4 flex-col rounded-lg border border-gray-800 bg-gray-900/60 p-2 gap-2 lg:mt-0 lg:flex-row lg:items-center lg:gap-1 lg:border-0 lg:bg-transparent lg:p-0">
+          <ul className="flex list-none mt-4 flex-col rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-2 gap-2 lg:mt-0 lg:flex-row lg:items-center lg:gap-1 lg:border-0 lg:bg-transparent lg:p-0">
             <li
               className="w-full lg:w-auto"
               onClick={() => setIsMenuOpen(false)}
@@ -164,10 +155,10 @@ export const Navbar = () => {
 
             {/* USER PROFILE DROPDOWN */}
             {isAuthenticated && user ? (
-              <li className="relative w-full lg:w-auto mt-2 lg:mt-0 lg:ml-4 lg:pl-4 border-t lg:border-t-0 lg:border-l border-gray-800 pt-3 lg:pt-0">
+              <li className="relative w-full lg:w-auto mt-2 lg:mt-0 lg:ml-4 lg:pl-4 border-t lg:border-t-0 lg:border-l border-white/10 pt-3 lg:pt-0">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center justify-between lg:justify-start gap-3 w-full lg:w-auto px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none bg-transparent border-0 cursor-pointer text-left"
+                  className="flex items-center justify-between lg:justify-start gap-3 w-full lg:w-auto px-3 py-1.5 rounded-full hover:bg-white/10 transition-all duration-200 focus:outline-none bg-transparent border-0 cursor-pointer text-left"
                 >
                   <div className="flex flex-col text-left">
                     <span className="text-sm font-bold text-gray-100 truncate max-w-[120px]">
@@ -189,12 +180,13 @@ export const Navbar = () => {
                   </div>
 
                   {/* --- NEW: Image / Initial Render Logic --- */}
-                  <div className="relative w-10 h-10 rounded-full flex-none overflow-hidden border-2 border-[#1a163a] shadow-lg bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                  <div className="relative w-10 h-10 rounded-full flex-none overflow-hidden border-2 border-[#1a163a] shadow-[0_0_15px_rgba(37,99,235,0.4)] bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                     {user.image ? (
                       <Image
                         src={user.image}
                         alt={`${user.name}'s Profile`}
                         fill
+                        unoptimized   
                         className="object-cover"
                         sizes="40px"
                       />
@@ -205,34 +197,16 @@ export const Navbar = () => {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 bottom-full mb-2 lg:bottom-auto lg:top-full lg:mt-3 w-full lg:w-56 bg-[#121726] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute right-0 bottom-full mb-2 lg:bottom-auto lg:top-full lg:mt-3 w-full lg:w-56 bg-[#12172a]/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl py-2 z-50 animate-in">
                     <Link
                       href="/manage-account"
                       onClick={() => {
                         setIsProfileOpen(false);
                         setIsMenuOpen(false);
                       }}
-                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-[#1e2235] hover:text-white transition-colors no-underline"
+                      className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors no-underline"
                     >
-                      <svg
-                        className="w-4 h-4 mr-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37.996.608 2.296.07 2.572-1.065z"
-                        ></path>
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        ></path>
-                      </svg>
+                      <Settings className="w-4 h-4 mr-3 text-gray-400" />
                       Manage Account
                     </Link>
 
@@ -243,21 +217,9 @@ export const Navbar = () => {
                         clear();
                         await signOut({ callbackUrl: "/" });
                       }}
-                      className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-gray-800 pt-2.5 bg-transparent border-0 cursor-pointer text-left"
+                      className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors mt-1 border-t border-white/10 pt-2.5 bg-transparent border-0 cursor-pointer text-left"
                     >
-                      <svg
-                        className="w-4 h-4 mr-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        ></path>
-                      </svg>
+                      <LogOut className="w-4 h-4 mr-3" />
                       Secure Logout
                     </button>
                   </div>
@@ -271,7 +233,7 @@ export const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Link href="/login" className="no-underline block w-full">
-                    <button className="rounded-xl border-2 border-blue-600 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition-all bg-transparent cursor-pointer w-full lg:w-auto min-h-[38px]">
+                    <button className="rounded-xl border-2 border-blue-600/70 px-5 py-2 text-sm font-bold text-blue-400 hover:bg-blue-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300 bg-transparent cursor-pointer w-full lg:w-auto min-h-[38px]">
                       Login
                     </button>
                   </Link>
@@ -281,7 +243,7 @@ export const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Link href="/signup" className="no-underline block w-full">
-                    <button className="rounded-xl bg-blue-600 border-2 border-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] cursor-pointer w-full lg:w-auto min-h-[38px]">
+                    <button className="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 border-2 border-transparent px-5 py-2 text-sm font-bold text-white hover:from-blue-500 hover:to-purple-500 hover:-translate-y-0.5 transition-all duration-300 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] cursor-pointer w-full lg:w-auto min-h-[38px]">
                       Sign Up
                     </button>
                   </Link>

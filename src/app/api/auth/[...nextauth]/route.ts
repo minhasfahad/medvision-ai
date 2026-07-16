@@ -23,7 +23,7 @@ const handler = NextAuth({
                     await userRepo.create({
                         name: user.name!,
                         email: user.email!,
-                        role: "patient",
+                        role: "user",
                     });
                 }
                 return true;

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "@/src/lib/axios";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import ProtectedRoute from "@/src/components/ProtectedRoute";
+import { Brain, Clock, CheckCircle2, AlertTriangle, Loader2, ClipboardList } from "lucide-react";
 
 interface RadiologistMetrics {
   totalScans: number;
@@ -38,7 +39,8 @@ export default function RadiologistOverview() {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center text-white">
+      <div className="flex h-64 items-center justify-center text-white gap-3">
+        <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
         <span className="text-lg font-medium animate-pulse">
           Loading radiology overview...
         </span>
@@ -48,10 +50,13 @@ export default function RadiologistOverview() {
 
   return (
     <ProtectedRoute>
-      <div className="p-6">
-        <div className="mb-8">
+      <div className="p-4 sm:p-6">
+        <div className="mb-8 animate-fade-in-up">
           <h1 className="text-3xl font-bold text-white tracking-wide">
-            Welcome, {user?.name || "Radiology Reviewer"}
+            Welcome,{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 animate-gradient-x">
+              {user?.name || "Radiology Reviewer"}
+            </span>
           </h1>
 
           <p className="text-gray-400 mt-2 text-sm">
@@ -63,12 +68,17 @@ export default function RadiologistOverview() {
         {/* Analytics Grid - Radiologist Dashboard Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
           {/* Metric Card 1: Total AI Scans */}
-          <div className="bg-[#1a163a] p-6 rounded-xl border border-gray-800 shadow-xl">
+          <div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-1 hover:border-blue-500/40 transition-all duration-300 animate-fade-in-up"
+            style={{ animationDelay: "0ms" }}
+          >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                 Total AI Scans
               </span>
-              <span className="text-blue-500 text-xl font-bold">🧠</span>
+              <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                <Brain className="w-4 h-4 text-blue-400" />
+              </div>
             </div>
 
             <div className="mt-4">
@@ -82,12 +92,17 @@ export default function RadiologistOverview() {
           </div>
 
           {/* Metric Card 2: Pending Reviews */}
-          <div className="bg-[#1a163a] p-6 rounded-xl border border-gray-800 shadow-xl border-l-4 border-l-amber-500">
+          <div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-xl border-l-4 border-l-amber-500 hover:-translate-y-1 hover:border-amber-500/40 transition-all duration-300 animate-fade-in-up"
+            style={{ animationDelay: "80ms" }}
+          >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                 Pending Reviews
               </span>
-              <span className="text-amber-500 text-xl font-bold">⏳</span>
+              <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                <Clock className="w-4 h-4 text-amber-400" />
+              </div>
             </div>
 
             <div className="mt-4">
@@ -101,12 +116,17 @@ export default function RadiologistOverview() {
           </div>
 
           {/* Metric Card 3: Confirmed Scans */}
-          <div className="bg-[#1a163a] p-6 rounded-xl border border-gray-800 shadow-xl">
+          <div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-1 hover:border-emerald-500/40 transition-all duration-300 animate-fade-in-up"
+            style={{ animationDelay: "160ms" }}
+          >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                 Confirmed Scans
               </span>
-              <span className="text-emerald-500 text-xl font-bold">✓</span>
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              </div>
             </div>
 
             <div className="mt-4">
@@ -120,12 +140,17 @@ export default function RadiologistOverview() {
           </div>
 
           {/* Metric Card 4: Needs Recheck */}
-          <div className="bg-[#1a163a] p-6 rounded-xl border border-gray-800 shadow-xl">
+          <div
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-1 hover:border-red-500/40 transition-all duration-300 animate-fade-in-up"
+            style={{ animationDelay: "240ms" }}
+          >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
                 Needs Recheck
               </span>
-              <span className="text-red-500 text-xl font-bold">!</span>
+              <div className="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-red-400" />
+              </div>
             </div>
 
             <div className="mt-4">
@@ -140,10 +165,18 @@ export default function RadiologistOverview() {
         </div>
 
         {/* Professional Workflow Section */}
-        <div className="bg-[#1a163a] rounded-xl border border-gray-800 shadow-xl p-6">
-          <h2 className="text-xl font-bold text-white mb-3">
-            Radiology Review Workflow
-          </h2>
+        <div
+          className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-6 animate-fade-in-up"
+          style={{ animationDelay: "320ms" }}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center flex-none">
+              <ClipboardList className="w-4 h-4 text-purple-400" />
+            </div>
+            <h2 className="text-xl font-bold text-white">
+              Radiology Review Workflow
+            </h2>
+          </div>
 
           <p className="text-gray-400 text-sm leading-6 max-w-4xl">
             Each AI-generated MRI result is first marked as pending review. The

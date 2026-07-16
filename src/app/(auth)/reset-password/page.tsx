@@ -3,6 +3,14 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/src/lib/axios";
 import Link from "next/link";
+import {
+  CheckCircle2,
+  Lock,
+  Eye,
+  EyeOff,
+  CheckCheck,
+  Loader2,
+} from "lucide-react";
 
 // We wrap the main form in a component so we can wrap it in Suspense
 // (Next.js requires Suspense when reading URL parameters)
@@ -60,9 +68,9 @@ function ResetPasswordForm() {
 
   if (success) {
     return (
-      <div className="text-center">
-        <div className="text-green-400 text-5xl mb-4">
-          <i className="fa-solid fa-circle-check"></i>
+      <div className="text-center animate-fade-in-up">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center">
+          <CheckCircle2 className="w-8 h-8 text-green-400" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">
           Password Reset Successful!
@@ -72,7 +80,7 @@ function ResetPasswordForm() {
         </p>
         <Link
           href="/login"
-          className="login-signup border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9] py-2 px-6 font-bold transition-all inline-block text-white no-underline"
+          className="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-0.5 py-2.5 px-6 font-bold transition-all duration-300 inline-block text-white no-underline"
         >
           Go to Login
         </Link>
@@ -83,7 +91,7 @@ function ResetPasswordForm() {
   return (
     <form onSubmit={handleReset} className="grid gap-6 sm:gap-8 w-full">
       {error && (
-        <p className="text-red-500 text-sm sm:text-base text-center m-0">
+        <p className="text-red-400 text-sm sm:text-base bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-center m-0">
           {error}
         </p>
       )}
@@ -98,35 +106,37 @@ function ResetPasswordForm() {
       </h1>
 
       <div className="relative w-full max-w-sm mx-auto">
-        <i className="fa-solid fa-unlock-keyhole absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
         <input
           required
           type={showPassword ? "text" : "password"}
           placeholder="New Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+          className="text-white placeholder-gray-500 bg-white/5 w-full pl-11 pr-12 py-2.5 border border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-sm sm:text-base"
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none p-0 m-0 z-10 text-gray-400 hover:text-white"
+          className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none p-0 m-0 z-10 text-gray-500 hover:text-white transition-colors"
         >
-          <i
-            className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
-          ></i>
+          {showPassword ? (
+            <EyeOff className="w-4 h-4" />
+          ) : (
+            <Eye className="w-4 h-4" />
+          )}
         </button>
       </div>
 
       <div className="relative w-full max-w-sm mx-auto">
-        <i className="fa-solid fa-check-double absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <CheckCheck className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
         <input
           required
           type="password"
           placeholder="Confirm New Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="text-white shadow-[0_0_10px_#5ed4ff,0_0_10px_#5ed4ff] bg-white/10 w-full pl-10 pr-4 py-2 border border-gray-300 shadow-blue-500/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+          className="text-white placeholder-gray-500 bg-white/5 w-full pl-11 pr-4 py-2.5 border border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-sm sm:text-base"
         />
       </div>
 
@@ -135,8 +145,9 @@ function ResetPasswordForm() {
           type="submit"
           disabled={loading}
           // Added 'flex items-center' to make 'justify-center' work perfectly
-          className="login-signup flex items-center justify-center text-center w-full border-2 border-[#cfeffa] shadow-[0_0_10px_#bfa9d9,0_0_20px_#bfa9d9] py-2 px-4 text-sm sm:text-base transition-all disabled:opacity-50"
+          className="flex items-center justify-center gap-2 text-center w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-0.5 py-2.5 px-4 text-sm sm:text-base transition-all duration-300 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
         >
+          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
           {loading ? "Resetting..." : "Reset Password"}
         </button>
       </div>
@@ -146,12 +157,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen h-[100vh] w-full px-4 flex items-center justify-center text-white">
-      <div className="grid h-full w-full items-center justify-items-center">
-        <div className="border-2 w-full max-w-md p-6 sm:p-10 pt-5 border-blue-400 shadow-lg shadow-blue-500/50 rounded-lg bg-black/10">
+    <div className="min-h-screen w-full px-4 py-10 flex items-center justify-center text-white">
+      <div className="grid w-full items-center justify-items-center">
+        <div className="w-full max-w-md p-6 sm:p-10 pt-5 border border-white/10 shadow-[0_0_40px_rgba(37,99,235,0.15)] rounded-2xl bg-white/5 backdrop-blur-md animate-fade-in-up">
           <Suspense
             fallback={
-              <div className="text-center text-blue-400">
+              <div className="flex items-center justify-center gap-2 text-center text-blue-400">
+                <Loader2 className="w-4 h-4 animate-spin" />
                 Loading secure form...
               </div>
             }

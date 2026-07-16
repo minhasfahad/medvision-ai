@@ -10,6 +10,7 @@ export async function GET() {
     const doctors = await UserModel.find({ role: "doctor" }).select("-password_hash");
     return NextResponse.json(doctors);
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ message: "Error fetching doctors" }, { status: 500 });
   }
 }

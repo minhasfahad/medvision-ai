@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "@/src/lib/store/useAuthStore";
 import api from "@/src/lib/axios";
 import Image from "next/image"; // NEW: For avatar preview
+import { Camera, Plus, X, Loader2, Save } from "lucide-react";
 
 export default function DoctorProfileSettings() {
   const { user } = useAuthStore();
@@ -140,12 +141,15 @@ export default function DoctorProfileSettings() {
 
   if (isLoading)
     return (
-      <div className="text-white text-center py-10">Loading profile...</div>
+      <div className="flex items-center justify-center gap-2 text-white text-center py-10">
+        <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
+        Loading profile...
+      </div>
     );
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <div className="mb-8">
+      <div className="mb-8 animate-fade-in-up">
         <h1 className="text-3xl font-bold text-white tracking-wide">
           Professional Profile
         </h1>
@@ -155,16 +159,16 @@ export default function DoctorProfileSettings() {
         </p>
       </div>
 
-      <div className="bg-[#1a163a] rounded-xl border border-gray-800 shadow-2xl p-8">
+      <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl p-8 animate-fade-in-up">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* --- NEW: Professional Photo Uploader --- */}
-          <div className="flex flex-col items-start mb-6 pb-6 border-b border-gray-800">
+          <div className="flex flex-col items-start mb-6 pb-6 border-b border-white/10">
             <label className="block text-sm font-medium text-gray-300 mb-3">
               Professional Photo
             </label>
             <div className="flex items-center gap-5">
               <div
-                className="relative w-20 h-20 rounded-full overflow-hidden bg-[#120f26] border-2 border-gray-700 cursor-pointer hover:border-blue-500 transition-colors flex-shrink-0"
+                className="relative w-20 h-20 rounded-full overflow-hidden bg-white/5 border-2 border-white/10 cursor-pointer hover:border-blue-500 transition-colors flex-shrink-0"
                 onClick={() => fileInputRef.current?.click()}
               >
                 {image ? (
@@ -176,19 +180,7 @@ export default function DoctorProfileSettings() {
                   />
                 ) : (
                   <div className="flex items-center justify-center w-full h-full text-gray-500">
-                    <svg
-                      className="w-8 h-8"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                    <Camera className="w-8 h-8" />
                   </div>
                 )}
               </div>
@@ -196,8 +188,9 @@ export default function DoctorProfileSettings() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-sm bg-[#120f26] hover:bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-2 text-sm bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-lg transition-colors"
                 >
+                  <Camera className="w-4 h-4" />
                   Upload Photo
                 </button>
                 <p className="text-xs text-gray-500">
@@ -226,7 +219,7 @@ export default function DoctorProfileSettings() {
                 placeholder="e.g. Neuro-Oncologist"
                 value={formData.specialty}
                 onChange={handleChange}
-                className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors"
               />
             </div>
 
@@ -241,7 +234,7 @@ export default function DoctorProfileSettings() {
                 placeholder="e.g. City General Hospital, Lahore"
                 value={formData.clinic}
                 onChange={handleChange}
-                className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors"
               />
             </div>
 
@@ -256,7 +249,7 @@ export default function DoctorProfileSettings() {
                 placeholder="e.g. 15 Yrs Exp"
                 value={formData.experience}
                 onChange={handleChange}
-                className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors"
               />
             </div>
 
@@ -271,7 +264,7 @@ export default function DoctorProfileSettings() {
                 placeholder="e.g. Rs. 3000"
                 value={formData.fee}
                 onChange={handleChange}
-                className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors"
               />
             </div>
           </div>
@@ -285,29 +278,31 @@ export default function DoctorProfileSettings() {
                 type="datetime-local"
                 value={slotInput}
                 onChange={(e) => setSlotInput(e.target.value)}
-                className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white [color-scheme:dark]"
+                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors [color-scheme:dark]"
               />
               <button
                 type="button"
                 onClick={addSlot}
-                className="bg-blue-600 px-6 rounded-lg font-bold hover:bg-blue-500 text-white"
+                className="flex items-center gap-1.5 bg-blue-600 px-6 rounded-xl font-bold hover:bg-blue-500 hover:-translate-y-0.5 text-white transition-all"
               >
+                <Plus className="w-4 h-4" />
                 Add
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              {availableSlots.map((slot) => (
+              {availableSlots.map((slot, idx) => (
                 <div
                   key={slot}
-                  className="bg-gray-800 text-xs text-white px-3 py-2 rounded-lg flex items-center gap-2 border border-gray-600"
+                  style={{ animationDelay: `${idx * 40}ms` }}
+                  className="bg-white/5 text-xs text-white px-3 py-2 rounded-lg flex items-center gap-2 border border-white/10 animate-fade-in-up"
                 >
                   {new Date(slot).toLocaleString()}
                   <button
                     type="button"
                     onClick={() => removeSlot(slot)}
-                    className="text-red-400 font-bold"
+                    className="text-red-400 hover:text-red-300 transition-colors"
                   >
-                    ✕
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
@@ -325,7 +320,7 @@ export default function DoctorProfileSettings() {
               placeholder="e.g. Meningioma, Glioma"
               value={formData.expertise}
               onChange={handleChange}
-              className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white"
+              className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors"
             />
           </div>
 
@@ -339,17 +334,25 @@ export default function DoctorProfileSettings() {
               placeholder="Briefly describe your background..."
               value={formData.about}
               onChange={handleChange}
-              className="w-full bg-[#120f26] border border-gray-700 rounded-lg p-3 text-white resize-none"
+              className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-colors resize-none"
             />
           </div>
 
-          <div className="flex justify-end pt-4 border-t border-gray-800">
+          <div className="flex justify-end pt-4 border-t border-white/10">
             <button
               type="submit"
               disabled={isSaving}
-              className="bg-blue-600 px-8 py-3 rounded-xl font-bold text-white hover:bg-blue-500 transition-colors"
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:opacity-70 px-8 py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] hover:-translate-y-1"
             >
-              {isSaving ? "Saving..." : "Publish Profile"}
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" /> Publish Profile
+                </>
+              )}
             </button>
           </div>
         </form>
