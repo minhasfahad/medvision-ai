@@ -116,7 +116,7 @@ export default function TryDemoPage() {
       console.error("Upload failed", error);
       setSaveStatus({
         type: "error",
-        message: "Error connecting to server. Please try again.",
+        message: DEMO_NOTICE,
       });
     } finally {
       setLoading(false);
@@ -147,9 +147,9 @@ export default function TryDemoPage() {
       setIsDownloading(false);
     }
   };
-
   const hasResult = Boolean(analyzedImage && analysisData);
-
+  const DEMO_NOTICE =
+    "Brain MRI scanning is temporarily unavailable on this free-tier demo deployment. The AI analysis module will be available soon. This is not an error.";
   return (
     <ProtectedRoute>
       <div className="relative min-h-screen text-white w-full">
@@ -220,7 +220,8 @@ export default function TryDemoPage() {
 
                 <button
                   onClick={handleUpload}
-                  disabled={loading || !selectedImage}
+                  // disabled={loading || !selectedImage}
+                  disabled={true}
                   className="w-full border-none bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 sm:py-3.5 rounded-xl text-sm sm:text-base font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.5)] hover:-translate-y-1"
                 >
                   {loading ? (
@@ -235,7 +236,10 @@ export default function TryDemoPage() {
                     </span>
                   )}
                 </button>
-
+                <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-amber-500/40 bg-amber-900/20 p-3 text-xs text-amber-200 sm:text-sm">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-amber-300" />
+                  <p className="min-w-0 break-words">{DEMO_NOTICE}</p>
+                </div>
                 {/* Status Alerts */}
                 {saveStatus.type && (
                   <div
@@ -552,7 +556,10 @@ export default function TryDemoPage() {
                           Book Appointment
                         </button>
                       ) : (
-                        <Link href="/patient-dashboard/my-history" className="w-full">
+                        <Link
+                          href="/patient-dashboard/my-history"
+                          className="w-full"
+                        >
                           <button className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-gray-200 transition-all hover:-translate-y-1 hover:bg-white/10 hover:text-white sm:text-base">
                             <History className="h-4 w-4 sm:h-5 sm:w-5" />
                             View Scan History
