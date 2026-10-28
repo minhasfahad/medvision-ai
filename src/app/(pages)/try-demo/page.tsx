@@ -113,7 +113,8 @@ export default function TryDemoPage() {
       console.error("Upload failed", error);
       setSaveStatus({
         type: "error",
-        message: "Error connecting to server. Please try again.",
+        // message: "Error connecting to server. Please try again.",
+        message: DEMO_NOTICE,
       });
     } finally {
       setLoading(false);
