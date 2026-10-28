@@ -25,6 +25,8 @@ import {
   UploadCloud,
   Brain,
 } from "lucide-react";
+const DEMO_NOTICE =
+  "Brain MRI scanning is temporarily unavailable on this free-tier demo deployment. The AI analysis module will be available soon. This is not an error.";
 export default function TryDemoPage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [analyzedImage, setAnalyzedImage] = useState<string | null>(null);
@@ -178,7 +180,9 @@ export default function TryDemoPage() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setSelectedImage(e.target.files?.[0] || null)}
+                  onChange={(e) =>
+                    setSelectedImage(e.target.files?.[0] || null)
+                  }
                   className="block w-full text-xs sm:text-sm text-gray-400
               file:mr-3 sm:file:mr-4 file:py-2 file:px-3 sm:file:py-2.5 sm:file:px-4
               file:rounded-lg file:border-0
@@ -191,7 +195,8 @@ export default function TryDemoPage() {
 
             <button
               onClick={handleUpload}
-              disabled={loading || !selectedImage}
+              // disabled={loading || !selectedImage}
+              disabled={true}
               className="w-full border-none bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 sm:py-3.5 rounded-xl text-sm sm:text-base font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(168,85,247,0.5)] hover:-translate-y-1"
             >
               {loading ? (
@@ -206,7 +211,10 @@ export default function TryDemoPage() {
                 </span>
               )}
             </button>
-
+            <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-amber-500/40 bg-amber-900/20 p-3 text-xs text-amber-200 sm:text-sm">
+              <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-amber-300" />
+              <p className="min-w-0 break-words">{DEMO_NOTICE}</p>
+            </div>
             {/* Status Alerts */}
             {saveStatus.type && (
               <div
