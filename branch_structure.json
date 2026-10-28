@@ -1,0 +1,33 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "animated-version",
+    "backup-local-fix",
+    "dev",
+    "main",
+    "minhasfahad-patch-1",
+    "minhasfahad-patch-2",
+    "minhasfahad-patch-3",
+    "origin"
+  ],
+  "parent": {
+    "animated-version": "main",
+    "backup-local-fix": "main",
+    "dev": "main",
+    "main": null,
+    "minhasfahad-patch-1": "main",
+    "minhasfahad-patch-2": "main",
+    "minhasfahad-patch-3": "main",
+    "origin": "main"
+  },
+  "order": [
+    "main",
+    "animated-version",
+    "backup-local-fix",
+    "dev",
+    "minhasfahad-patch-1",
+    "minhasfahad-patch-2",
+    "minhasfahad-patch-3",
+    "origin"
+  ]
+}

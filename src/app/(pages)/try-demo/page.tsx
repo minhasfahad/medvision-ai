@@ -30,6 +30,7 @@ import {
   Brain,
   Gauge,
 } from "lucide-react";
+import DemoNoticeDialog from "@/src/components/DemoNoticeDialog";
 export default function TryDemoPage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [analyzedImage, setAnalyzedImage] = useState<string | null>(null);
@@ -153,6 +154,7 @@ export default function TryDemoPage() {
   return (
     <ProtectedRoute>
       <div className="relative min-h-screen text-white w-full">
+      <DemoNoticeDialog />
         <AmbientBackground />
 
         <main className="relative pt-20 sm:pt-24 px-4 pb-16 max-w-7xl mx-auto w-full">
