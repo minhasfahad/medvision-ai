@@ -16,7 +16,7 @@ The project integrates a Next.js frontend, Node.js backend, and Python FastAPI i
 - **Video Consultation:** Integration with Whereby for online consultations.
 - **AI Chatbot:** Anthropic Claude API integration with MongoDB-backed data persistence.
 - **Cloud Image Storage:** Cloudinary integration for medical image storage.
-- **Deployment & Automation:** Vercel.
+- **Deployment & Automation:** Vercel deployment, Previously deployed on AWS EC2 AI hosting.
 
 ## 🛠️ Tech Stack
 
@@ -32,8 +32,7 @@ The project integrates a Next.js frontend, Node.js backend, and Python FastAPI i
 | Image Storage | Cloudinary |
 | AI Chatbot | Anthropic Claude API |
 | Video Consultation | Whereby |
-| Deployment | Vercel, AWS EC2 |
-| CI/CD & Process Management | GitHub Actions, PM2 |
+| Deployment | Vercel |
 
 ## 📸 Screenshots
 
