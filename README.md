@@ -40,34 +40,40 @@ The project integrates a Next.js frontend, Node.js backend, and Python FastAPI i
 > **Setup:** Create a folder named `screenshots` in the root of your GitHub repository and upload all 10 images below. GitHub will render them directly in this README.
 
 ### 1. Home Page
-![MedVision AI Home Page](screenshots/medvision-home.png)
+<img width="1920" height="978" alt="Home" src="https://github.com/user-attachments/assets/dd0f58f7-a2a6-4d58-80f1-e5c4a76c7955" />
+
 
 ### 2. MRI Image Upload
-![MRI Image Upload](screenshots/medvision-upload.png)
+<img width="1910" height="991" alt="Upload" src="https://github.com/user-attachments/assets/1491ce6c-94aa-48de-9643-c00d97a0fd11" />
+
 
 ### 3. AI Detection Results
-![AI Detection Results](screenshots/medvision-results.png)
+<img width="1204" height="883" alt="Predection-Page" src="https://github.com/user-attachments/assets/9ea3624a-cec2-4887-9199-8e3922655563" />
+
 
 ### 4. Appointment Booking
-![Appointment Booking](screenshots/medvision-appointment.png)
+<img width="1920" height="1080" alt="Book-Appointment" src="https://github.com/user-attachments/assets/cbf83e96-0f6e-4cb8-ac9c-201bed11839e" />
+
 
 ### 5. AI Healthcare Chatbot
-![AI Healthcare Chatbot](screenshots/medvision-chatbot.png)
+<img width="1920" height="984" alt="Chatbot-Page" src="https://github.com/user-attachments/assets/57a38504-a8d0-48fc-8152-c7be27be71ca" />
+
 
 ### 6. Doctor Dashboard
-![Doctor Dashboard](screenshots/medvision-doctor-dashboard.png)
+<img width="1920" height="1080" alt="Doctors-Profile-Settings" src="https://github.com/user-attachments/assets/f2135b2b-e8a3-4512-86cb-613e5ee5044f" />
+
 
 ### 7. Pending Case Reviews
-![Pending Case Reviews](screenshots/medvision-pending-reviews.png)
+<img width="1920" height="1080" alt="Pending-Reviews" src="https://github.com/user-attachments/assets/b69febf8-33ce-442d-9f76-1d1e9cd7cc98" />
+
 
 ### 8. Admin Patient Management
-![Admin Patient Management](screenshots/medvision-admin-patients.png)
+<img width="1920" height="981" alt="Admin-Manage-Patients" src="https://github.com/user-attachments/assets/eee08a5c-918e-4243-a562-52369df6cb59" />
 
-### 9. Tumor Prediction Visualization
-![Tumor Prediction Visualization](screenshots/medvision-prediction.png)
 
-### 10. Radiology Portal
-![Radiology Portal](screenshots/medvision-radiology-portal.png)
+### 9. Radiology Portal
+<img width="1920" height="1080" alt="Radiology-Portal" src="https://github.com/user-attachments/assets/cd987796-6cb4-4b31-974e-870cfd29f8d6" />
+
 
 ## 🏗️ System Architecture
 
