@@ -37,8 +37,6 @@ The project integrates a Next.js frontend, Node.js backend, and Python FastAPI i
 
 ## 📸 Screenshots
 
-> **Setup:** Create a folder named `screenshots` in the root of your GitHub repository and upload all 10 images below. GitHub will render them directly in this README.
-
 ### 1. Home Page
 <img width="1920" height="978" alt="Home" src="https://github.com/user-attachments/assets/dd0f58f7-a2a6-4d58-80f1-e5c4a76c7955" />
 
@@ -188,17 +186,12 @@ YOLO_MODEL_PATH=weights/best.pt
 MOBILENET_MODEL_PATH=weights/mri_validator_model.pth
 ```
 
-Use the actual environment variable names expected by your code. Never commit real API keys, passwords, or production secrets to GitHub.
-
 ## ☁️ Deployment
 
-- **Frontend:** Deployed on Vercel.
-- **AI Inference Server:** Hosted on AWS EC2.
+- **Full App:** Deployed on Vercel.
 - **Node.js Backend:** Managed using PM2.
 - **CI/CD:** GitHub Actions for configured automation workflows.
 - **Image Storage:** Cloudinary.
-
-Ensure production environment variables, CORS policies, API URLs, and access controls are configured correctly for each deployed service.
 
 ## 📊 Model Evaluation
 
@@ -215,7 +208,7 @@ IoU measures the overlap between the predicted segmentation region and the groun
 
 ## 👨‍💻 Author
 
-**Fahad Hamza**  
+**Fahad Hamza Minhas**  
 Computer Science Graduate | Full-Stack Developer | AI & Deep Learning Enthusiast
 
 - GitHub: [@minhasfahad](https://github.com/minhasfahad)
