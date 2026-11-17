@@ -25,7 +25,7 @@ The project integrates a Next.js frontend, Node.js backend, and Python FastAPI i
 | Frontend | Next.js, React, TypeScript, Tailwind CSS |
 | State Management | Zustand |
 | Authentication | NextAuth, JWT |
-| Backend | Node.js, Express.js |
+| Backend | Node.js |
 | AI Inference | Python, FastAPI |
 | Deep Learning | YOLO11-seg, MobileNetV3 |
 | Database | MongoDB |
@@ -83,7 +83,7 @@ User Interfaces
 Next.js + TypeScript
        │
        ▼
-Node.js + Express.js ───────► MongoDB
+Node.js ───────► MongoDB
        │                         │
        │                         └── Application Data
        │
